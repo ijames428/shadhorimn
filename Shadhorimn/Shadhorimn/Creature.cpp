@@ -9,7 +9,7 @@ Creature::Creature(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f
 	render_window = window;
 
 	sf::RectangleShape shape(dimensions);
-	shape.setFillColor(sf::Color::Cyan);
+	shape.setFillColor(sf::Color::Red);
 	shape.setPosition(position);
 
 	rectangle_shape = shape;
