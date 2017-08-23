@@ -43,6 +43,11 @@ void Drone::UpdateBehavior() {
 		velocity.x = 0.0f;
 		velocity.y = 0.0f;
 	}
+}
+
+void Drone::Draw(sf::Vector2f camera_position) {
+	rectangle_shape.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+	render_window->draw(rectangle_shape);
 
 #ifdef _DEBUG
 	sf::Color base_color(sf::Color::Blue);
@@ -52,7 +57,7 @@ void Drone::UpdateBehavior() {
 	sf::Color circle_color(base_color.r, base_color.g, base_color.b, 65);
 	sf::CircleShape aggro_circle(aggro_radius);
 	aggro_circle.setFillColor(circle_color);
-	aggro_circle.setPosition(sf::Vector2f(x + (width / 2) - (aggro_radius), y + (height / 2) - (aggro_radius)));
+	aggro_circle.setPosition(sf::Vector2f(x + (width / 2) - (aggro_radius) - camera_position.x, y + (height / 2) - (aggro_radius) - camera_position.y));
 	render_window->draw(aggro_circle);
 #endif
 }

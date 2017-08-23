@@ -15,7 +15,7 @@ Creature::Creature(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f
 	rectangle_shape = shape;
 }
 
-void Creature::Draw() {
-	rectangle_shape.setPosition(sf::Vector2f(x, y));
+void Creature::Draw(sf::Vector2f camera_position) {
+	rectangle_shape.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
 	render_window->draw(rectangle_shape);
 }

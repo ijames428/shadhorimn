@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Drone.cpp" />
     <ClCompile Include="InputHandler.cpp" />
@@ -29,6 +30,7 @@
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Creature.h" />
     <ClInclude Include="Drone.h" />
     <ClInclude Include="InputHandler.h" />

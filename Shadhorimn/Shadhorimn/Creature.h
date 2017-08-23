@@ -13,7 +13,7 @@ class Creature : public RigidBody {
 		Creature(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);
 		sf::RectangleShape rectangle_shape;
 		sf::RenderWindow *render_window;
-		void Draw();
+		void Draw(sf::Vector2f camera_position);
 };
 
 #endif
