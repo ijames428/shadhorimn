@@ -4,7 +4,7 @@
 using namespace std;
 #include <SFML/Graphics.hpp>
 
-class Camera {
+class Camera {  
 public:
 	sf::Vector2f viewport_position;
 	sf::Vector2f viewport_dimensions;
