@@ -23,12 +23,12 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 void World::Update(sf::Int64 frame_delta) {
 	render_window->clear();
 
-	float lerp = 0.1f;
-	sf::Vector2f position = camera->viewport_position;
-	position.x += (main_character->x - position.x) * lerp * frame_delta;
-	position.y += (main_character->y - position.y) * lerp * frame_delta;
-	//camera->viewport_position = sf::Vector2f(main_character->x - camera->viewport_dimensions.x / 2.0f, main_character->y - camera->viewport_dimensions.y / 2.0f);
-	camera->viewport_position = sf::Vector2f(position.x, position.y);
+	//float lerp = 0.1f;
+	//sf::Vector2f position = camera->viewport_position;
+	//position.x += (main_character->x - position.x) * lerp * frame_delta;
+	//position.y += (main_character->y - position.y) * lerp * frame_delta;
+	camera->viewport_position = sf::Vector2f(main_character->x - camera->viewport_dimensions.x / 2.0f, main_character->y - camera->viewport_dimensions.y / 2.0f);
+	//camera->viewport_position = sf::Vector2f(position.x, position.y);
 
 	main_character->Draw(camera->viewport_position);
 	for (int i = 0; i < (int)creatures.size(); i++) {
