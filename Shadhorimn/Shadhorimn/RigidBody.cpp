@@ -99,23 +99,35 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 			if (!colliders.empty()) {
 				for (int c = 0; c < (int)colliders.size(); c++) {
 					if (id != colliders[c]->id && colliders[c]->collision_enabled) {
-						if (AreTheRigidBodiesCollidingHorizontally(this, colliders[c])) {
-							if (velocity.x > 0.0f) {
-								future_x = colliders[c]->x - future_width;
-							} else if (velocity.x < 0.0f) {
-								future_x = colliders[c]->x + colliders[c]->width;
-							}
+						bool horizontal_collision = AreTheRigidBodiesCollidingHorizontally(this, colliders[c]);
+						bool vertical_collision = AreTheRigidBodiesCollidingVertically(this, colliders[c]);
+						if (horizontal_collision) {
+							//if (velocity.x > 0.0f) {
+							//	future_x = colliders[c]->x - future_width;
+							//} else if (velocity.x < 0.0f) {
+							//	future_x = colliders[c]->x + colliders[c]->width;
+							//}
 
+							if (x + (width / 2.0f) < colliders[c]->x + (colliders[c]->width / 2.0f)) {
+								future_x = x + (colliders[c]->x - (x + future_width));
+							} else {
+								future_x = x + (x - (colliders[c]->x + colliders[c]->width));
+							}
 							velocity.x = 0.0f;
 						}
-						if (AreTheRigidBodiesCollidingVertically(this, colliders[c])) {
-							if (velocity.y > 0.0f) {
-								future_y = colliders[c]->y - future_height;
+						if (vertical_collision) {
+							//if (velocity.y > 0.0f) {
+							//	future_y = colliders[c]->y - future_height;
+							//	in_the_air = false;
+							//} else if (velocity.y < 0.0f) {
+							//	future_y = colliders[c]->y + colliders[c]->height;
+							//}
+							if (y + (height / 2.0f) < colliders[c]->y + (colliders[c]->height / 2.0f)) {
+								future_y = y + (colliders[c]->y - (y + future_height));
 								in_the_air = false;
-							} else if (velocity.y < 0.0f) {
-								future_y = colliders[c]->y + colliders[c]->height;
+							} else {
+								future_y = y + (y - (colliders[c]->y + colliders[c]->height));
 							}
-
 							velocity.y = 0.0f;
 						}
 					}
@@ -123,6 +135,28 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 			}
 		}
 	}
+}
+
+bool RigidBody::AreTheRigidBodiesCollidingHorizontally(RigidBody* rb1, RigidBody* rb2) {
+	bool hor = (rb1->future_x + rb1->future_width < rb2->x || rb1->future_x > rb2->x + rb2->width);
+	bool ver = ((rb1->y + 1.0f) + (rb1->future_height - 2.0f) < rb2->y || rb1->y + 1.0f > rb2->y + rb2->height);
+
+	if (hor || ver) {
+		return false;
+	}
+
+	return true;
+}
+
+bool RigidBody::AreTheRigidBodiesCollidingVertically(RigidBody* rb1, RigidBody* rb2) {
+	bool hor = ((rb1->x + 1.0f) + (rb1->future_width - 2.0f) < rb2->x || rb1->x + 1.0f > rb2->x + rb2->width);
+	bool ver = (rb1->future_y + rb1->future_height < rb2->y || rb1->future_y > rb2->y + rb2->height);
+
+	if (hor || ver) {
+		return false;
+	}
+
+	return true;
 }
 
 std::vector<RigidBody*> RigidBody::GetCollidersRigidBodyIsCollidingWith() {
@@ -146,28 +180,6 @@ std::vector<RigidBody*> RigidBody::GetCollidersRigidBodyIsCollidingWith() {
 	}
 
 	return collidersBeingCollidedWith;
-}
-
-bool RigidBody::AreTheRigidBodiesCollidingHorizontally(RigidBody* rb1, RigidBody* rb2) {
-	bool hor = (rb1->future_x + rb1->future_width < rb2->x || rb1->future_x > rb2->x + rb2->width);
-	bool ver = ((rb1->y + 1.0f) + (rb1->future_height - 2.0f) < rb2->y || rb1->y + 1.0f > rb2->y + rb2->height);
-
-	if (hor || ver) {
-		return false;
-	}
-
-	return true;
-}
-
-bool RigidBody::AreTheRigidBodiesCollidingVertically(RigidBody* rb1, RigidBody* rb2) {
-	bool hor = ((rb1->x + 2.0f) + (rb1->future_width - 4.0f) < rb2->x || rb1->x + 2.0f > rb2->x + rb2->width);
-	bool ver = (rb1->future_y + rb1->future_height < rb2->y || rb1->future_y > rb2->y + rb2->height);
-
-	if (hor || ver) {
-		return false;
-	}
-
-	return true;
 }
 
 void RigidBody::SetGridTopLeftX(int new_value) {

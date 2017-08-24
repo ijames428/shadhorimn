@@ -30,7 +30,7 @@ int main()
 	sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode::VideoMode((int)window_width, (int)window_height), "Shadhorimn");// , sf::Style::Fullscreen);
 	//sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode::getDesktopMode(), "Shadhorimn");// , sf::Style::Fullscreen);
 
-	PlayerCharacter* main_character = new PlayerCharacter(window, sf::Vector2f(500.0f, 400.0f), sf::Vector2f(40.0f, 80.0f), true);
+	PlayerCharacter* main_character = new PlayerCharacter(window, sf::Vector2f(500.0f, 510.0f), sf::Vector2f(40.0f, 80.0f), true);
 	InputHandler* input_handler = new InputHandler(main_character);
 
 	SingletonAccess<World> TheWorld = Singleton<World>::Get();
