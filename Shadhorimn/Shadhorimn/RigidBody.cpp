@@ -129,7 +129,7 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 
 bool RigidBody::AreTheRigidBodiesCollidingHorizontally(RigidBody* rb1, RigidBody* rb2) {
 	bool hor = (rb1->future_x + rb1->future_width < rb2->x || rb1->future_x > rb2->x + rb2->width);
-	bool ver = ((rb1->y + 1.0f) + (rb1->future_height - 2.0f) < rb2->y || rb1->y + 1.0f > rb2->y + rb2->height);
+	bool ver = ((rb1->y + 2.0f) + (rb1->future_height - 4.0f) < rb2->y || rb1->y + 2.0f > rb2->y + rb2->height);
 
 	if (hor || ver) {
 		return false;
@@ -139,7 +139,7 @@ bool RigidBody::AreTheRigidBodiesCollidingHorizontally(RigidBody* rb1, RigidBody
 }
 
 bool RigidBody::AreTheRigidBodiesCollidingVertically(RigidBody* rb1, RigidBody* rb2) {
-	bool hor = ((rb1->x + 1.0f) + (rb1->future_width - 2.0f) < rb2->x || rb1->x + 1.0f > rb2->x + rb2->width);
+	bool hor = ((rb1->x + 2.0f) + (rb1->future_width - 4.0f) < rb2->x || rb1->x + 2.0f > rb2->x + rb2->width);
 	bool ver = (rb1->future_y + rb1->future_height < rb2->y || rb1->future_y > rb2->y + rb2->height);
 
 	if (hor || ver) {

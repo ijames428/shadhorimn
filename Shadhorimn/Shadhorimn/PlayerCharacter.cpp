@@ -58,8 +58,6 @@ void PlayerCharacter::HandleButtonXPress() {
 	}
 
 	Singleton<World>::Get()->ScreenShake(hit_objects.size() > 0 ? 1.0f : 0.0f);
-
-	cout << hit_objects.size() << "\n";
 }
 
 void PlayerCharacter::HandleButtonXRelease() {

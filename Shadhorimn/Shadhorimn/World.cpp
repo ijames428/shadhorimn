@@ -22,7 +22,7 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	current_time = 0;
 	screen_shaking = false;
 	screen_shake_start_time = 0;
-	screen_shake_duration = 0.01f * 1000000; // 1000000 is one second in microseconds.
+	screen_shake_duration = (sf::Int64)(0.01f * 1000000); // 1000000 is one second in microseconds.
 }
 
 void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
@@ -32,10 +32,15 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 
 	sf::Vector2f screen_shake_amount = sf::Vector2f(0.0f, 0.0f);
 
-	if (screen_shake_start_time + screen_shake_duration > current_time) {
-		screen_shake_amount.x = 5.0f;
-		screen_shake_amount.y = 5.0f;
-	} else {
+	screen_shake_amount.x = screen_shake_magnitude * 5.0f * (rand() % 2 == 0 ? 1.0f : -1.0f);
+	screen_shake_amount.y = screen_shake_magnitude * 5.0f * (rand() % 2 == 0 ? 1.0f : -1.0f);
+
+	if (screen_shake_start_time + screen_shake_duration < current_time) {
+		screen_shake_amount.x *= (rand() % 2 == 0 ? 1.0f : -1.0f);
+		screen_shake_amount.y *= (rand() % 2 == 0 ? 1.0f : -1.0f);
+	}
+
+	if (screen_shake_start_time + screen_shake_duration * 2 < current_time) {
 		screen_shake_magnitude = 0.0f;
 	}
 
