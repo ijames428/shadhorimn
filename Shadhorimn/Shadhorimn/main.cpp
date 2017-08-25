@@ -54,7 +54,7 @@ int main()
 
 		input_handler->Update();
 
-		TheWorld->Update(frame_delta);
+		TheWorld->Update(time_current, frame_delta);
 	}
 
 	return 0;

@@ -18,27 +18,44 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 
 	drones.push_back(new Drone(render_window, sf::Vector2f(600.0f, 450.0f), sf::Vector2f(30.0f, 30.0f), false));
 	drones.push_back(new Drone(render_window, sf::Vector2f(200.0f, 300.0f), sf::Vector2f(30.0f, 30.0f), false));
+
+	current_time = 0;
+	screen_shaking = false;
+	screen_shake_start_time = 0;
+	screen_shake_duration = 0.01f * 1000000; // 1000000 is one second in microseconds.
 }
 
-void World::Update(sf::Int64 frame_delta) {
+void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 	render_window->clear();
+
+	current_time = curr_time;
+
+	sf::Vector2f screen_shake_amount = sf::Vector2f(0.0f, 0.0f);
+
+	if (screen_shake_start_time + screen_shake_duration > current_time) {
+		screen_shake_amount.x = 5.0f;
+		screen_shake_amount.y = 5.0f;
+	} else {
+		screen_shake_magnitude = 0.0f;
+	}
 
 	float lerp = 0.00001f;
 	sf::Vector2f position = camera->viewport_position;
 	position.x += (main_character->x - camera->viewport_dimensions.x / 2.0f - position.x) * lerp * frame_delta;
 	position.y += (main_character->y - camera->viewport_dimensions.y / 2.0f - position.y) * lerp * frame_delta;
-	//camera->viewport_position = sf::Vector2f(main_character->x - camera->viewport_dimensions.x / 2.0f, main_character->y - camera->viewport_dimensions.y / 2.0f);
 	camera->viewport_position = sf::Vector2f(position.x, position.y);
 
-	main_character->Draw(camera->viewport_position);
+	sf::Vector2f viewport_position_with_screen_shake = sf::Vector2f(camera->viewport_position.x + screen_shake_amount.x, camera->viewport_position.y + screen_shake_amount.y);
+
+	main_character->Draw(viewport_position_with_screen_shake);
 	for (int i = 0; i < (int)creatures.size(); i++) {
-		creatures[i]->Draw(camera->viewport_position);
+		creatures[i]->Draw(viewport_position_with_screen_shake);
 	}
 	for (int i = 0; i < (int)platforms.size(); i++) {
-		platforms[i]->Draw(camera->viewport_position);
+		platforms[i]->Draw(viewport_position_with_screen_shake);
 	}
 	for (int i = 0; i < (int)drones.size(); i++) {
-		drones[i]->Draw(camera->viewport_position);
+		drones[i]->Draw(viewport_position_with_screen_shake);
 	}
 
 	main_character->Update(frame_delta);
@@ -54,6 +71,11 @@ void World::Update(sf::Int64 frame_delta) {
 	}
 
 	render_window->display();
+}
+
+void World::ScreenShake(float magnitude) {
+	screen_shake_start_time = current_time;
+	screen_shake_magnitude = magnitude;
 }
 
 void World::AddRigidBodyToGrid(RigidBody* rb) {

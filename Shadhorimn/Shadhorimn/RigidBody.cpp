@@ -101,13 +101,8 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 					if (id != colliders[c]->id && colliders[c]->collision_enabled) {
 						bool horizontal_collision = AreTheRigidBodiesCollidingHorizontally(this, colliders[c]);
 						bool vertical_collision = AreTheRigidBodiesCollidingVertically(this, colliders[c]);
-						if (horizontal_collision) {
-							//if (velocity.x > 0.0f) {
-							//	future_x = colliders[c]->x - future_width;
-							//} else if (velocity.x < 0.0f) {
-							//	future_x = colliders[c]->x + colliders[c]->width;
-							//}
 
+						if (horizontal_collision) {
 							if (x + (width / 2.0f) < colliders[c]->x + (colliders[c]->width / 2.0f)) {
 								future_x = x + (colliders[c]->x - (x + future_width));
 							} else {
@@ -115,13 +110,8 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 							}
 							velocity.x = 0.0f;
 						}
+
 						if (vertical_collision) {
-							//if (velocity.y > 0.0f) {
-							//	future_y = colliders[c]->y - future_height;
-							//	in_the_air = false;
-							//} else if (velocity.y < 0.0f) {
-							//	future_y = colliders[c]->y + colliders[c]->height;
-							//}
 							if (y + (height / 2.0f) < colliders[c]->y + (colliders[c]->height / 2.0f)) {
 								future_y = y + (colliders[c]->y - (y + future_height));
 								in_the_air = false;

@@ -1,6 +1,8 @@
 using namespace std;
 #include <iostream>
 #include "PlayerCharacter.h"
+#include "Singleton.h"
+#include "World.h"
 
 PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : 
 	Creature::Creature(window, position, dimensions, subject_to_gravity) {
@@ -54,6 +56,8 @@ void PlayerCharacter::HandleButtonXPress() {
 		hit_objects[i]->velocity.x = knock_back_x;
 		hit_objects[i]->velocity.y = -knock_back_y;
 	}
+
+	Singleton<World>::Get()->ScreenShake(hit_objects.size() > 0 ? 1.0f : 0.0f);
 
 	cout << hit_objects.size() << "\n";
 }

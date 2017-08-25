@@ -8,6 +8,11 @@ using namespace std;
 
 class World {
 	private:
+		sf::Int64 current_time;
+		bool screen_shaking;
+		sf::Int64 screen_shake_start_time;
+		sf::Int64 screen_shake_duration;
+		float screen_shake_magnitude;
 		Camera* camera;
 		sf::RenderWindow* render_window;
 		std::vector<Platform*> platforms = std::vector<Platform*>();
@@ -23,8 +28,9 @@ class World {
 		PlayerCharacter* main_character;
 		World();
 		void Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* character);
-		void Update(sf::Int64 frame_delta);
+		void Update(sf::Int64 current_time, sf::Int64 frame_delta);
 		void AddRigidBodyToGrid(RigidBody* rb);
 		void MoveRigidBodyInGrid(RigidBody* rb);
 		std::vector<RigidBody*> GetObjectsInGridLocation(int grid_x, int grid_y);
+		void ScreenShake(float magnitude);
 };
