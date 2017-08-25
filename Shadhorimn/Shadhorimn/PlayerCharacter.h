@@ -2,12 +2,22 @@
 #define PLAYERCHARACTER_H
 
 using namespace std;
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "Creature.h"
 
 class PlayerCharacter : public Creature {
 	private:
+		std::vector<sf::Sound> hit_sounds = std::vector<sf::Sound>();
+		sf::SoundBuffer buffer0;
+		sf::SoundBuffer buffer1;
+		sf::SoundBuffer buffer2;
+		sf::Sound soundLand;
+		sf::SoundBuffer bufferLand;
+		sf::Sound soundJump;
+		sf::SoundBuffer bufferJump;
 		RigidBody* HitBox;
+		bool was_in_air;
 	public:
 		PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);
 		void HandleLeftStickInput(float horizontal, float vertical);

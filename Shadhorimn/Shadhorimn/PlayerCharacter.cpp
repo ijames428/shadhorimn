@@ -16,6 +16,41 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	shape.setPosition(position);
 
 	rectangle_shape = shape;
+
+	if (!buffer0.loadFromFile("Sound/Hit0.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		hit_sounds.push_back(sf::Sound());
+		hit_sounds[0].setBuffer(buffer0);
+	}
+
+	if (!buffer1.loadFromFile("Sound/Hit1.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		hit_sounds.push_back(sf::Sound());
+		hit_sounds[1].setBuffer(buffer1);
+	}
+
+	if (!buffer2.loadFromFile("Sound/Hit2.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		hit_sounds.push_back(sf::Sound());
+		hit_sounds[2].setBuffer(buffer2);
+	}
+
+	if (!bufferLand.loadFromFile("Sound/Land.wav")) {
+		throw exception("Sound file not found");
+	}
+	else {
+		soundLand.setBuffer(bufferLand);
+	}
+
+	if (!bufferJump.loadFromFile("Sound/Jump.wav")) {
+		throw exception("Sound file not found");
+	}
+	else {
+		soundJump.setBuffer(bufferJump);
+	}
 }
 
 void PlayerCharacter::HandleLeftStickInput(float horizontal, float vertical) {
@@ -26,6 +61,7 @@ void PlayerCharacter::HandleButtonAPress() {
 	if (!in_the_air) {
 		velocity.y = -(jump_power);
 		in_the_air = true;
+		soundJump.play();
 	}
 }
 
@@ -53,6 +89,9 @@ void PlayerCharacter::HandleButtonXPress() {
 	std::vector<RigidBody*> hit_objects = HitBox->GetCollidersRigidBodyIsCollidingWith();
 	
 	for (int i = 0; i < (int)hit_objects.size(); i++) {
+		if (hit_sounds.size() > 0) {
+			hit_sounds[rand() % 3].play();
+		}
 		hit_objects[i]->velocity.x = knock_back_x;
 		hit_objects[i]->velocity.y = -knock_back_y;
 	}
