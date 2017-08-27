@@ -72,7 +72,7 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 	}
 	for (int i = 0; i < (int)drones.size(); i++) {
 		drones[i]->Update(frame_delta);
-		drones[i]->UpdateBehavior();
+		drones[i]->UpdateBehavior(current_time);
 	}
 
 	render_window->display();

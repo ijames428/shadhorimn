@@ -6,6 +6,9 @@ using namespace std;
 
 PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : 
 	Creature::Creature(window, position, dimensions, subject_to_gravity) {
+	entity_type = "PlayerCharacter";
+	hit_points = 10;
+
 	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 10.0f), false, false);
 
 	speed = 0.5f;
@@ -92,8 +95,12 @@ void PlayerCharacter::HandleButtonXPress() {
 		if (hit_sounds.size() > 0) {
 			hit_sounds[rand() % 3].play();
 		}
-		hit_objects[i]->velocity.x = knock_back_x;
-		hit_objects[i]->velocity.y = -knock_back_y;
+
+		if (hit_objects[i]->entity_type == "Drone" || hit_objects[i]->entity_type == "Creature") {
+			hit_objects[i]->velocity.x = knock_back_x;
+			hit_objects[i]->velocity.y = -knock_back_y;
+			((Creature*)(hit_objects[i]))->TakeHit(1, 1000000);
+		}
 	}
 
 	Singleton<World>::Get()->ScreenShake(hit_objects.size() > 0 ? 1.0f : 0.0f);

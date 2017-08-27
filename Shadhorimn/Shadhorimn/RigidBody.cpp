@@ -5,6 +5,8 @@ using namespace std;
 #include "World.h"
 
 RigidBody::RigidBody(sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity, bool subject_to_collision) {
+	entity_type = "RigidBody";
+
 	x = position.x;
 	y = position.y;
 	width = dimensions.x;

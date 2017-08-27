@@ -6,6 +6,9 @@ using namespace std;
 #define PI 3.14159265
 
 Drone::Drone(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : Creature::Creature(window, position, dimensions, subject_to_gravity) {
+	entity_type = "Drone";
+	hit_points = 2;
+
 	speed = 2.0f;
 	jump_power = 1.0f;
 	aggro_radius = 200.0f;
@@ -22,26 +25,32 @@ Drone::Drone(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimen
 	target = Singleton<World>::Get()->main_character;
 }
 
-void Drone::UpdateBehavior() {
-	is_aggroed = RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(target->x + target->width / 2.0f, target->y + target->height / 2.0f), sf::Vector2f(x, y)) < aggro_radius;
-
-	if (is_aggroed) {
-		if (target->x > x) {
-			velocity.x = movement_speed;
-		}
-		else if (target->x < x) {
-			velocity.x = -movement_speed;
-		}
-
-		if (target->y > y) {
-			velocity.y = movement_speed;
-		}
-		else if (target->y < y) {
-			velocity.y = -movement_speed;
-		}
+void Drone::UpdateBehavior(sf::Int64 curr_time) {
+	if (hit_stun_start_time + hit_stun_duration > curr_time) {
+		gravity_enabled = true;
 	} else {
-		velocity.x = 0.0f;
-		velocity.y = 0.0f;
+		gravity_enabled = false;
+
+		is_aggroed = RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(target->x + target->width / 2.0f, target->y + target->height / 2.0f), sf::Vector2f(x, y)) < aggro_radius;
+
+		if (is_aggroed) {
+			if (target->x > x) {
+				velocity.x = movement_speed;
+			}
+			else if (target->x < x) {
+				velocity.x = -movement_speed;
+			}
+
+			if (target->y > y) {
+				velocity.y = movement_speed;
+			}
+			else if (target->y < y) {
+				velocity.y = -movement_speed;
+			}
+		} else {
+			velocity.x = 0.0f;
+			velocity.y = 0.0f;
+		}
 	}
 }
 
