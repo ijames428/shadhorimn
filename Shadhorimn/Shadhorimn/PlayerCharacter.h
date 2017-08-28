@@ -5,6 +5,7 @@ using namespace std;
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "Creature.h"
+#include "Projectile.h"
 
 class PlayerCharacter : public Creature {
 	private:
@@ -19,6 +20,7 @@ class PlayerCharacter : public Creature {
 		RigidBody* HitBox;
 		bool was_in_air;
 	public:
+		Projectile* test_projectile;
 		PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);
 		void HandleLeftStickInput(float horizontal, float vertical);
 		void HandleButtonAPress();

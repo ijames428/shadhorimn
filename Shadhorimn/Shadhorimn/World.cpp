@@ -53,6 +53,7 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 	sf::Vector2f viewport_position_with_screen_shake = sf::Vector2f(camera->viewport_position.x + screen_shake_amount.x, camera->viewport_position.y + screen_shake_amount.y);
 
 	main_character->Draw(viewport_position_with_screen_shake);
+	main_character->test_projectile->Draw(viewport_position_with_screen_shake);
 	for (int i = 0; i < (int)creatures.size(); i++) {
 		creatures[i]->Draw(viewport_position_with_screen_shake);
 	}
@@ -64,6 +65,8 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 	}
 
 	main_character->Update(frame_delta);
+	main_character->test_projectile->Update(frame_delta);
+	main_character->test_projectile->UpdateProjectile(current_time);
 	for (int i = 0; i < (int)creatures.size(); i++) {
 		creatures[i]->Update(frame_delta);
 	}

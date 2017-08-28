@@ -26,30 +26,36 @@ Drone::Drone(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimen
 }
 
 void Drone::UpdateBehavior(sf::Int64 curr_time) {
-	if (hit_stun_start_time + hit_stun_duration > curr_time) {
+	current_time = curr_time;
+
+	if (hit_points <= 0) {
 		gravity_enabled = true;
 	} else {
-		gravity_enabled = false;
-
-		is_aggroed = RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(target->x + target->width / 2.0f, target->y + target->height / 2.0f), sf::Vector2f(x, y)) < aggro_radius;
-
-		if (is_aggroed) {
-			if (target->x > x) {
-				velocity.x = movement_speed;
-			}
-			else if (target->x < x) {
-				velocity.x = -movement_speed;
-			}
-
-			if (target->y > y) {
-				velocity.y = movement_speed;
-			}
-			else if (target->y < y) {
-				velocity.y = -movement_speed;
-			}
+		if (hit_stun_start_time + hit_stun_duration > curr_time) {
+			gravity_enabled = true;
 		} else {
-			velocity.x = 0.0f;
-			velocity.y = 0.0f;
+			gravity_enabled = false;
+
+			is_aggroed = RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(target->x + target->width / 2.0f, target->y + target->height / 2.0f), sf::Vector2f(x, y)) < aggro_radius;
+
+			if (is_aggroed) {
+				if (target->x > x) {
+					velocity.x = movement_speed;
+				}
+				else if (target->x < x) {
+					velocity.x = -movement_speed;
+				}
+
+				if (target->y > y) {
+					velocity.y = movement_speed;
+				}
+				else if (target->y < y) {
+					velocity.y = -movement_speed;
+				}
+			} else {
+				velocity.x = 0.0f;
+				velocity.y = 0.0f;
+			}
 		}
 	}
 }

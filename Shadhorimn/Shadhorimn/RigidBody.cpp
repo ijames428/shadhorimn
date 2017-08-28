@@ -23,6 +23,7 @@ RigidBody::RigidBody(sf::Vector2f position, sf::Vector2f dimensions, bool subjec
 	velocity.x = 0.0f;
 	velocity.y = 0.0f;
 
+	entities_excluded_from_collision = std::vector<std::string>();
 	Singleton<World>::Get()->AddRigidBodyToGrid(this);
 }
 
@@ -100,7 +101,8 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 
 			if (!colliders.empty()) {
 				for (int c = 0; c < (int)colliders.size(); c++) {
-					if (id != colliders[c]->id && colliders[c]->collision_enabled) {
+					if (id != colliders[c]->id && colliders[c]->collision_enabled &&
+						(std::find(entities_excluded_from_collision.begin(), entities_excluded_from_collision.end(), colliders[c]->entity_type) == entities_excluded_from_collision.end())) {
 						bool horizontal_collision = AreTheRigidBodiesCollidingHorizontally(this, colliders[c]);
 						bool vertical_collision = AreTheRigidBodiesCollidingVertically(this, colliders[c]);
 
@@ -160,7 +162,7 @@ std::vector<RigidBody*> RigidBody::GetCollidersRigidBodyIsCollidingWith() {
 
 			if (!colliders.empty()) {
 				for (int c = 0; c < (int)colliders.size(); c++) {
-					if (id != colliders[c]->id) {
+					if (id != colliders[c]->id && (std::find(entities_excluded_from_collision.begin(), entities_excluded_from_collision.end(), colliders[c]->entity_type) == entities_excluded_from_collision.end())) {
 						if (AreTheRigidBodiesCollidingHorizontally(this, colliders[c]) && 
 							AreTheRigidBodiesCollidingVertically(this, colliders[c])) {
 							collidersBeingCollidedWith.push_back(colliders[c]);

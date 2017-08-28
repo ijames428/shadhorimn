@@ -9,6 +9,7 @@ Creature::Creature(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f
 	speed = 2.0f;
 	jump_power = 1.0f;
 
+	current_time = 0;
 	hit_stun_start_time = 0;
 	hit_stun_duration = 0;
 
@@ -27,7 +28,8 @@ void Creature::Draw(sf::Vector2f camera_position) {
 }
 
 void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur) {
-	sf::Int64 adjusted_damage = damage;
-	hit_points = (hit_points - adjusted_damage < 0 ? 0 : adjusted_damage);
+	sf::Int16 adjusted_damage = (sf::Int16)damage;
+	hit_points = (hit_points - adjusted_damage < 0 ? 0 : hit_points - adjusted_damage);
 	hit_stun_duration = hit_stun_dur;
+	hit_stun_start_time = current_time;
 }

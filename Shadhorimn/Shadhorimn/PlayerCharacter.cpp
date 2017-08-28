@@ -10,6 +10,9 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	hit_points = 10;
 
 	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 10.0f), false, false);
+	test_projectile = new Projectile(window, position, sf::Vector2f(10.0f, 10.0f), false);
+
+	entities_excluded_from_collision.push_back("Projectile");
 
 	speed = 0.5f;
 	jump_power = 0.9f;
@@ -110,6 +113,12 @@ void PlayerCharacter::HandleButtonXRelease() {
 }
 
 void PlayerCharacter::HandleButtonYPress() {
+	float x_velocity = 1.0f;
+	if (!facing_right) {
+		x_velocity *= -1.0f;
+	}
+	test_projectile->Fire(current_time, sf::Vector2f(x, y), sf::Vector2f(x_velocity, 0.0f));
+	cout << "Fire\n";
 }
 
 void PlayerCharacter::HandleButtonYRelease() {

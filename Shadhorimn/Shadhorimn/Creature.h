@@ -7,6 +7,7 @@ using namespace std;
 
 class Creature : public RigidBody {
 	protected:
+		sf::Int64 current_time;
 		sf::Int64 hit_stun_start_time;
 		sf::Int64 hit_stun_duration;
 		float speed;

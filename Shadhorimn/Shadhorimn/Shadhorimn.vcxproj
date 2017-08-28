@@ -26,6 +26,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlayerCharacter.cpp" />
+    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -36,6 +37,7 @@
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PlayerCharacter.h" />
+    <ClInclude Include="Projectile.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="World.h" />
