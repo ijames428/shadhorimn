@@ -14,6 +14,11 @@ void InputHandler::Update() {
 		bool x_button_current = sf::Joystick::isButtonPressed(0, x_button);
 		bool y_button_current = sf::Joystick::isButtonPressed(0, y_button);
 
+		bool right_bumper_button_current = sf::Joystick::isButtonPressed(0, right_bumper_button);
+		bool left_bumper_button_current = sf::Joystick::isButtonPressed(0, left_bumper_button);
+		bool select_button_current = sf::Joystick::isButtonPressed(0, select_button);
+		bool start_button_current = sf::Joystick::isButtonPressed(0, start_button);
+
 		if (a_button_current && !a_button_previous) {
 			player_character->HandleButtonAPress();
 		}
@@ -42,10 +47,45 @@ void InputHandler::Update() {
 			player_character->HandleButtonYRelease();
 		}
 
+
+		if (right_bumper_button_current && !right_bumper_button_previous) {
+			player_character->HandleButtonRightBumperPress();
+		}
+		if (!right_bumper_button_current && right_bumper_button_previous) {
+			player_character->HandleButtonRightBumperRelease();
+		}
+
+		if (left_bumper_button_current && !left_bumper_button_previous) {
+			player_character->HandleButtonLeftBumperPress();
+		}
+		if (!left_bumper_button_current && left_bumper_button_previous) {
+			player_character->HandleButtonLeftBumperRelease();
+		}
+
+		if (select_button_current && !select_button_previous) {
+			player_character->HandleButtonSelectPress();
+		}
+		if (!select_button_current && select_button_previous) {
+			player_character->HandleButtonSelectRelease();
+		}
+
+		if (start_button_current && !start_button_previous) {
+			player_character->HandleButtonStartPress();
+		}
+		if (!start_button_current && start_button_previous) {
+			player_character->HandleButtonStartRelease();
+		}
+
 		a_button_previous = a_button_current;
 		b_button_previous = b_button_current;
 		x_button_previous = x_button_current;
 		y_button_previous = y_button_current;
+
+		right_bumper_button_previous = right_bumper_button_current;
+		left_bumper_button_previous = left_bumper_button_current;
+		select_button_previous = select_button_current;
+		start_button_previous = start_button_current;
+
 
 		float left_stick_horizontal = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
 		float left_stick_vertical = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);

@@ -17,7 +17,6 @@ protected:
 	sf::Int64 current_time;
 	sf::Int64 fired_time;
 	sf::Vector2f fired_position;
-	sf::Int64 length_of_life;
 	sf::Int64 range;
 	float speed;
 public:

@@ -8,6 +8,8 @@ using namespace std;
 
 class World {
 	private:
+		sf::Texture hit_point_texture;
+		std::vector<sf::Sprite> hit_point_sprites = std::vector<sf::Sprite>();
 		sf::Int64 current_time;
 		bool screen_shaking;
 		sf::Int64 screen_shake_start_time;
@@ -25,6 +27,7 @@ class World {
 		int cell_height = 100;
 		std::vector<std::vector<std::vector<RigidBody*>>> Grid = std::vector<std::vector<std::vector<RigidBody*>>>(grid_width, std::vector<std::vector<RigidBody*>>(grid_height, std::vector<RigidBody*>()));
 	public:
+		bool paused;
 		PlayerCharacter* main_character;
 		World();
 		void Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* character);

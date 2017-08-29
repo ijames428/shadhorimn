@@ -173,13 +173,30 @@ std::vector<RigidBody*> RigidBody::GetCollidersRigidBodyIsCollidingWith() {
 	for (int w = grid_top_left_x; w <= grid_bot_right_x; w++) {
 		for (int h = grid_top_left_y; h <= grid_bot_right_y; h++) {
 			std::vector<RigidBody*> colliders = Singleton<World>::Get()->GetObjectsInGridLocation(w, h);
+			//std::vector<RigidBody*> unique_colliders = std::vector<RigidBody*>();
+			//
+			//for (int i = 0; i < (int)colliders.size(); i++) {
+			//
+			//}
 
 			if (!colliders.empty()) {
 				for (int c = 0; c < (int)colliders.size(); c++) {
 					if (id != colliders[c]->id && (std::find(entities_excluded_from_collision.begin(), entities_excluded_from_collision.end(), colliders[c]->entity_type) == entities_excluded_from_collision.end())) {
 						if (AreTheRigidBodiesCollidingHorizontally(this, colliders[c]) && 
 							AreTheRigidBodiesCollidingVertically(this, colliders[c])) {
-							collidersBeingCollidedWith.push_back(colliders[c]);
+							bool already_in_list = false;
+
+							for (int i = 0; i < (int)collidersBeingCollidedWith.size(); i++) {
+								if (collidersBeingCollidedWith[i]->entity_type == colliders[c]->entity_type &&
+									collidersBeingCollidedWith[i]->id == colliders[c]->id) {
+									already_in_list = true;
+									break;
+								}
+							}
+
+							if (!already_in_list) {
+								collidersBeingCollidedWith.push_back(colliders[c]);
+							}
 						}
 					}
 				}

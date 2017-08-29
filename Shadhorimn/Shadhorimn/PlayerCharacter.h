@@ -31,6 +31,14 @@ class PlayerCharacter : public Creature {
 		void HandleButtonXRelease();
 		void HandleButtonYPress();
 		void HandleButtonYRelease();
+		void HandleButtonRightBumperPress();
+		void HandleButtonRightBumperRelease();
+		void HandleButtonLeftBumperPress();
+		void HandleButtonLeftBumperRelease();
+		void HandleButtonSelectPress();
+		void HandleButtonSelectRelease();
+		void HandleButtonStartPress();
+		void HandleButtonStartRelease();
 };
 
 #endif

@@ -126,3 +126,28 @@ void PlayerCharacter::HandleButtonYPress() {
 
 void PlayerCharacter::HandleButtonYRelease() {
 }
+
+void PlayerCharacter::HandleButtonRightBumperPress() {
+}
+
+void PlayerCharacter::HandleButtonRightBumperRelease() {
+}
+
+void PlayerCharacter::HandleButtonLeftBumperPress() {
+}
+
+void PlayerCharacter::HandleButtonLeftBumperRelease() {
+}
+
+void PlayerCharacter::HandleButtonSelectPress() {
+}
+
+void PlayerCharacter::HandleButtonSelectRelease() {
+}
+
+void PlayerCharacter::HandleButtonStartPress() {
+	Singleton<World>::Get()->paused = !Singleton<World>::Get()->paused;
+}
+
+void PlayerCharacter::HandleButtonStartRelease() {
+}
