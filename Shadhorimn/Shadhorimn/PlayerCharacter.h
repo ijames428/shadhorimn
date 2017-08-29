@@ -20,6 +20,7 @@ class PlayerCharacter : public Creature {
 		RigidBody* HitBox;
 		bool was_in_air;
 	public:
+		int max_hit_points = 10;
 		Projectile* test_projectile;
 		PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);
 		void HandleLeftStickInput(float horizontal, float vertical);

@@ -67,9 +67,6 @@ int main()
 			if (GameState == GAME_STATE_LOGOS) {
 				window->clear();
 
-				if (sf::Joystick::isButtonPressed(0, 7))
-					cout << "start?\n";
-
 				bool proceed = false;
 
 				if (logo_screen_sprite_transparency >= 255) {
@@ -119,6 +116,10 @@ int main()
 				input_handler->Update();
 
 				TheWorld->Update(time_current / 1000, frame_delta / 1000);
+
+				if (sf::Joystick::isButtonPressed(0, 7) && main_character->hit_points <= 0) {
+					GameState = GAME_STATE_INITILIZATION;
+				}
 			}
 		}
 	}

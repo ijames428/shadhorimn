@@ -6,23 +6,31 @@ World::World() {
 }
 
 void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* character) {
+	Grid = std::vector<std::vector<std::vector<RigidBody*>>>(grid_width, std::vector<std::vector<RigidBody*>>(grid_height, std::vector<RigidBody*>()));
+
 	render_window = window;
 	camera = cam;
 	main_character = character;
 	paused = false;
+	game_over_screen_sprite_transparency = 0;
 
 	main_character->x = 500.0f;
 	main_character->y = 510.0f;
+	main_character->hit_points = main_character->max_hit_points;
+	main_character->velocity = sf::Vector2f(0.0f, 0.0f);
 
+	platforms.erase(platforms.begin(), platforms.end());
 	platforms.push_back(new Platform(render_window, sf::Vector2f(540.0f, 500.0f), sf::Vector2f(200.0f, 1.0f)));
-	//platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1.0f, 600.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1.0f, 600.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(1599.0f, 0.0f), sf::Vector2f(1.0f, 600.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 600.0f), sf::Vector2f(1600.0f, 10.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1600.0f, 1.0f)));
 
+	creatures.erase(creatures.begin(), creatures.end());
 	creatures.push_back(new Creature(render_window, sf::Vector2f(300.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
 	creatures.push_back(new Creature(render_window, sf::Vector2f(200.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
 
+	drones.erase(drones.begin(), drones.end());
 	drones.push_back(new Drone(render_window, sf::Vector2f(600.0f, 450.0f), sf::Vector2f(30.0f, 30.0f), false));
 	drones.push_back(new Drone(render_window, sf::Vector2f(200.0f, 300.0f), sf::Vector2f(30.0f, 30.0f), false));
 
@@ -35,6 +43,9 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	for (int i = 0; i < main_character->hit_points; i++) {
 		hit_point_sprites.push_back(sf::Sprite(hit_point_texture));
 	}
+
+	game_over_texture.loadFromFile("Images/GameOverScreen.png");
+	game_over_sprite = sf::Sprite(game_over_texture);
 }
 
 void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
@@ -42,64 +53,76 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 	{
 		render_window->clear();
 
-		current_time = curr_time;
+		if (main_character->hit_points > 0) {
+			current_time = curr_time;
 
-		if (frame_delta > 250) {
-			frame_delta = 50;
-		}
+			if (frame_delta > 250) {
+				frame_delta = 50;
+			}
 
-		sf::Vector2f screen_shake_amount = sf::Vector2f(0.0f, 0.0f);
+			sf::Vector2f screen_shake_amount = sf::Vector2f(0.0f, 0.0f);
 
-		screen_shake_amount.x = screen_shake_magnitude * 5.0f * (rand() % 2 == 0 ? 1.0f : -1.0f);
-		screen_shake_amount.y = screen_shake_magnitude * 5.0f * (rand() % 2 == 0 ? 1.0f : -1.0f);
+			screen_shake_amount.x = screen_shake_magnitude * 5.0f * (rand() % 2 == 0 ? 1.0f : -1.0f);
+			screen_shake_amount.y = screen_shake_magnitude * 5.0f * (rand() % 2 == 0 ? 1.0f : -1.0f);
 
-		if (screen_shake_start_time + screen_shake_duration < current_time) {
-			screen_shake_amount.x *= (rand() % 2 == 0 ? 1.0f : -1.0f);
-			screen_shake_amount.y *= (rand() % 2 == 0 ? 1.0f : -1.0f);
-		}
+			if (screen_shake_start_time + screen_shake_duration < current_time) {
+				screen_shake_amount.x *= (rand() % 2 == 0 ? 1.0f : -1.0f);
+				screen_shake_amount.y *= (rand() % 2 == 0 ? 1.0f : -1.0f);
+			}
 
-		if (screen_shake_start_time + screen_shake_duration * 2 < current_time) {
-			screen_shake_magnitude = 0.0f;
-		}
+			if (screen_shake_start_time + screen_shake_duration * 2 < current_time) {
+				screen_shake_magnitude = 0.0f;
+			}
 
-		float lerp = 0.01f;
-		sf::Vector2f position = camera->viewport_position;
-		position.x += (main_character->x - camera->viewport_dimensions.x / 2.0f - position.x) * lerp * frame_delta;
-		position.y += (main_character->y - camera->viewport_dimensions.y / 2.0f - position.y) * lerp * frame_delta;
-		camera->viewport_position = sf::Vector2f(position.x, position.y);
+			float lerp = 0.01f;
+			sf::Vector2f position = camera->viewport_position;
+			position.x += (main_character->x - camera->viewport_dimensions.x / 2.0f - position.x) * lerp * frame_delta;
+			position.y += (main_character->y - camera->viewport_dimensions.y / 2.0f - position.y) * lerp * frame_delta;
+			camera->viewport_position = sf::Vector2f(position.x, position.y);
 
-		sf::Vector2f viewport_position_with_screen_shake = sf::Vector2f(camera->viewport_position.x + screen_shake_amount.x, camera->viewport_position.y + screen_shake_amount.y);
+			sf::Vector2f viewport_position_with_screen_shake = sf::Vector2f(camera->viewport_position.x + screen_shake_amount.x, camera->viewport_position.y + screen_shake_amount.y);
 
-		main_character->Draw(viewport_position_with_screen_shake);
-		main_character->test_projectile->Draw(viewport_position_with_screen_shake);
-		for (int i = 0; i < (int)creatures.size(); i++) {
-			creatures[i]->Draw(viewport_position_with_screen_shake);
-		}
-		for (int i = 0; i < (int)platforms.size(); i++) {
-			platforms[i]->Draw(viewport_position_with_screen_shake);
-		}
-		for (int i = 0; i < (int)drones.size(); i++) {
-			drones[i]->Draw(viewport_position_with_screen_shake);
-		}
+			main_character->Draw(viewport_position_with_screen_shake);
+			main_character->test_projectile->Draw(viewport_position_with_screen_shake);
+			for (int i = 0; i < (int)creatures.size(); i++) {
+				creatures[i]->Draw(viewport_position_with_screen_shake);
+			}
+			for (int i = 0; i < (int)platforms.size(); i++) {
+				platforms[i]->Draw(viewport_position_with_screen_shake);
+			}
+			for (int i = 0; i < (int)drones.size(); i++) {
+				drones[i]->Draw(viewport_position_with_screen_shake);
+			}
 
-		main_character->Update(frame_delta);
-		main_character->test_projectile->Update(frame_delta);
-		main_character->test_projectile->UpdateProjectile(current_time);
-		for (int i = 0; i < (int)creatures.size(); i++) {
-			creatures[i]->Update(frame_delta);
-		}
-		for (int i = 0; i < (int)platforms.size(); i++) {
-			platforms[i]->Update(frame_delta);
-		}
-		for (int i = 0; i < (int)drones.size(); i++) {
-			drones[i]->Update(frame_delta);
-			drones[i]->UpdateBehavior(current_time);
-			drones[i]->UpdateProjectiles(current_time, frame_delta);
-		}
+			main_character->Update(frame_delta);
+			main_character->test_projectile->Update(frame_delta);
+			main_character->test_projectile->UpdateProjectile(current_time);
+			for (int i = 0; i < (int)creatures.size(); i++) {
+				creatures[i]->Update(frame_delta);
+			}
+			for (int i = 0; i < (int)platforms.size(); i++) {
+				platforms[i]->Update(frame_delta);
+			}
+			for (int i = 0; i < (int)drones.size(); i++) {
+				drones[i]->Update(frame_delta);
+				drones[i]->UpdateBehavior(current_time);
+				drones[i]->UpdateProjectiles(current_time, frame_delta);
+			}
 
-		for (int i = 0; i < main_character->hit_points; i++) {
-			hit_point_sprites[i].setPosition(sf::Vector2f(10.0f + 27.0f * (float)i, 10.0f));
-			render_window->draw(hit_point_sprites[i]);
+			for (int i = 0; i < main_character->hit_points; i++) {
+				hit_point_sprites[i].setPosition(sf::Vector2f(10.0f + 27.0f * (float)i, 10.0f));
+				render_window->draw(hit_point_sprites[i]);
+			}
+		} else {
+			if (game_over_screen_sprite_transparency >= 255) {
+				game_over_screen_sprite_transparency = 255;
+			} else {
+				game_over_screen_sprite_transparency += 2;
+			}
+
+			game_over_sprite.setColor(sf::Color(255, 255, 255, game_over_screen_sprite_transparency));
+
+			render_window->draw(game_over_sprite);
 		}
 
 		render_window->display();
