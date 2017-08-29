@@ -9,12 +9,11 @@ Drone::Drone(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimen
 	entity_type = "Drone";
 	hit_points = 2;
 
-	speed = 2.0f;
 	jump_power = 1.0f;
 	aggro_radius = 200.0f;
 	is_aggroed = false;
 
-	movement_speed = 0.05f;
+	movement_speed = 1.0f;
 
 	sf::RectangleShape shape(dimensions);
 	shape.setFillColor(sf::Color::Blue);
@@ -23,6 +22,13 @@ Drone::Drone(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimen
 	rectangle_shape = shape;
 
 	target = Singleton<World>::Get()->main_character;
+
+	time_between_firing = 250;
+	time_of_last_firing = 0;
+	for (int i = 0; i < 10; i++) {
+		projectiles.push_back(new Projectile(window, position, sf::Vector2f(10.0f, 10.0f), false));
+		projectiles[i]->ExcludeFromCollision("Drone");
+	}
 }
 
 void Drone::UpdateBehavior(sf::Int64 curr_time) {
@@ -52,6 +58,33 @@ void Drone::UpdateBehavior(sf::Int64 curr_time) {
 				else if (target->y < y) {
 					velocity.y = -movement_speed;
 				}
+
+				if (time_of_last_firing + time_between_firing < current_time) {
+					for (int i = 0; i < (int)(projectiles.size()); i++) {
+						if (!projectiles[i]->is_active) {
+							float deltaX = target->x - x;
+							float deltaY = target->y - y;
+							sf::Vector2f vel = sf::Vector2f(deltaX, deltaY);
+							sf::Vector2f starting_position = sf::Vector2f(x - projectiles[i]->width, y);
+							float length = sqrt(deltaX * deltaX + deltaY * deltaY);
+
+							if (length != 0) {
+								vel.x = vel.x / length;
+								vel.y = vel.y / length;
+							}
+
+							if (facing_right) {
+								starting_position.x += width + projectiles[i]->width;
+							}
+
+							projectiles[i]->Fire(current_time, starting_position, vel * 4.0f);
+
+							time_of_last_firing = current_time;
+
+							break;
+						}
+					}
+				}
 			} else {
 				velocity.x = 0.0f;
 				velocity.y = 0.0f;
@@ -60,9 +93,20 @@ void Drone::UpdateBehavior(sf::Int64 curr_time) {
 	}
 }
 
+void Drone::UpdateProjectiles(sf::Int64 curr_time, sf::Int64 frame_delta) {
+	for (int i = 0; i < (int)(projectiles.size()); i++) {
+		projectiles[i]->Update(frame_delta);
+		projectiles[i]->UpdateProjectile(curr_time);
+	}
+}
+
 void Drone::Draw(sf::Vector2f camera_position) {
 	rectangle_shape.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
 	render_window->draw(rectangle_shape);
+
+	for (int i = 0; i < (int)(projectiles.size()); i++) {
+		projectiles[i]->Draw(camera_position);
+	}
 
 #ifdef _DEBUG
 	sf::Color base_color(sf::Color::Blue);

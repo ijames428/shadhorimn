@@ -11,11 +11,12 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 
 	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 10.0f), false, false);
 	test_projectile = new Projectile(window, position, sf::Vector2f(10.0f, 10.0f), false);
+	test_projectile->ExcludeFromCollision(entity_type);
 
 	entities_excluded_from_collision.push_back("Projectile");
 
-	speed = 0.5f;
-	jump_power = 0.9f;
+	speed = 5.0f;
+	jump_power = 12.0f;
 
 	sf::RectangleShape shape(dimensions);
 	shape.setFillColor(sf::Color::Yellow);
@@ -81,8 +82,8 @@ void PlayerCharacter::HandleButtonBRelease() {
 }
 
 void PlayerCharacter::HandleButtonXPress() {
-	float knock_back_x = 0.2f;
-	float knock_back_y = 0.6f;
+	float knock_back_x = 2.0f;
+	float knock_back_y = 6.0f;
 
 	if (facing_right) {
 		HitBox->x = x + width;
@@ -102,7 +103,7 @@ void PlayerCharacter::HandleButtonXPress() {
 		if (hit_objects[i]->entity_type == "Drone" || hit_objects[i]->entity_type == "Creature") {
 			hit_objects[i]->velocity.x = knock_back_x;
 			hit_objects[i]->velocity.y = -knock_back_y;
-			((Creature*)(hit_objects[i]))->TakeHit(1, 1000000);
+			((Creature*)(hit_objects[i]))->TakeHit(1, 1000);
 		}
 	}
 
@@ -114,11 +115,13 @@ void PlayerCharacter::HandleButtonXRelease() {
 
 void PlayerCharacter::HandleButtonYPress() {
 	float x_velocity = 1.0f;
+	sf::Vector2f starting_position = sf::Vector2f(x - test_projectile->width, y);
 	if (!facing_right) {
 		x_velocity *= -1.0f;
+	} else {
+		starting_position.x += width + test_projectile->width;
 	}
-	test_projectile->Fire(current_time, sf::Vector2f(x, y), sf::Vector2f(x_velocity, 0.0f));
-	cout << "Fire\n";
+	test_projectile->Fire(current_time, starting_position, sf::Vector2f(x_velocity, 0.0f));
 }
 
 void PlayerCharacter::HandleButtonYRelease() {

@@ -17,7 +17,7 @@ RigidBody::RigidBody(sf::Vector2f position, sf::Vector2f dimensions, bool subjec
 
 	weight = 10.0f;
 
-	gravity_acceleration = 0.003f;
+	gravity_acceleration = 0.5f;
 	terminal_velocity = 20.0f;
 
 	velocity.x = 0.0f;
@@ -28,7 +28,7 @@ RigidBody::RigidBody(sf::Vector2f position, sf::Vector2f dimensions, bool subjec
 }
 
 void RigidBody::Update(sf::Int64 delta_time) {
-	float mMovementSpeedTimefactor = delta_time / 1000.0f;
+	float mMovementSpeedTimefactor = delta_time / 10.0f;
 
 	if (mMovementSpeedTimefactor > 2.0f) {
 		mMovementSpeedTimefactor = 2.0f;
@@ -42,7 +42,7 @@ void RigidBody::Update(sf::Int64 delta_time) {
 	float pregravity_velocity_y = velocity.y;
 
 	if (gravity_enabled) {
-		velocity.y = velocity.y + gravity_acceleration * mMovementSpeedTimefactor;
+		velocity.y = velocity.y + gravity_acceleration;// * mMovementSpeedTimefactor;
 	}
 
 	if (velocity.y > terminal_velocity) {
@@ -71,8 +71,12 @@ void RigidBody::Update(sf::Int64 delta_time) {
 		}
 	}
 
-	future_x = x + velocity.x * mMovementSpeedTimefactor;
-	future_y = y + velocity.y * mMovementSpeedTimefactor;
+	future_x = x + velocity.x;// * mMovementSpeedTimefactor;
+	if (entity_type == "PlayerCharacter") {
+		future_y = y + velocity.y;// * mMovementSpeedTimefactor;
+	} else {
+		future_y = y + velocity.y;// * mMovementSpeedTimefactor;
+	}
 
 	if (old_x != future_x || old_y != future_y || old_width != future_width || old_height != future_height)
 	{
@@ -109,8 +113,18 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 						if (horizontal_collision) {
 							if (x + (width / 2.0f) < colliders[c]->x + (colliders[c]->width / 2.0f)) {
 								future_x = x + (colliders[c]->x - (x + future_width));
+								//float move = abs(x - abs(x + (colliders[c]->x - (x + future_width))));
+								//float absVelX = abs(velocity.x);
+								//if (move > absVelX) {
+								//	cout << "moved like crazy\n";
+								//}
 							} else {
-								future_x = x + (x - (colliders[c]->x + colliders[c]->width));
+								future_x = x - (x - (colliders[c]->x + colliders[c]->width));
+								//float move = abs(x - abs(x - (x - (colliders[c]->x + colliders[c]->width))));
+								//float absVelX = abs(velocity.x);
+								//if (move > absVelX) {
+								//	cout << "moved like crazy\n";
+								//}
 							}
 							velocity.x = 0.0f;
 						}
@@ -120,7 +134,7 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 								future_y = y + (colliders[c]->y - (y + future_height));
 								in_the_air = false;
 							} else {
-								future_y = y + (y - (colliders[c]->y + colliders[c]->height));
+								future_y = y - (y - (colliders[c]->y + colliders[c]->height));
 							}
 							velocity.y = 0.0f;
 						}
@@ -132,10 +146,10 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 }
 
 bool RigidBody::AreTheRigidBodiesCollidingHorizontally(RigidBody* rb1, RigidBody* rb2) {
-	bool hor = (rb1->future_x + rb1->future_width < rb2->x || rb1->future_x > rb2->x + rb2->width);
-	bool ver = ((rb1->y + 2.0f) + (rb1->future_height - 4.0f) < rb2->y || rb1->y + 2.0f > rb2->y + rb2->height);
+	bool rb1_is_horizontally_outside_rb2 = (rb1->future_x + rb1->future_width < rb2->x || rb1->future_x > rb2->x + rb2->width);
+	bool rb1_is_vertically_outside_rb2 = ((rb1->y + 5.0f) + (rb1->future_height - 10.0f) < rb2->y || rb1->y + 5.0f > rb2->y + rb2->height);
 
-	if (hor || ver) {
+	if (rb1_is_horizontally_outside_rb2 || rb1_is_vertically_outside_rb2) {
 		return false;
 	}
 
@@ -143,10 +157,10 @@ bool RigidBody::AreTheRigidBodiesCollidingHorizontally(RigidBody* rb1, RigidBody
 }
 
 bool RigidBody::AreTheRigidBodiesCollidingVertically(RigidBody* rb1, RigidBody* rb2) {
-	bool hor = ((rb1->x + 2.0f) + (rb1->future_width - 4.0f) < rb2->x || rb1->x + 2.0f > rb2->x + rb2->width);
-	bool ver = (rb1->future_y + rb1->future_height < rb2->y || rb1->future_y > rb2->y + rb2->height);
+	bool rb1_is_horizontally_outside_rb2 = ((rb1->x + 5.0f) + (rb1->future_width - 10.0f) < rb2->x || rb1->x + 5.0f > rb2->x + rb2->width);
+	bool rb1_is_vertically_outside_rb2 = (rb1->future_y + rb1->future_height < rb2->y || rb1->future_y > rb2->y + rb2->height);
 
-	if (hor || ver) {
+	if (rb1_is_horizontally_outside_rb2 || rb1_is_vertically_outside_rb2) {
 		return false;
 	}
 

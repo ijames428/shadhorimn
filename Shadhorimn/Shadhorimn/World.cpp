@@ -10,8 +10,14 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	camera = cam;
 	main_character = character;
 
+	main_character->x = 500.0f;
+	main_character->y = 510.0f;
+
 	platforms.push_back(new Platform(render_window, sf::Vector2f(540.0f, 500.0f), sf::Vector2f(200.0f, 1.0f)));
-	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 600.0f), sf::Vector2f(1600.0f, 1.0f)));
+	//platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1.0f, 600.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1599.0f, 0.0f), sf::Vector2f(1.0f, 600.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 600.0f), sf::Vector2f(1600.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1600.0f, 1.0f)));
 
 	creatures.push_back(new Creature(render_window, sf::Vector2f(300.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
 	creatures.push_back(new Creature(render_window, sf::Vector2f(200.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
@@ -22,7 +28,7 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	current_time = 0;
 	screen_shaking = false;
 	screen_shake_start_time = 0;
-	screen_shake_duration = (sf::Int64)(0.01f * 1000000); // 1000000 is one second in microseconds.
+	screen_shake_duration = (sf::Int64)(0.01f * 1000); // 1000 is one second in milliseconds.
 }
 
 void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
@@ -44,7 +50,7 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 		screen_shake_magnitude = 0.0f;
 	}
 
-	float lerp = 0.00001f;
+	float lerp = 0.01f;
 	sf::Vector2f position = camera->viewport_position;
 	position.x += (main_character->x - camera->viewport_dimensions.x / 2.0f - position.x) * lerp * frame_delta;
 	position.y += (main_character->y - camera->viewport_dimensions.y / 2.0f - position.y) * lerp * frame_delta;
@@ -76,6 +82,7 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 	for (int i = 0; i < (int)drones.size(); i++) {
 		drones[i]->Update(frame_delta);
 		drones[i]->UpdateBehavior(current_time);
+		drones[i]->UpdateProjectiles(current_time, frame_delta);
 	}
 
 	render_window->display();
@@ -91,6 +98,19 @@ void World::AddRigidBodyToGrid(RigidBody* rb) {
 	int topLeftY = (int)rb->y / cell_height;
 	int botRightX = (int)(rb->x + rb->width) / cell_width;
 	int botRightY = (int)(rb->y + rb->height) / cell_height;
+
+	if (topLeftX > 0) {
+		topLeftX--;
+	}
+	if (topLeftY > 0) {
+		topLeftY--;
+	}
+	if (botRightX < grid_width) {
+		botRightX++;
+	}
+	if (botRightY < grid_height) {
+		botRightY++;
+	}
 
 	rb->SetGridTopLeftX(topLeftX);
 	rb->SetGridTopLeftY(topLeftY);
@@ -118,6 +138,11 @@ void World::MoveRigidBodyInGrid(RigidBody* rb) {
 	int topLeftY = (int)rb->y / cell_height;
 	int botRightX = (int)(rb->x + rb->width) / cell_width;
 	int botRightY = (int)(rb->y + rb->height) / cell_height;
+
+	if (topLeftX < 0 || topLeftY < 0 || botRightX < 0 || botRightY < 0 ||
+		topLeftX >= Grid.size() || topLeftY >= Grid.size() || botRightX >= Grid.size() || botRightY >= Grid.size()) {
+		return;
+	}
 	
 	if (topLeftX != rb->grid_top_left_x || topLeftY != rb->grid_top_left_y || botRightX != rb->grid_bot_right_x || botRightY != rb->grid_bot_right_y) {
 		for (int w = topLeftX; w <= botRightX; w++) {

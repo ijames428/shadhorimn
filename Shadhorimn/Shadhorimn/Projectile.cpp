@@ -8,13 +8,11 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 	current_time = 0;
 	fired_position = sf::Vector2f(0.0f, 0.0f);
 	fired_time = 0;
-	length_of_life = 1000000;
+	length_of_life = 1000;
 	range = 10000;
 	is_active = false;
 	fired_velocity = sf::Vector2f(0.0f, 0.0f);
 	collision_enabled = false;
-
-	entities_excluded_from_collision.push_back("PlayerCharacter");
 
 	render_window = window;
 
@@ -23,6 +21,30 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 	shape.setPosition(position);
 
 	circle_shape = shape;
+
+	if (!buffer0.loadFromFile("Sound/Hit0.wav")) {
+		throw exception("Sound file not found");
+	}
+	else {
+		hit_sounds.push_back(sf::Sound());
+		hit_sounds[0].setBuffer(buffer0);
+	}
+
+	if (!buffer1.loadFromFile("Sound/Hit1.wav")) {
+		throw exception("Sound file not found");
+	}
+	else {
+		hit_sounds.push_back(sf::Sound());
+		hit_sounds[1].setBuffer(buffer1);
+	}
+
+	if (!buffer2.loadFromFile("Sound/Hit2.wav")) {
+		throw exception("Sound file not found");
+	}
+	else {
+		hit_sounds.push_back(sf::Sound());
+		hit_sounds[2].setBuffer(buffer2);
+	}
 }
 
 void Projectile::Draw(sf::Vector2f camera_position) {
@@ -36,17 +58,17 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 	current_time = curr_time;
 
 	if (is_active) {
-		float knock_back_x = 0.1f;
-		float knock_back_y = 0.05f;
+		float knock_back_x = velocity.x * 2.0f;
+		float knock_back_y = velocity.y;
 
 		velocity = fired_velocity;
 
 		std::vector<RigidBody*> hit_objects = GetCollidersRigidBodyIsCollidingWith();
-		cout << hit_objects.size() << "\n";
+
 		for (int i = 0; i < (int)hit_objects.size(); i++) {
-			//if (hit_sounds.size() > 0) {
-			//	hit_sounds[rand() % 3].play();
-			//}
+			if (hit_sounds.size() > 0) {
+				hit_sounds[rand() % 3].play();
+			}
 
 			if (hit_objects[i]->entity_type == "Drone" ||
 				hit_objects[i]->entity_type == "Creature" ||
@@ -71,4 +93,8 @@ void Projectile::Fire(sf::Int64 curr_time, sf::Vector2f position, sf::Vector2f v
 	y = position.y;
 	fired_velocity = vel;
 	is_active = true;
+}
+
+void Projectile::ExcludeFromCollision(std::string entity_type) {
+	entities_excluded_from_collision.push_back(entity_type);
 }
