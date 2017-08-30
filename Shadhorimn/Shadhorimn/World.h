@@ -1,13 +1,15 @@
 using namespace std;
 #include <SFML/Graphics.hpp>
-#include "RigidBody.h"
 #include "PlayerCharacter.h"
+#include "Checkpoint.h"
+#include "RigidBody.h"
 #include "Platform.h"
-#include "Drone.h"
 #include "Camera.h"
+#include "Drone.h"
 
 class World {
 	private:
+		Checkpoint* current_checkpoint;
 		sf::Font ringbearer_font = sf::Font();
 		sf::Text continue_text;
 		sf::Text lives_counter_text;
@@ -25,6 +27,7 @@ class World {
 		float screen_shake_magnitude;
 		Camera* camera;
 		sf::RenderWindow* render_window;
+		std::vector<Checkpoint*> checkpoints = std::vector<Checkpoint*>();
 		std::vector<Platform*> platforms = std::vector<Platform*>();
 		std::vector<Creature*> creatures = std::vector<Creature*>();
 		std::vector<Drone*> drones = std::vector<Drone*>();
@@ -35,7 +38,8 @@ class World {
 		int cell_height = 100;
 		std::vector<std::vector<std::vector<RigidBody*>>> Grid = std::vector<std::vector<std::vector<RigidBody*>>>(grid_width, std::vector<std::vector<RigidBody*>>(grid_height, std::vector<RigidBody*>()));
 	public:
-		int number_of_lives = 2;
+		int starting_number_of_lives = 2;
+		int current_number_of_lives = 2;
 		bool paused;
 		PlayerCharacter* main_character;
 		World();
@@ -45,4 +49,5 @@ class World {
 		void MoveRigidBodyInGrid(RigidBody* rb);
 		std::vector<RigidBody*> GetObjectsInGridLocation(int grid_x, int grid_y);
 		void ScreenShake(float magnitude);
+		void SetCurrentCheckPoint(Checkpoint* cp);
 };

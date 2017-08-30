@@ -14,10 +14,18 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	paused = false;
 	game_over_screen_sprite_transparency = 0;
 
-	main_character->x = 500.0f;
-	main_character->y = 510.0f;
+	if (current_number_of_lives == starting_number_of_lives) {
+		current_checkpoint = new Checkpoint(render_window, sf::Vector2f(500.0f, 590.0f), sf::Vector2f(40.0f, 10.0f), false);
+	}
+
+	main_character->x = current_checkpoint->x;
+	main_character->y = current_checkpoint->y + current_checkpoint->height - main_character->height;
 	main_character->hit_points = main_character->max_hit_points;
 	main_character->velocity = sf::Vector2f(0.0f, 0.0f);
+
+	checkpoints.erase(checkpoints.begin(), checkpoints.end());
+	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(2.0f, 590.0f), sf::Vector2f(40.0f, 10.0f), false));
+	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(620.0f, 490.0f), sf::Vector2f(40.0f, 10.0f), false));
 
 	platforms.erase(platforms.begin(), platforms.end());
 	platforms.push_back(new Platform(render_window, sf::Vector2f(540.0f, 500.0f), sf::Vector2f(200.0f, 1.0f)));
@@ -31,8 +39,8 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	creatures.push_back(new Creature(render_window, sf::Vector2f(200.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
 
 	drones.erase(drones.begin(), drones.end());
-	drones.push_back(new Drone(render_window, sf::Vector2f(600.0f, 450.0f), sf::Vector2f(30.0f, 30.0f), false));
-	drones.push_back(new Drone(render_window, sf::Vector2f(200.0f, 300.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(1000.0f, 450.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(1100.0f, 300.0f), sf::Vector2f(30.0f, 30.0f), false));
 
 	current_time = 0;
 	screen_shaking = false;
@@ -54,11 +62,11 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 		return;
 	
 	lives_counter_text.setFont(ringbearer_font);
-	lives_counter_text.setString("Lives: " + std::to_string(number_of_lives));
+	lives_counter_text.setString("Lives: " + std::to_string(current_number_of_lives));
 	lives_counter_text.setPosition(10.0f, 40.0f);
 
 	continue_text.setFont(ringbearer_font);
-	continue_text.setString("You have " + std::to_string(number_of_lives) + " lives left.\nPress Start to continue.");
+	continue_text.setString("You have " + std::to_string(current_number_of_lives) + " lives left.\nPress Start to continue.");
 	continue_text.setPosition(camera->viewport_dimensions.x / 2.0f - 150.0f, camera->viewport_dimensions.y / 2.0f - 100.0f);
 }
 
@@ -98,6 +106,10 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 
 			main_character->Draw(viewport_position_with_screen_shake);
 			main_character->test_projectile->Draw(viewport_position_with_screen_shake);
+			for (int i = 0; i < (int)checkpoints.size(); i++) {
+				checkpoints[i]->Draw(viewport_position_with_screen_shake);
+				checkpoints[i]->UpdateCheckPoint();
+			}
 			for (int i = 0; i < (int)creatures.size(); i++) {
 				creatures[i]->Draw(viewport_position_with_screen_shake);
 			}
@@ -111,6 +123,9 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			main_character->Update(frame_delta);
 			main_character->test_projectile->Update(frame_delta);
 			main_character->test_projectile->UpdateProjectile(current_time);
+			for (int i = 0; i < (int)checkpoints.size(); i++) {
+				checkpoints[i]->Update(frame_delta);
+			}
 			for (int i = 0; i < (int)creatures.size(); i++) {
 				creatures[i]->Update(frame_delta);
 			}
@@ -128,10 +143,10 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				render_window->draw(hit_point_sprites[i]);
 			}
 
-			lives_counter_text.setString("Lives: " + std::to_string(number_of_lives));
+			lives_counter_text.setString("Lives: " + std::to_string(current_number_of_lives));
 			render_window->draw(lives_counter_text);
 		} else {
-			lives_counter_text.setString(std::to_string(number_of_lives));
+			lives_counter_text.setString(std::to_string(current_number_of_lives));
 
 			if (game_over_screen_sprite_transparency >= 255) {
 				game_over_screen_sprite_transparency = 255;
@@ -139,7 +154,7 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				game_over_screen_sprite_transparency += 1;
 			}
 
-			if (number_of_lives > 0) {
+			if (current_number_of_lives > 0) {
 				blank_screen_sprite.setColor(sf::Color(255, 255, 255, game_over_screen_sprite_transparency));
 				render_window->draw(blank_screen_sprite);
 
@@ -233,4 +248,8 @@ void World::MoveRigidBodyInGrid(RigidBody* rb) {
 
 std::vector<RigidBody*> World::GetObjectsInGridLocation(int grid_x, int grid_y) {
 	return Grid[grid_x][grid_y];
+}
+
+void World::SetCurrentCheckPoint(Checkpoint* cp) {
+	current_checkpoint = cp;
 }
