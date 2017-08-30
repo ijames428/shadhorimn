@@ -114,7 +114,7 @@ void PlayerCharacter::HandleButtonXRelease() {
 }
 
 void PlayerCharacter::HandleButtonYPress() {
-	float x_velocity = 1.0f;
+	float x_velocity = 10.0f;
 	sf::Vector2f starting_position = sf::Vector2f(x - test_projectile->width, y);
 	if (!facing_right) {
 		x_velocity *= -1.0f;

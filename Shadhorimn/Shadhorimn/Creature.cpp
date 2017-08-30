@@ -42,6 +42,8 @@ void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur) {
 		hit_points = hit_points - adjusted_damage;
 	}
 
+	sf::Time sleep_time = sf::milliseconds(20);
+	sf::sleep(sf::Time(sleep_time));
 	hit_stun_duration = hit_stun_dur;
 	hit_stun_start_time = current_time;
 }

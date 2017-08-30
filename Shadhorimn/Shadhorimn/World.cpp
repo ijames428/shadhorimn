@@ -44,15 +44,22 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 		hit_point_sprites.push_back(sf::Sprite(hit_point_texture));
 	}
 
+	blank_screen_texture.loadFromFile("Images/StartMenuBackground.png");
+	blank_screen_sprite = sf::Sprite(blank_screen_texture);
+
 	game_over_texture.loadFromFile("Images/GameOverScreen.png");
 	game_over_sprite = sf::Sprite(game_over_texture);
 
 	if (!ringbearer_font.loadFromFile("Images/RingbearerFont.ttf"))
 		return;
-
+	
 	lives_counter_text.setFont(ringbearer_font);
 	lives_counter_text.setString("Lives: " + std::to_string(number_of_lives));
 	lives_counter_text.setPosition(10.0f, 40.0f);
+
+	continue_text.setFont(ringbearer_font);
+	continue_text.setString("You have " + std::to_string(number_of_lives) + " lives left.\nPress Start to continue.");
+	continue_text.setPosition(camera->viewport_dimensions.x / 2.0f - 150.0f, camera->viewport_dimensions.y / 2.0f - 100.0f);
 }
 
 void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
@@ -121,7 +128,7 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				render_window->draw(hit_point_sprites[i]);
 			}
 
-			lives_counter_text.setString(std::to_string(number_of_lives));
+			lives_counter_text.setString("Lives: " + std::to_string(number_of_lives));
 			render_window->draw(lives_counter_text);
 		} else {
 			lives_counter_text.setString(std::to_string(number_of_lives));
@@ -129,12 +136,21 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			if (game_over_screen_sprite_transparency >= 255) {
 				game_over_screen_sprite_transparency = 255;
 			} else {
-				game_over_screen_sprite_transparency += 2;
+				game_over_screen_sprite_transparency += 1;
 			}
 
-			game_over_sprite.setColor(sf::Color(255, 255, 255, game_over_screen_sprite_transparency));
+			if (number_of_lives > 0) {
+				blank_screen_sprite.setColor(sf::Color(255, 255, 255, game_over_screen_sprite_transparency));
+				render_window->draw(blank_screen_sprite);
 
-			render_window->draw(game_over_sprite);
+				continue_text.setFillColor(sf::Color(255, 255, 255, game_over_screen_sprite_transparency));
+				continue_text.setOutlineColor(sf::Color(255, 255, 255, game_over_screen_sprite_transparency));
+				render_window->draw(continue_text);
+			} else {
+				game_over_sprite.setColor(sf::Color(255, 255, 255, game_over_screen_sprite_transparency));
+
+				render_window->draw(game_over_sprite);
+			}
 		}
 
 		render_window->display();

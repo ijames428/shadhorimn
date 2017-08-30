@@ -9,10 +9,13 @@ using namespace std;
 class World {
 	private:
 		sf::Font ringbearer_font = sf::Font();
+		sf::Text continue_text;
 		sf::Text lives_counter_text;
 		int game_over_screen_sprite_transparency;
 		sf::Texture game_over_texture;
 		sf::Sprite game_over_sprite;
+		sf::Texture blank_screen_texture;
+		sf::Sprite blank_screen_sprite;
 		sf::Texture hit_point_texture;
 		std::vector<sf::Sprite> hit_point_sprites = std::vector<sf::Sprite>();
 		sf::Int64 current_time;

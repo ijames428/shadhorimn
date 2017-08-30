@@ -15,8 +15,10 @@ int main()
 	{
 		GAME_STATE_LOGOS,
 		GAME_STATE_START_MENU,
+		GAME_STATE_OPENING_CRAWL,
 		GAME_STATE_INITILIZATION,
-		GAME_STATE_IN_GAME
+		GAME_STATE_IN_GAME,
+		GAME_STATE_CREDITS
 	};
 	GameStates GameState = GAME_STATE_LOGOS;
 
@@ -69,12 +71,25 @@ int main()
 	sf::Text start_text("Press Start to begin", ringbearer_font);
 	start_text.setPosition(viewport_width / 2.0f - 120.0f, viewport_height / 2.0f - 60.0f);
 
+	int a_button = 0;
+	int b_button = 1;
+	int start_button = 7;
+
+	bool a_button_previous = false;
+	bool b_button_previous = false;
+	bool start_button_previous = false;
+
 	while (window->isOpen())
 	{
 		sf::Event event;
 
 		time = clock.getElapsedTime();
 		time_current = time.asMicroseconds();
+
+		bool a_button_current = sf::Joystick::isButtonPressed(0, a_button);
+		bool b_button_current = sf::Joystick::isButtonPressed(0, b_button);
+		bool start_button_current = sf::Joystick::isButtonPressed(0, start_button);
+
 
 		if (time_previous + microseconds_per_frame < time_current) {
 			frame_delta = time_current - time_previous;
@@ -95,20 +110,27 @@ int main()
 
 				window->draw(logo_screen_sprite);
 
+				cout << a_button_current << " " << a_button_previous << "\n";
+				if ((a_button_current && !a_button_previous) || (start_button_current && !start_button_previous)) {
+					proceed = true;
+				}
+
+				if (proceed)
+					GameState = GAME_STATE_START_MENU;
+
 				while (window->pollEvent(event))
 				{
 					if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape)
 						window->close();
 
-					if (event.key.code == sf::Keyboard::Return)
-						proceed = true;
+					if (event.key.code == sf::Keyboard::Return) {
+						//proceed = true;
+					}
 				}
 
-				if (sf::Joystick::isButtonPressed(0, 0))
-					proceed = true;
-
-				if (proceed)
-					GameState = GAME_STATE_START_MENU;
+				a_button_previous = a_button_current;
+				b_button_previous = b_button_current;
+				start_button_previous = start_button_current;
 
 				window->display();
 			} else if (GameState == GAME_STATE_START_MENU) {
@@ -127,9 +149,13 @@ int main()
 					}
 				}
 
-				if (sf::Joystick::isButtonPressed(0, 7)) {
+				if ((a_button_current && !a_button_previous) || (start_button_current && !start_button_previous)) {
 					GameState = GAME_STATE_INITILIZATION;
 				}
+
+				a_button_previous = a_button_current;
+				b_button_previous = b_button_current;
+				start_button_previous = start_button_current;
 
 				window->display();
 			} else if (GameState == GAME_STATE_INITILIZATION) {
@@ -147,14 +173,21 @@ int main()
 
 				TheWorld->Update(time_current / 1000, frame_delta / 1000);
 
-				if (sf::Joystick::isButtonPressed(0, 7) && main_character->hit_points <= 0) {
-					if (TheWorld->number_of_lives > 0) {
-						TheWorld->number_of_lives--;
-						GameState = GAME_STATE_INITILIZATION;
-					} else {
-						GameState = GAME_STATE_START_MENU;
+				if (main_character->hit_points <= 0) {
+					if ((a_button_current && !a_button_previous) || (start_button_current && !start_button_previous)) {
+						if (TheWorld->number_of_lives > 0) {
+							TheWorld->number_of_lives--;
+							GameState = GAME_STATE_INITILIZATION;
+						} else {
+							TheWorld->number_of_lives = 2;
+							GameState = GAME_STATE_START_MENU;
+						}
 					}
 				}
+
+				a_button_previous = a_button_current;
+				b_button_previous = b_button_current;
+				start_button_previous = start_button_current;
 			}
 		}
 	}

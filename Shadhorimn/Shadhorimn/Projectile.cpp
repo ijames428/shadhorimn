@@ -88,6 +88,7 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 }
 
 void Projectile::Fire(sf::Int64 curr_time, sf::Vector2f position, sf::Vector2f vel) {
+	fired_position = position;
 	fired_time = current_time;
 	x = position.x;
 	y = position.y;
