@@ -20,8 +20,8 @@ int main()
 	};
 	GameStates GameState = GAME_STATE_LOGOS;
 
-	float viewport_width = 1024.0f;
-	float viewport_height = 768.0f;
+	float viewport_width = 1280.0f;
+	float viewport_height = 720.0f;
 	float window_width = viewport_width;
 	float window_height = viewport_height;
 
@@ -53,6 +53,22 @@ int main()
 	sf::Sprite logo_screen_sprite(logo_screen_texture);
 	int logo_screen_sprite_transparency = 0;
 
+	sf::Texture start_menu_background_texture;
+	if (!start_menu_background_texture.loadFromFile("Images/StartMenuBackground.png"))
+		return -1;
+
+	sf::Sprite start_menu_background_sprite(start_menu_background_texture);
+
+	sf::Font ringbearer_font;
+	if (!ringbearer_font.loadFromFile("Images/RingbearerFont.ttf"))
+		return -1;
+
+	sf::Text title_text("Shadhorimn", ringbearer_font, 90);
+	title_text.setPosition(viewport_width / 2.0f - 260.0f, viewport_height / 2.0f - 200.0f);
+
+	sf::Text start_text("Press Start to begin", ringbearer_font);
+	start_text.setPosition(viewport_width / 2.0f - 120.0f, viewport_height / 2.0f - 60.0f);
+
 	while (window->isOpen())
 	{
 		sf::Event event;
@@ -71,8 +87,7 @@ int main()
 
 				if (logo_screen_sprite_transparency >= 255) {
 					logo_screen_sprite_transparency = 255;
-				}
-				else {
+				} else {
 					logo_screen_sprite_transparency++;
 				}
 
@@ -96,17 +111,32 @@ int main()
 					GameState = GAME_STATE_START_MENU;
 
 				window->display();
-			}
-			else if (GameState == GAME_STATE_START_MENU) {
+			} else if (GameState == GAME_STATE_START_MENU) {
+				window->clear();
 
-				GameState = GAME_STATE_INITILIZATION;
-			}
-			else if (GameState == GAME_STATE_INITILIZATION) {
+				window->draw(title_text);
+				window->draw(start_text);
+
+				while (window->pollEvent(event))
+				{
+					if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape)
+						window->close();
+
+					if (event.key.code == sf::Keyboard::Return) {//sf::Joystick::isButtonPressed(0, 0)) {
+						GameState = GAME_STATE_INITILIZATION;
+					}
+				}
+
+				if (sf::Joystick::isButtonPressed(0, 7)) {
+					GameState = GAME_STATE_INITILIZATION;
+				}
+
+				window->display();
+			} else if (GameState == GAME_STATE_INITILIZATION) {
 				TheWorld->Init(window, camera, main_character);
 
 				GameState = GAME_STATE_IN_GAME;
-			}
-			else if (GameState == GAME_STATE_IN_GAME) {
+			} else if (GameState == GAME_STATE_IN_GAME) {
 				while (window->pollEvent(event))
 				{
 					if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape)
@@ -118,7 +148,12 @@ int main()
 				TheWorld->Update(time_current / 1000, frame_delta / 1000);
 
 				if (sf::Joystick::isButtonPressed(0, 7) && main_character->hit_points <= 0) {
-					GameState = GAME_STATE_INITILIZATION;
+					if (TheWorld->number_of_lives > 0) {
+						TheWorld->number_of_lives--;
+						GameState = GAME_STATE_INITILIZATION;
+					} else {
+						GameState = GAME_STATE_START_MENU;
+					}
 				}
 			}
 		}

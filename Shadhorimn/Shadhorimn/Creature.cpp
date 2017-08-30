@@ -1,6 +1,8 @@
 using namespace std;
 #include <iostream>
 #include "Creature.h"
+#include "Singleton.h"
+#include "World.h"
 
 Creature::Creature(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : RigidBody::RigidBody(position, dimensions, subject_to_gravity) {
 	entity_type = "Creature"; 
@@ -29,7 +31,17 @@ void Creature::Draw(sf::Vector2f camera_position) {
 
 void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur) {
 	sf::Int16 adjusted_damage = (sf::Int16)damage;
-	hit_points = (hit_points - adjusted_damage < 0 ? 0 : hit_points - adjusted_damage);
+
+	if (hit_points - adjusted_damage <= 0) {
+		//if (entity_type == "PlayerCharacter") {
+		//	Singleton<World>::Get()->number_of_lives--;
+		//}
+		
+		hit_points = 0;
+	} else {
+		hit_points = hit_points - adjusted_damage;
+	}
+
 	hit_stun_duration = hit_stun_dur;
 	hit_stun_start_time = current_time;
 }

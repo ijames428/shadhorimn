@@ -46,6 +46,13 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 
 	game_over_texture.loadFromFile("Images/GameOverScreen.png");
 	game_over_sprite = sf::Sprite(game_over_texture);
+
+	if (!ringbearer_font.loadFromFile("Images/RingbearerFont.ttf"))
+		return;
+
+	lives_counter_text.setFont(ringbearer_font);
+	lives_counter_text.setString("Lives: " + std::to_string(number_of_lives));
+	lives_counter_text.setPosition(10.0f, 40.0f);
 }
 
 void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
@@ -113,7 +120,12 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				hit_point_sprites[i].setPosition(sf::Vector2f(10.0f + 27.0f * (float)i, 10.0f));
 				render_window->draw(hit_point_sprites[i]);
 			}
+
+			lives_counter_text.setString(std::to_string(number_of_lives));
+			render_window->draw(lives_counter_text);
 		} else {
+			lives_counter_text.setString(std::to_string(number_of_lives));
+
 			if (game_over_screen_sprite_transparency >= 255) {
 				game_over_screen_sprite_transparency = 255;
 			} else {

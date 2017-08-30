@@ -8,7 +8,7 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 	current_time = 0;
 	fired_position = sf::Vector2f(0.0f, 0.0f);
 	fired_time = 0;
-	range = 10000;
+	range = 1000;
 	is_active = false;
 	fired_velocity = sf::Vector2f(0.0f, 0.0f);
 	collision_enabled = false;
@@ -82,6 +82,8 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 		if (GetDistanceBetweenTwoPoints(sf::Vector2f(x, y), fired_position) > range) {
 			is_active = false;
 		}
+	} else {
+		velocity = sf::Vector2f(0.0f, 0.0f);
 	}
 }
 

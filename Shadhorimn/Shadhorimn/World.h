@@ -8,6 +8,8 @@ using namespace std;
 
 class World {
 	private:
+		sf::Font ringbearer_font = sf::Font();
+		sf::Text lives_counter_text;
 		int game_over_screen_sprite_transparency;
 		sf::Texture game_over_texture;
 		sf::Sprite game_over_sprite;
@@ -30,6 +32,7 @@ class World {
 		int cell_height = 100;
 		std::vector<std::vector<std::vector<RigidBody*>>> Grid = std::vector<std::vector<std::vector<RigidBody*>>>(grid_width, std::vector<std::vector<RigidBody*>>(grid_height, std::vector<RigidBody*>()));
 	public:
+		int number_of_lives = 2;
 		bool paused;
 		PlayerCharacter* main_character;
 		World();
