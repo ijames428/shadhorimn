@@ -2,6 +2,7 @@ using namespace std;
 #include <SFML/Graphics.hpp>
 #include "PlayerCharacter.h"
 #include "Checkpoint.h"
+#include "EndOfTheGame.h"
 #include "RigidBody.h"
 #include "Platform.h"
 #include "Camera.h"
@@ -9,6 +10,8 @@ using namespace std;
 
 class World {
 	private:
+		EndOfTheGame* end_of_the_game_trigger;
+		bool player_beat_the_game = false;
 		Checkpoint* current_checkpoint;
 		sf::Font ringbearer_font = sf::Font();
 		sf::Text continue_text;
@@ -50,4 +53,6 @@ class World {
 		std::vector<RigidBody*> GetObjectsInGridLocation(int grid_x, int grid_y);
 		void ScreenShake(float magnitude);
 		void SetCurrentCheckPoint(Checkpoint* cp);
+		void EndTheGame();
+		bool DidThePlayerBeatTheGame();
 };

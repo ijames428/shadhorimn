@@ -23,6 +23,7 @@
     <ClCompile Include="Checkpoint.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Drone.cpp" />
+    <ClCompile Include="EndOfTheGame.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Platform.cpp" />
@@ -36,6 +37,7 @@
     <ClInclude Include="Checkpoint.h" />
     <ClInclude Include="Creature.h" />
     <ClInclude Include="Drone.h" />
+    <ClInclude Include="EndOfTheGame.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PlayerCharacter.h" />

@@ -14,6 +14,8 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	paused = false;
 	game_over_screen_sprite_transparency = 0;
 
+	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(1560.0f, 590.0f), sf::Vector2f(40.0f, 10.0f), false);
+
 	if (current_number_of_lives == starting_number_of_lives) {
 		current_checkpoint = new Checkpoint(render_window, sf::Vector2f(500.0f, 590.0f), sf::Vector2f(40.0f, 10.0f), false);
 	}
@@ -106,9 +108,9 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 
 			main_character->Draw(viewport_position_with_screen_shake);
 			main_character->test_projectile->Draw(viewport_position_with_screen_shake);
+			end_of_the_game_trigger->Draw(viewport_position_with_screen_shake);
 			for (int i = 0; i < (int)checkpoints.size(); i++) {
 				checkpoints[i]->Draw(viewport_position_with_screen_shake);
-				checkpoints[i]->UpdateCheckPoint();
 			}
 			for (int i = 0; i < (int)creatures.size(); i++) {
 				creatures[i]->Draw(viewport_position_with_screen_shake);
@@ -123,8 +125,11 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			main_character->Update(frame_delta);
 			main_character->test_projectile->Update(frame_delta);
 			main_character->test_projectile->UpdateProjectile(current_time);
+			end_of_the_game_trigger->Update(frame_delta);
+			end_of_the_game_trigger->UpdateEndOfTheGame();
 			for (int i = 0; i < (int)checkpoints.size(); i++) {
 				checkpoints[i]->Update(frame_delta);
+				checkpoints[i]->UpdateCheckPoint();
 			}
 			for (int i = 0; i < (int)creatures.size(); i++) {
 				creatures[i]->Update(frame_delta);
@@ -252,4 +257,12 @@ std::vector<RigidBody*> World::GetObjectsInGridLocation(int grid_x, int grid_y) 
 
 void World::SetCurrentCheckPoint(Checkpoint* cp) {
 	current_checkpoint = cp;
+}
+
+void World::EndTheGame() {
+	player_beat_the_game = true;
+}
+
+bool World::DidThePlayerBeatTheGame() {
+	return player_beat_the_game;
 }

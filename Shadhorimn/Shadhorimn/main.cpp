@@ -13,6 +13,7 @@ int IncrementTransparency(int transparency);
 void SetPreviousButtonValues();
 void UpdateGameStateLogos();
 void UpdateGameStateStartMenu();
+void UpdateGameStateCredits();
 
 void HandleClosingEvent();
 bool WasButtonAPressed();
@@ -51,6 +52,8 @@ sf::Sprite start_menu_background_sprite;
 sf::Font ringbearer_font;
 sf::Text title_text;
 sf::Text start_text;
+
+sf::Text credits_text;
 
 int a_button = 0;
 int b_button = 1;
@@ -113,6 +116,9 @@ int main()
 	start_text = sf::Text("Press Start to begin", ringbearer_font);
 	start_text.setPosition(viewport_width / 2.0f - 120.0f, viewport_height / 2.0f - 60.0f);
 
+	credits_text = sf::Text("Programmed by Ian James\n\nArt by Conor Koenig\n\n\n\n\nThank you for playing Shadhorimn", ringbearer_font);
+	credits_text.setPosition(viewport_width / 2.0f - 220.0f, viewport_height + 50.0f);
+
 	while (window->isOpen())
 	{
 		time = clock.getElapsedTime();
@@ -147,10 +153,15 @@ int main()
 							GameState = GAME_STATE_START_MENU;
 						}
 					}
+				} else if (Singleton<World>::Get()->DidThePlayerBeatTheGame()) {
+					GameState = GAME_STATE_CREDITS;
+					credits_text.setPosition(viewport_width / 2.0f - 120.0f, viewport_height + 50.0f);
 				}
 
 				HandleClosingEvent();
 				SetPreviousButtonValues();
+			} else if (GameState == GAME_STATE_CREDITS) {
+				UpdateGameStateCredits();
 			}
 		}
 	}
@@ -188,6 +199,22 @@ void UpdateGameStateStartMenu() {
 
 	if (WasButtonAPressed() || WasButtonStartPressed()) {
 		GameState = GAME_STATE_INITILIZATION;
+	}
+
+	HandleClosingEvent();
+	SetPreviousButtonValues();
+
+	window->display();
+}
+
+void UpdateGameStateCredits() {
+	window->clear();
+
+	credits_text.setPosition(credits_text.getPosition().x, credits_text.getPosition().y - 1.0f);
+	window->draw(credits_text);
+
+	if (WasButtonAPressed() || WasButtonStartPressed() || credits_text.getPosition().y < - 500.0f) {
+		GameState = GAME_STATE_START_MENU;
 	}
 
 	HandleClosingEvent();
