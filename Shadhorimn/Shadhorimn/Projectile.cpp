@@ -12,6 +12,8 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 	is_active = false;
 	fired_velocity = sf::Vector2f(0.0f, 0.0f);
 	collision_enabled = false;
+	time_of_impact = 0;
+	duration_of_impact_animation = 50;
 
 	render_window = window;
 
@@ -44,12 +46,23 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 		hit_sounds.push_back(sf::Sound());
 		hit_sounds[2].setBuffer(buffer2);
 	}
+
+	impact_texture.loadFromFile("Images/BulletImpact.png");
+	impact_sprite = sf::Sprite(impact_texture);
+
+	impact_position = sf::Vector2f(0.0f, 0.0f);
 }
 
 void Projectile::Draw(sf::Vector2f camera_position) {
 	if (is_active) {
 		circle_shape.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
 		render_window->draw(circle_shape);
+	}
+
+	if (time_of_impact + duration_of_impact_animation > current_time) {
+		impact_sprite.setPosition(sf::Vector2f((impact_position.x + width / 2.0f) - (impact_texture.getSize().x / 2.0f) - camera_position.x, 
+												(impact_position.y + height / 2.0f) - (impact_texture.getSize().y / 2.0f) - camera_position.y));
+		render_window->draw(impact_sprite);
 	}
 }
 
@@ -74,9 +87,12 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 				hit_objects[i]->entity_type == "PlayerCharacter") {
 				hit_objects[i]->velocity.x = knock_back_x;
 				hit_objects[i]->velocity.y = -knock_back_y;
-				((Creature*)(hit_objects[i]))->TakeHit(1, 500000);
+				((Creature*)(hit_objects[i]))->TakeHit(1, 500);
 			}
+
 			is_active = false;
+			time_of_impact = current_time;
+			impact_position = sf::Vector2f(x, y);
 		}
 
 		if (GetDistanceBetweenTwoPoints(sf::Vector2f(x, y), fired_position) > range) {

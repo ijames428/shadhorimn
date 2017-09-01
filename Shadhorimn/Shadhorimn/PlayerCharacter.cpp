@@ -47,16 +47,15 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 
 	if (!bufferLand.loadFromFile("Sound/Land.wav")) {
 		throw exception("Sound file not found");
-	}
-	else {
+	} else {
 		soundLand.setBuffer(bufferLand);
 	}
 
 	if (!bufferJump.loadFromFile("Sound/Jump.wav")) {
 		throw exception("Sound file not found");
-	}
-	else {
+	} else {
 		soundJump.setBuffer(bufferJump);
+		soundJump.setVolume(20);
 	}
 }
 

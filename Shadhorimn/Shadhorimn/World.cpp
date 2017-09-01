@@ -13,6 +13,7 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	main_character = character;
 	paused = false;
 	game_over_screen_sprite_transparency = 0;
+	player_is_in_combat = false;
 
 	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(1560.0f, 590.0f), sf::Vector2f(40.0f, 10.0f), false);
 
@@ -35,6 +36,7 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	platforms.push_back(new Platform(render_window, sf::Vector2f(1599.0f, 0.0f), sf::Vector2f(1.0f, 600.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 600.0f), sf::Vector2f(1600.0f, 10.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1600.0f, 1.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(800.0f, 500.0f), sf::Vector2f(10.0f, 100.0f)));
 
 	creatures.erase(creatures.begin(), creatures.end());
 	creatures.push_back(new Creature(render_window, sf::Vector2f(300.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
@@ -59,6 +61,10 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 
 	game_over_texture.loadFromFile("Images/GameOverScreen.png");
 	game_over_sprite = sf::Sprite(game_over_texture);
+
+	parallax_background_texture.loadFromFile("Images/parallax_background.jpg");
+	parallax_background_sprite = sf::Sprite(parallax_background_texture);
+	parallax_background_sprite.setPosition(0.0f, 0.0f);
 
 	if (!ringbearer_font.loadFromFile("Images/RingbearerFont.ttf"))
 		return;
@@ -106,6 +112,10 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 
 			sf::Vector2f viewport_position_with_screen_shake = sf::Vector2f(camera->viewport_position.x + screen_shake_amount.x, camera->viewport_position.y + screen_shake_amount.y);
 
+			sf::Vector2f parallax_background_viewport_position = sf::Vector2f(-(viewport_position_with_screen_shake.x / 10.0f), -(viewport_position_with_screen_shake.y / 10.0f));
+			parallax_background_sprite.setPosition(parallax_background_viewport_position);
+			render_window->draw(parallax_background_sprite);
+
 			main_character->Draw(viewport_position_with_screen_shake);
 			main_character->test_projectile->Draw(viewport_position_with_screen_shake);
 			end_of_the_game_trigger->Draw(viewport_position_with_screen_shake);
@@ -120,6 +130,7 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			}
 			for (int i = 0; i < (int)drones.size(); i++) {
 				drones[i]->Draw(viewport_position_with_screen_shake);
+
 			}
 
 			main_character->Update(frame_delta);
@@ -137,10 +148,17 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			for (int i = 0; i < (int)platforms.size(); i++) {
 				platforms[i]->Update(frame_delta);
 			}
+
+			player_is_in_combat = false;
+
 			for (int i = 0; i < (int)drones.size(); i++) {
 				drones[i]->Update(frame_delta);
 				drones[i]->UpdateBehavior(current_time);
 				drones[i]->UpdateProjectiles(current_time, frame_delta);
+
+				if (drones[i]->hit_points > 0 && RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(main_character->x, main_character->y), sf::Vector2f(drones[i]->x, drones[i]->y)) < 600.0f) {
+					player_is_in_combat = true;
+				}
 			}
 
 			for (int i = 0; i < main_character->hit_points; i++) {
@@ -265,4 +283,8 @@ void World::EndTheGame() {
 
 bool World::DidThePlayerBeatTheGame() {
 	return player_beat_the_game;
+}
+
+bool World::IsPlayerInCombat() {
+	return player_is_in_combat;
 }

@@ -44,6 +44,9 @@ Camera* camera;
 InputHandler* input_handler;
 PlayerCharacter* main_character;
 
+sf::Music background_music;
+sf::Music combat_music;
+
 sf::Texture logo_screen_texture;
 sf::Sprite logo_screen_sprite;
 int logo_screen_sprite_transparency;
@@ -88,9 +91,23 @@ int main()
 	sf::Int64 time_previous = time.asMicroseconds();
 	sf::Int64 frame_delta;
 	sf::Int64 start_time = time.asMicroseconds();
+	
+	int background_music_volume = 100;
+	int combat_music_volume = 0;
+
+	if (!background_music.openFromFile("Sound/background_music0.ogg"))
+		return -1;
+	combat_music.setVolume(background_music_volume);
+	background_music.play();
+	background_music.setLoop(true);
+
+	if (!combat_music.openFromFile("Sound/combat_music.ogg"))
+		return -1;
+	combat_music.setVolume(combat_music_volume);
+	combat_music.play();
+	combat_music.setLoop(true);
 
 	camera = new Camera(sf::Vector2f(viewport_width / 2, viewport_height / 2), sf::Vector2f(viewport_width, viewport_height));
-
 	window = new sf::RenderWindow(sf::VideoMode::VideoMode((int)window_width, (int)window_height), "Shadhorimn");// , sf::Style::Fullscreen);
 	//sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode::getDesktopMode(), "Shadhorimn");// , sf::Style::Fullscreen);
 	main_character = new PlayerCharacter(window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 80.0f), true);
@@ -139,9 +156,28 @@ int main()
 			} else if (GameState == GAME_STATE_INITILIZATION) {
 				Singleton<World>::Get()->Init(window, camera, main_character);
 				GameState = GAME_STATE_IN_GAME;
+				window->clear();
 			} else if (GameState == GAME_STATE_IN_GAME) {
 				input_handler->Update();
 				Singleton<World>::Get()->Update(time_current / 1000, frame_delta / 1000);
+
+				if (Singleton<World>::Get()->IsPlayerInCombat()) {
+					if (combat_music_volume < 100) {
+						combat_music_volume++;
+						background_music_volume--;
+
+						combat_music.setVolume(combat_music_volume);
+						background_music.setVolume(background_music_volume);
+					}
+				} else {
+					if (background_music_volume < 100) {
+						background_music_volume++;
+						combat_music_volume--;
+
+						background_music.setVolume(background_music_volume);
+						combat_music.setVolume(combat_music_volume);
+					}
+				}
 
 				if (main_character->hit_points <= 0) {
 					if ((a_button_current && !a_button_previous) || (start_button_current && !start_button_previous)) {

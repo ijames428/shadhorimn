@@ -9,6 +9,8 @@ using namespace std;
 
 class Projectile : public RigidBody {
 protected:
+	sf::Texture impact_texture;
+	sf::Sprite impact_sprite;
 	std::vector<sf::Sound> hit_sounds = std::vector<sf::Sound>();
 	sf::SoundBuffer buffer0;
 	sf::SoundBuffer buffer1;
@@ -19,6 +21,9 @@ protected:
 	sf::Vector2f fired_position;
 	sf::Int64 range;
 	float speed;
+	sf::Vector2f impact_position;
+	sf::Int64 time_of_impact;
+	sf::Int64 duration_of_impact_animation;
 public:
 	bool is_active;
 	Projectile(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);

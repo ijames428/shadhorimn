@@ -10,6 +10,7 @@ using namespace std;
 
 class World {
 	private:
+		bool player_is_in_combat;
 		EndOfTheGame* end_of_the_game_trigger;
 		bool player_beat_the_game = false;
 		Checkpoint* current_checkpoint;
@@ -22,6 +23,8 @@ class World {
 		sf::Texture blank_screen_texture;
 		sf::Sprite blank_screen_sprite;
 		sf::Texture hit_point_texture;
+		sf::Texture parallax_background_texture;
+		sf::Sprite parallax_background_sprite;
 		std::vector<sf::Sprite> hit_point_sprites = std::vector<sf::Sprite>();
 		sf::Int64 current_time;
 		bool screen_shaking;
@@ -55,4 +58,5 @@ class World {
 		void SetCurrentCheckPoint(Checkpoint* cp);
 		void EndTheGame();
 		bool DidThePlayerBeatTheGame();
+		bool IsPlayerInCombat();
 };
