@@ -17,6 +17,9 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 	time_of_impact = 0;
 	duration_of_impact_animation = 50;
 
+	ExcludeFromCollision("Projectile");
+	ExcludeFromCollision("Rigidbody");
+
 	render_window = window;
 
 	sf::CircleShape shape(dimensions.x);
@@ -75,7 +78,7 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 	current_time = curr_time;
 
 	if (is_active) {
-		float knock_back_x = velocity.x * 2.0f;
+		float knock_back_x = velocity.x;
 		float knock_back_y = velocity.y;
 
 		velocity = fired_velocity;
@@ -88,8 +91,9 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 			}
 
 			if (hit_objects[i]->entity_type == "Drone" ||
-				hit_objects[i]->entity_type == "Creature" ||
-				hit_objects[i]->entity_type == "PlayerCharacter") {
+				hit_objects[i]->entity_type == "Grunt" ||
+				hit_objects[i]->entity_type == "PlayerCharacter" ||
+				hit_objects[i]->entity_type == "Gunner") {
 				hit_objects[i]->velocity.x = knock_back_x;
 				hit_objects[i]->velocity.y = -knock_back_y;
 				((Creature*)(hit_objects[i]))->TakeHit(1, 500);

@@ -25,6 +25,7 @@
     <ClCompile Include="Drone.cpp" />
     <ClCompile Include="EndOfTheGame.cpp" />
     <ClCompile Include="Grunt.cpp" />
+    <ClCompile Include="Gunner.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Platform.cpp" />
@@ -42,6 +43,7 @@
     <ClInclude Include="Drone.h" />
     <ClInclude Include="EndOfTheGame.h" />
     <ClInclude Include="Grunt.h" />
+    <ClInclude Include="Gunner.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PlayerCharacter.h" />

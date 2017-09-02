@@ -5,7 +5,7 @@ using namespace std;
 #include "World.h"  
 
 EndOfTheGame::EndOfTheGame(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : RigidBody::RigidBody(position, dimensions, subject_to_gravity) {
-	entity_type = "Checkpoint";
+	entity_type = "EndOfTheGame";
 	collision_enabled = false;
 	render_window = window;
 

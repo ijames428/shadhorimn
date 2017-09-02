@@ -10,6 +10,7 @@ Grunt::Grunt(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimen
 	hit_points = 3;
 	jump_power = 1.0f;
 	aggro_radius = 200.0f;
+	attack_radius = 75.0f;
 	is_aggroed = false;
 	movement_speed = 1.0f;
 
@@ -31,8 +32,10 @@ Grunt::Grunt(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimen
 void Grunt::UpdateBehavior(sf::Int64 curr_time) {
 	current_time = curr_time;
 
-	if (hit_points >= 0) {
-		if (hit_stun_start_time + hit_stun_duration <= curr_time) {  
+	if (hit_points > 0) {
+		if (hit_stun_start_time + hit_stun_duration <= curr_time) {
+			rectangle_shape.setFillColor(sf::Color::Magenta);
+
 			is_aggroed = RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(target->x + target->width / 2.0f, target->y + target->height / 2.0f), sf::Vector2f(x, y)) < aggro_radius;
 
 			if (is_aggroed) {
@@ -45,7 +48,8 @@ void Grunt::UpdateBehavior(sf::Int64 curr_time) {
 					}
 				}
 
-				if (time_of_last_attack + time_between_attacks <= curr_time) {
+				if (time_of_last_attack + time_between_attacks <= curr_time && 
+					RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(target->x + target->width / 2.0f, target->y + target->height / 2.0f), sf::Vector2f(x + width / 2.0f, y + height / 2.0f)) < attack_radius) {
 					float knock_back_x = 2.0f;
 					float knock_back_y = 6.0f;
 
@@ -75,6 +79,8 @@ void Grunt::UpdateBehavior(sf::Int64 curr_time) {
 				velocity.x = 0.0f;
 				velocity.y = 0.0f;
 			}
+		} else {
+			rectangle_shape.setFillColor(sf::Color::Red);
 		}
 	}
 }

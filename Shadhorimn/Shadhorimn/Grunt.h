@@ -12,6 +12,7 @@ private:
 	float movement_speed;
 	bool is_aggroed;
 	float aggro_radius;
+	float attack_radius;
 	sf::Int64 time_of_last_attack;
 	sf::Int64 duration_of_attack;
 	sf::Int64 time_between_attacks;

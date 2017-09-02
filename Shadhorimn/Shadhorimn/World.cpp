@@ -38,9 +38,13 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1600.0f, 1.0f)));
 	//platforms.push_back(new Platform(render_window, sf::Vector2f(800.0f, 500.0f), sf::Vector2f(10.0f, 100.0f)));
 
-	creatures.erase(creatures.begin(), creatures.end());
-	creatures.push_back(new Creature(render_window, sf::Vector2f(300.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
-	creatures.push_back(new Creature(render_window, sf::Vector2f(200.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
+	grunts.erase(grunts.begin(), grunts.end());
+	//grunts.push_back(new Grunt(render_window, sf::Vector2f(300.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
+	grunts.push_back(new Grunt(render_window, sf::Vector2f(200.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
+
+	gunners.erase(gunners.begin(), gunners.end());
+	gunners.push_back(new Gunner(render_window, sf::Vector2f(300.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
+	//grunts.push_back(new Grunt(render_window, sf::Vector2f(200.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
 
 	drones.erase(drones.begin(), drones.end());
 	drones.push_back(new Drone(render_window, sf::Vector2f(1000.0f, 450.0f), sf::Vector2f(30.0f, 30.0f), false));
@@ -122,15 +126,17 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			for (int i = 0; i < (int)checkpoints.size(); i++) {
 				checkpoints[i]->Draw(viewport_position_with_screen_shake);
 			}
-			for (int i = 0; i < (int)creatures.size(); i++) {
-				creatures[i]->Draw(viewport_position_with_screen_shake);
+			for (int i = 0; i < (int)grunts.size(); i++) {
+				grunts[i]->Draw(viewport_position_with_screen_shake);
 			}
 			for (int i = 0; i < (int)platforms.size(); i++) {
 				platforms[i]->Draw(viewport_position_with_screen_shake);
 			}
+			for (int i = 0; i < (int)gunners.size(); i++) {
+				gunners[i]->Draw(viewport_position_with_screen_shake);
+			}
 			for (int i = 0; i < (int)drones.size(); i++) {
 				drones[i]->Draw(viewport_position_with_screen_shake);
-
 			}
 
 			main_character->Update(frame_delta);
@@ -142,8 +148,9 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				checkpoints[i]->Update(frame_delta);
 				checkpoints[i]->UpdateCheckPoint();
 			}
-			for (int i = 0; i < (int)creatures.size(); i++) {
-				creatures[i]->Update(frame_delta);
+			for (int i = 0; i < (int)grunts.size(); i++) {
+				grunts[i]->Update(frame_delta);
+				grunts[i]->UpdateBehavior(current_time);
 			}
 			for (int i = 0; i < (int)platforms.size(); i++) {
 				platforms[i]->Update(frame_delta);
@@ -159,6 +166,12 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				if (drones[i]->hit_points > 0 && RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(main_character->x, main_character->y), sf::Vector2f(drones[i]->x, drones[i]->y)) < 600.0f) {
 					player_is_in_combat = true;
 				}
+			}
+
+			for (int i = 0; i < (int)gunners.size(); i++) {
+				gunners[i]->Update(frame_delta);
+				gunners[i]->UpdateBehavior(current_time);
+				gunners[i]->UpdateProjectiles(current_time, frame_delta);
 			}
 
 			for (int i = 0; i < main_character->hit_points; i++) {

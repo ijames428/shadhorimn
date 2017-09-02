@@ -3,6 +3,7 @@ using namespace std;
 #include "Platform.h"
 
 Platform::Platform(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : RigidBody::RigidBody(position, dimensions, subject_to_gravity) {
+	entity_type = "Platform";
 	render_window = window;
 
 	sf::RectangleShape shape(dimensions);

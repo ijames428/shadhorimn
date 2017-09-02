@@ -6,7 +6,9 @@ using namespace std;
 #include "RigidBody.h"
 #include "Platform.h"
 #include "Camera.h"
+#include "Gunner.h"
 #include "Drone.h"
+#include "Grunt.h"
 
 class World {
 	private:
@@ -35,7 +37,8 @@ class World {
 		sf::RenderWindow* render_window;
 		std::vector<Checkpoint*> checkpoints = std::vector<Checkpoint*>();
 		std::vector<Platform*> platforms = std::vector<Platform*>();
-		std::vector<Creature*> creatures = std::vector<Creature*>();
+		std::vector<Gunner*> gunners = std::vector<Gunner*>();
+		std::vector<Grunt*> grunts = std::vector<Grunt*>();
 		std::vector<Drone*> drones = std::vector<Drone*>();
 		int grid_width = 50;
 		int grid_height = 50;

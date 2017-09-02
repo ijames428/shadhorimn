@@ -145,9 +145,14 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 	}
 }
 
-bool RigidBody::AreTheRigidBodiesCollidingHorizontally(RigidBody* rb1, RigidBody* rb2) {
+bool RigidBody::AreTheRigidBodiesCollidingHorizontally(RigidBody* rb1, RigidBody* rb2, bool just_check_no_response) {
 	bool rb1_is_horizontally_outside_rb2 = (rb1->future_x + rb1->future_width < rb2->x || rb1->future_x > rb2->x + rb2->width);
-	bool rb1_is_vertically_outside_rb2 = ((rb1->y + 5.0f) + (rb1->future_height - 10.0f) < rb2->y || rb1->y + 5.0f > rb2->y + rb2->height);
+	bool rb1_is_vertically_outside_rb2 = false;
+	if (just_check_no_response) {
+		rb1_is_vertically_outside_rb2 = (rb1->y + rb1->future_height < rb2->y || rb1->y > rb2->y + rb2->height);
+	} else {
+		rb1_is_vertically_outside_rb2 = ((rb1->y + 5.0f) + (rb1->future_height - 10.0f) < rb2->y || rb1->y + 5.0f > rb2->y + rb2->height);
+	}
 
 	if (rb1_is_horizontally_outside_rb2 || rb1_is_vertically_outside_rb2) {
 		return false;
@@ -156,9 +161,15 @@ bool RigidBody::AreTheRigidBodiesCollidingHorizontally(RigidBody* rb1, RigidBody
 	return true;
 }
 
-bool RigidBody::AreTheRigidBodiesCollidingVertically(RigidBody* rb1, RigidBody* rb2) {
-	bool rb1_is_horizontally_outside_rb2 = ((rb1->x + 5.0f) + (rb1->future_width - 10.0f) < rb2->x || rb1->x + 5.0f > rb2->x + rb2->width);
+bool RigidBody::AreTheRigidBodiesCollidingVertically(RigidBody* rb1, RigidBody* rb2, bool just_check_no_response) {
+	bool rb1_is_horizontally_outside_rb2 = false;
 	bool rb1_is_vertically_outside_rb2 = (rb1->future_y + rb1->future_height < rb2->y || rb1->future_y > rb2->y + rb2->height);
+
+	if (just_check_no_response) {
+		rb1_is_horizontally_outside_rb2 = (rb1->x + rb1->future_width < rb2->x || rb1->x > rb2->x + rb2->width);
+	} else {
+		rb1_is_horizontally_outside_rb2 = ((rb1->x + 5.0f) + (rb1->future_width - 10.0f) < rb2->x || rb1->x + 5.0f > rb2->x + rb2->width);
+	}
 
 	if (rb1_is_horizontally_outside_rb2 || rb1_is_vertically_outside_rb2) {
 		return false;
@@ -182,8 +193,8 @@ std::vector<RigidBody*> RigidBody::GetCollidersRigidBodyIsCollidingWith() {
 			if (!colliders.empty()) {
 				for (int c = 0; c < (int)colliders.size(); c++) {
 					if (id != colliders[c]->id && (std::find(entities_excluded_from_collision.begin(), entities_excluded_from_collision.end(), colliders[c]->entity_type) == entities_excluded_from_collision.end())) {
-						if (AreTheRigidBodiesCollidingHorizontally(this, colliders[c]) && 
-							AreTheRigidBodiesCollidingVertically(this, colliders[c])) {
+						if (AreTheRigidBodiesCollidingHorizontally(this, colliders[c], true) && 
+							AreTheRigidBodiesCollidingVertically(this, colliders[c], true)) {
 							bool already_in_list = false;
 
 							for (int i = 0; i < (int)collidersBeingCollidedWith.size(); i++) {
