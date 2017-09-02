@@ -24,12 +24,15 @@
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Drone.cpp" />
     <ClCompile Include="EndOfTheGame.cpp" />
+    <ClCompile Include="Grunt.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlayerCharacter.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="RigidBody.cpp" />
+    <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="SpriteAnimation.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -38,12 +41,15 @@
     <ClInclude Include="Creature.h" />
     <ClInclude Include="Drone.h" />
     <ClInclude Include="EndOfTheGame.h" />
+    <ClInclude Include="Grunt.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PlayerCharacter.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="RigidBody.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="SpriteAnimation.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

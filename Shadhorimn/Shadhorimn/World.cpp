@@ -36,7 +36,7 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	platforms.push_back(new Platform(render_window, sf::Vector2f(1599.0f, 0.0f), sf::Vector2f(1.0f, 600.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 600.0f), sf::Vector2f(1600.0f, 10.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1600.0f, 1.0f)));
-	platforms.push_back(new Platform(render_window, sf::Vector2f(800.0f, 500.0f), sf::Vector2f(10.0f, 100.0f)));
+	//platforms.push_back(new Platform(render_window, sf::Vector2f(800.0f, 500.0f), sf::Vector2f(10.0f, 100.0f)));
 
 	creatures.erase(creatures.begin(), creatures.end());
 	creatures.push_back(new Creature(render_window, sf::Vector2f(300.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));

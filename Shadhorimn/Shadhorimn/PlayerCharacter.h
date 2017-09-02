@@ -4,11 +4,16 @@
 using namespace std;
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
-#include "Creature.h"
+#include "SpriteAnimation.h"
 #include "Projectile.h"
+#include "Creature.h"
 
 class PlayerCharacter : public Creature {
 	private:
+		SpriteAnimation* running_animation;
+		sf::Texture idle_texture;
+		sf::Sprite idle_sprite;
+		float idle_sprite_scale;
 		std::vector<sf::Sound> hit_sounds = std::vector<sf::Sound>();
 		sf::SoundBuffer buffer0;
 		sf::SoundBuffer buffer1;
@@ -40,6 +45,7 @@ class PlayerCharacter : public Creature {
 		void HandleButtonSelectRelease();
 		void HandleButtonStartPress();
 		void HandleButtonStartRelease();
+		void Draw(sf::Vector2f camera_position);
 };
 
 #endif

@@ -1,6 +1,8 @@
 using namespace std;
 #include <iostream>
 #include "Projectile.h"
+#include "Singleton.h"
+#include "Settings.h"
 
 Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : RigidBody::RigidBody(position, dimensions, subject_to_gravity) {
 	entity_type = "Projectile";
@@ -29,6 +31,7 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 	else {
 		hit_sounds.push_back(sf::Sound());
 		hit_sounds[0].setBuffer(buffer0);
+		hit_sounds[0].setVolume(20 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
 	}
 
 	if (!buffer1.loadFromFile("Sound/Hit1.wav")) {
@@ -37,6 +40,7 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 	else {
 		hit_sounds.push_back(sf::Sound());
 		hit_sounds[1].setBuffer(buffer1);
+		hit_sounds[1].setVolume(20 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
 	}
 
 	if (!buffer2.loadFromFile("Sound/Hit2.wav")) {
@@ -45,6 +49,7 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 	else {
 		hit_sounds.push_back(sf::Sound());
 		hit_sounds[2].setBuffer(buffer2);
+		hit_sounds[2].setVolume(20 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
 	}
 
 	impact_texture.loadFromFile("Images/BulletImpact.png");

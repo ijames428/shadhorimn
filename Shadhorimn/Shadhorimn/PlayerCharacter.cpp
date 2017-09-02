@@ -2,6 +2,7 @@ using namespace std;
 #include <iostream>
 #include "PlayerCharacter.h"
 #include "Singleton.h"
+#include "Settings.h"
 #include "World.h"
 
 PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : 
@@ -24,11 +25,20 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 
 	rectangle_shape = shape;
 
+	idle_sprite_scale = 0.12f;
+	idle_texture.loadFromFile("Images/Kaltar_Idle.png");
+	idle_sprite = sf::Sprite(idle_texture);
+	idle_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
+	idle_sprite.setColor(sf::Color::Cyan);
+
+	running_animation = new SpriteAnimation(render_window, "Images/Kaltar_Running.png", 582, 522, 91, 9, 11, 0.12f, sf::Color::Cyan);
+
 	if (!buffer0.loadFromFile("Sound/Hit0.wav")) {
 		throw exception("Sound file not found");
 	} else {
 		hit_sounds.push_back(sf::Sound());
 		hit_sounds[0].setBuffer(buffer0);
+		hit_sounds[0].setVolume(20 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
 	}
 
 	if (!buffer1.loadFromFile("Sound/Hit1.wav")) {
@@ -36,6 +46,7 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	} else {
 		hit_sounds.push_back(sf::Sound());
 		hit_sounds[1].setBuffer(buffer1);
+		hit_sounds[1].setVolume(20 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
 	}
 
 	if (!buffer2.loadFromFile("Sound/Hit2.wav")) {
@@ -43,19 +54,41 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	} else {
 		hit_sounds.push_back(sf::Sound());
 		hit_sounds[2].setBuffer(buffer2);
+		hit_sounds[2].setVolume(20 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
 	}
 
 	if (!bufferLand.loadFromFile("Sound/Land.wav")) {
 		throw exception("Sound file not found");
 	} else {
 		soundLand.setBuffer(bufferLand);
+		soundLand.setVolume(Singleton<Settings>().Get()->effects_volume);
 	}
 
 	if (!bufferJump.loadFromFile("Sound/Jump.wav")) {
 		throw exception("Sound file not found");
 	} else {
 		soundJump.setBuffer(bufferJump);
-		soundJump.setVolume(20);
+		soundJump.setVolume(20 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
+	}
+}
+
+void PlayerCharacter::Draw(sf::Vector2f camera_position) {
+	if (facing_right) {
+		idle_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
+	} else {
+		idle_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
+	}
+
+	if (facing_right != running_animation->IsFacingRight()) {
+		running_animation->Flip();
+	}
+
+	if (velocity.x == 0) {
+		idle_sprite.setPosition(sf::Vector2f((x + width / 2.0f) - (idle_texture.getSize().x * idle_sprite.getScale().x / 2.0f) - camera_position.x,
+			(y + height / 2.0f) - (idle_texture.getSize().y * idle_sprite.getScale().y / 2.0f) - camera_position.y));
+		render_window->draw(idle_sprite);
+	} else {
+		running_animation->Draw(camera_position, sf::Vector2f(x + width / 2.0f, y + height / 2.0f));
 	}
 }
 

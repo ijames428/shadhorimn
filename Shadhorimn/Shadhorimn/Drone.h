@@ -9,7 +9,7 @@ using namespace std;
 
 class Drone : public Creature {
 private:
-	std::vector<Projectile*> projectiles = std::vector<Projectile*>();;
+	std::vector<Projectile*> projectiles = std::vector<Projectile*>();
 	float movement_speed;
 	bool is_aggroed;
 	float aggro_radius;
