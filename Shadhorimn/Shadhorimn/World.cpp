@@ -15,45 +15,13 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	game_over_screen_sprite_transparency = 0;
 	player_is_in_combat = false;
 
-	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(1560.0f, 590.0f), sf::Vector2f(40.0f, 10.0f), false);
-
-	if (current_number_of_lives == starting_number_of_lives) {
-		current_checkpoint = new Checkpoint(render_window, sf::Vector2f(500.0f, 590.0f), sf::Vector2f(40.0f, 10.0f), false);
-	}
-
-	main_character->x = current_checkpoint->x;
-	main_character->y = current_checkpoint->y + current_checkpoint->height - main_character->height;
-	main_character->hit_points = main_character->max_hit_points;
-	main_character->velocity = sf::Vector2f(0.0f, 0.0f);
-
-	checkpoints.erase(checkpoints.begin(), checkpoints.end());
-	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(2.0f, 590.0f), sf::Vector2f(40.0f, 10.0f), false));
-	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(620.0f, 490.0f), sf::Vector2f(40.0f, 10.0f), false));
-
-	platforms.erase(platforms.begin(), platforms.end());
-	platforms.push_back(new Platform(render_window, sf::Vector2f(540.0f, 500.0f), sf::Vector2f(200.0f, 1.0f)));
-	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1.0f, 600.0f)));
-	platforms.push_back(new Platform(render_window, sf::Vector2f(1599.0f, 0.0f), sf::Vector2f(1.0f, 600.0f)));
-	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 600.0f), sf::Vector2f(1600.0f, 10.0f)));
-	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1600.0f, 1.0f)));
-	//platforms.push_back(new Platform(render_window, sf::Vector2f(800.0f, 500.0f), sf::Vector2f(10.0f, 100.0f)));
-
-	grunts.erase(grunts.begin(), grunts.end());
-	//grunts.push_back(new Grunt(render_window, sf::Vector2f(300.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
-	grunts.push_back(new Grunt(render_window, sf::Vector2f(200.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
-
-	gunners.erase(gunners.begin(), gunners.end());
-	gunners.push_back(new Gunner(render_window, sf::Vector2f(300.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
-	//grunts.push_back(new Grunt(render_window, sf::Vector2f(200.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
-
-	drones.erase(drones.begin(), drones.end());
-	drones.push_back(new Drone(render_window, sf::Vector2f(1000.0f, 450.0f), sf::Vector2f(30.0f, 30.0f), false));
-	drones.push_back(new Drone(render_window, sf::Vector2f(1100.0f, 300.0f), sf::Vector2f(30.0f, 30.0f), false));
-
 	current_time = 0;
 	screen_shaking = false;
 	screen_shake_start_time = 0;
 	screen_shake_duration = (sf::Int64)(0.01f * 1000); // 1000 is one second in milliseconds.
+
+	BuildTestLevel();
+	//BuildDevLevel();
 
 	hit_point_texture.loadFromFile("Images/HitPoint.png");
 	for (int i = 0; i < main_character->hit_points; i++) {
@@ -300,4 +268,120 @@ bool World::DidThePlayerBeatTheGame() {
 
 bool World::IsPlayerInCombat() {
 	return player_is_in_combat;
+}
+
+void World::BuildTestLevel() {
+	if (current_number_of_lives == starting_number_of_lives) {
+		current_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(40.0f, 10.0f), false);
+	}
+
+	main_character->x = current_checkpoint->x;
+	main_character->y = current_checkpoint->y + current_checkpoint->height - main_character->height;
+	main_character->hit_points = main_character->max_hit_points;
+	main_character->velocity = sf::Vector2f(0.0f, 0.0f);
+
+	platforms.erase(platforms.begin(), platforms.end());
+	// Starting Room
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(10.0f, 200.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 200.0f), sf::Vector2f(200.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(200.0f, 200.0f), sf::Vector2f(10.0f, 600.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(200.0f, 800.0f), sf::Vector2f(1600.0f, 10.0f)));//floor
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1800.0f, 600.0f), sf::Vector2f(10.0f, 200.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1800.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1800.0f, 0.0f), sf::Vector2f(10.0f, 200.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(400.0f, 400.0f), sf::Vector2f(200.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1650.0f, 700.0f), sf::Vector2f(100.0f, 10.0f)));
+
+	// Hallway
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1800.0f, 600.0f), sf::Vector2f(1000.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1800.0f, 200.0f), sf::Vector2f(2800.0f, 10.0f)));
+
+	// Room 2
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2800.0f, 600.0f), sf::Vector2f(10.0f, 500.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2800.0f, 1100.0f), sf::Vector2f(1600.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4400.0f, 600.0f), sf::Vector2f(10.0f, 500.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4400.0f, 600.0f), sf::Vector2f(50.0f, 10.0f)));
+
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3000.0f, 700.0f), sf::Vector2f(200.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3300.0f, 800.0f), sf::Vector2f(200.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3600.0f, 900.0f), sf::Vector2f(200.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3900.0f, 800.0f), sf::Vector2f(200.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4200.0f, 700.0f), sf::Vector2f(200.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3300.0f, 1000.0f), sf::Vector2f(200.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3900.0f, 1000.0f), sf::Vector2f(200.0f, 10.0f)));
+
+	// Drop
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4600.0f, 200.0f), sf::Vector2f(10.0f, 2000.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4450.0f, 600.0f), sf::Vector2f(10.0f, 1000.0f)));
+
+	// Boss Room
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2600.0f, 2200.0f), sf::Vector2f(2000.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2600.0f, 2000.0f), sf::Vector2f(10.0f, 200.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2600.0f, 2000.0f), sf::Vector2f(400.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3000.0f, 1600.0f), sf::Vector2f(10.0f, 400.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3000.0f, 1600.0f), sf::Vector2f(1450.0f, 10.0f)));
+
+	checkpoints.erase(checkpoints.begin(), checkpoints.end());
+	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(2700.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false));
+	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(5400.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false));
+
+	grunts.erase(grunts.begin(), grunts.end());
+	grunts.push_back(new Grunt(render_window, sf::Vector2f(3380.0f, 700.0f), sf::Vector2f(40.0f, 80.0f), true));
+	grunts.push_back(new Grunt(render_window, sf::Vector2f(3680.0f, 800.0f), sf::Vector2f(40.0f, 80.0f), true));
+	grunts.push_back(new Grunt(render_window, sf::Vector2f(3380.0f, 900.0f), sf::Vector2f(40.0f, 80.0f), true));
+	grunts.push_back(new Grunt(render_window, sf::Vector2f(3500.0f, 1000.0f), sf::Vector2f(40.0f, 80.0f), true));
+	grunts.push_back(new Grunt(render_window, sf::Vector2f(3800.0f, 1000.0f), sf::Vector2f(40.0f, 80.0f), true));
+
+	gunners.erase(gunners.begin(), gunners.end());
+	gunners.push_back(new Gunner(render_window, sf::Vector2f(3980.0f, 700.0f), sf::Vector2f(40.0f, 80.0f), true));
+	gunners.push_back(new Gunner(render_window, sf::Vector2f(3980.0f, 900.0f), sf::Vector2f(40.0f, 80.0f), true));
+	gunners.push_back(new Gunner(render_window, sf::Vector2f(4100.0f, 1000.0f), sf::Vector2f(40.0f, 80.0f), true));
+	gunners.push_back(new Gunner(render_window, sf::Vector2f(4200.0f, 1000.0f), sf::Vector2f(40.0f, 80.0f), true));
+
+	drones.erase(drones.begin(), drones.end());
+	drones.push_back(new Drone(render_window, sf::Vector2f(500.0f, 300.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(700.0f, 700.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(900.0f, 700.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(1100.0f, 700.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(1300.0f, 700.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(1660.0f, 600.0f), sf::Vector2f(30.0f, 30.0f), false));
+
+	drones.push_back(new Drone(render_window, sf::Vector2f(3085.0f, 600.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(3985.0f, 700.0f), sf::Vector2f(30.0f, 30.0f), false));
+
+	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(2650.0f, 2250.0f), sf::Vector2f(40.0f, 100.0f), false);
+}
+
+void World::BuildDevLevel() {
+	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(1560.0f, 590.0f), sf::Vector2f(40.0f, 10.0f), false);
+
+	if (current_number_of_lives == starting_number_of_lives) {
+		current_checkpoint = new Checkpoint(render_window, sf::Vector2f(500.0f, 590.0f), sf::Vector2f(40.0f, 10.0f), false);
+	}
+
+	main_character->x = current_checkpoint->x;
+	main_character->y = current_checkpoint->y + current_checkpoint->height - main_character->height;
+	main_character->hit_points = main_character->max_hit_points;
+	main_character->velocity = sf::Vector2f(0.0f, 0.0f);
+
+	checkpoints.erase(checkpoints.begin(), checkpoints.end());
+	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(2.0f, 590.0f), sf::Vector2f(40.0f, 10.0f), false));
+	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(620.0f, 490.0f), sf::Vector2f(40.0f, 10.0f), false));
+
+	platforms.erase(platforms.begin(), platforms.end());
+	platforms.push_back(new Platform(render_window, sf::Vector2f(540.0f, 500.0f), sf::Vector2f(200.0f, 1.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1.0f, 600.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1599.0f, 0.0f), sf::Vector2f(1.0f, 600.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 600.0f), sf::Vector2f(1600.0f, 10.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(1600.0f, 1.0f)));
+
+	grunts.erase(grunts.begin(), grunts.end());
+	grunts.push_back(new Grunt(render_window, sf::Vector2f(200.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
+
+	gunners.erase(gunners.begin(), gunners.end());
+	gunners.push_back(new Gunner(render_window, sf::Vector2f(300.0f, 500.0f), sf::Vector2f(40.0f, 80.0f), true));
+
+	drones.erase(drones.begin(), drones.end());
+	drones.push_back(new Drone(render_window, sf::Vector2f(1000.0f, 450.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(1100.0f, 300.0f), sf::Vector2f(30.0f, 30.0f), false));
 }

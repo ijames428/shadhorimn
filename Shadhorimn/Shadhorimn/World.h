@@ -40,8 +40,8 @@ class World {
 		std::vector<Gunner*> gunners = std::vector<Gunner*>();
 		std::vector<Grunt*> grunts = std::vector<Grunt*>();
 		std::vector<Drone*> drones = std::vector<Drone*>();
-		int grid_width = 50;
-		int grid_height = 50;
+		int grid_width = 100;
+		int grid_height = 100;
 		int grid_depth = 10;
 		int cell_width = 100;
 		int cell_height = 100;
@@ -62,4 +62,6 @@ class World {
 		void EndTheGame();
 		bool DidThePlayerBeatTheGame();
 		bool IsPlayerInCombat();
+		void BuildDevLevel();
+		void BuildTestLevel();
 };
