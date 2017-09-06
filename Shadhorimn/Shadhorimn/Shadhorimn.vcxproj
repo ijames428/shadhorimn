@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Charger.cpp" />
     <ClCompile Include="Checkpoint.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Drone.cpp" />
@@ -38,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Charger.h" />
     <ClInclude Include="Checkpoint.h" />
     <ClInclude Include="Creature.h" />
     <ClInclude Include="Drone.h" />

@@ -5,6 +5,7 @@ using namespace std;
 #include "EndOfTheGame.h"
 #include "RigidBody.h"
 #include "Platform.h"
+#include "Charger.h"
 #include "Camera.h"
 #include "Gunner.h"
 #include "Drone.h"
@@ -44,6 +45,7 @@ class World {
 		std::vector<Gunner*> gunners = std::vector<Gunner*>();
 		std::vector<Grunt*> grunts = std::vector<Grunt*>();
 		std::vector<Drone*> drones = std::vector<Drone*>();
+		Charger* charger;
 		int grid_width = 100;
 		int grid_height = 100;
 		int grid_depth = 10;

@@ -138,7 +138,8 @@ void PlayerCharacter::HandleButtonXPress() {
 
 		if (hit_objects[i]->entity_type == "Drone" || 
 			hit_objects[i]->entity_type == "Grunt" ||
-			hit_objects[i]->entity_type == "Gunner") {
+			hit_objects[i]->entity_type == "Gunner" ||
+			hit_objects[i]->entity_type == "Charger") {
 			hit_objects[i]->velocity.x = knock_back_x;
 			hit_objects[i]->velocity.y = -knock_back_y;
 			((Creature*)(hit_objects[i]))->TakeHit(1, 1000);

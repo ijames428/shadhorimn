@@ -97,6 +97,18 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			}
 			main_character->test_projectile->Draw(viewport_position_with_screen_shake, current_time);
 
+			charger->Update(frame_delta);
+			charger->UpdateBehavior(current_time);
+			charger->UpdateProjectiles(current_time, frame_delta);
+			charger->Draw(viewport_position_with_screen_shake);
+			charger->DrawProjectiles(viewport_position_with_screen_shake, current_time);
+
+			//if (charger->test_projectile->is_active) {
+			//	charger->test_projectile->Update(frame_delta);
+			//	charger->test_projectile->UpdateProjectile(current_time);
+			//}
+			//charger->test_projectile->Draw(viewport_position_with_screen_shake, current_time);
+
 			if (IsObjectInUpdateRange((RigidBody*)end_of_the_game_trigger)) {
 				end_of_the_game_trigger->Update(frame_delta);
 				end_of_the_game_trigger->UpdateEndOfTheGame();
@@ -289,8 +301,8 @@ bool World::IsPlayerInCombat() {
 
 void World::BuildTestLevel() {
 	if (current_number_of_lives == starting_number_of_lives) {
-		current_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(40.0f, 10.0f), false);
-		//current_checkpoint = new Checkpoint(render_window, sf::Vector2f(4405.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false);
+		//current_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(40.0f, 10.0f), false);
+		current_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);
 	}
 
 	main_character->x = current_checkpoint->x;
@@ -339,6 +351,8 @@ void World::BuildTestLevel() {
 	platforms.push_back(new Platform(render_window, sf::Vector2f(3000.0f, 1600.0f), sf::Vector2f(10.0f, 400.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(3000.0f, 1600.0f), sf::Vector2f(1450.0f, 10.0f)));
 
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3600.0f, 2100.0f), sf::Vector2f(400.0f, 10.0f))); // Platform for viewing boss behavior
+
 	checkpoints.erase(checkpoints.begin(), checkpoints.end());
 	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(2700.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false));
 	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(4405.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false));
@@ -366,6 +380,8 @@ void World::BuildTestLevel() {
 
 	drones.push_back(new Drone(render_window, sf::Vector2f(3085.0f, 600.0f), sf::Vector2f(30.0f, 30.0f), false));
 	drones.push_back(new Drone(render_window, sf::Vector2f(3985.0f, 700.0f), sf::Vector2f(30.0f, 30.0f), false));
+
+	charger = new Charger(render_window, sf::Vector2f(2650.0f, 2100.0f), sf::Vector2f(40.0f, 80.0f), true);
 
 	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(2650.0f, 2050.0f), sf::Vector2f(40.0f, 100.0f), false);
 }
