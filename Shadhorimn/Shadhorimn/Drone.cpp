@@ -95,18 +95,22 @@ void Drone::UpdateBehavior(sf::Int64 curr_time) {
 
 void Drone::UpdateProjectiles(sf::Int64 curr_time, sf::Int64 frame_delta) {
 	for (int i = 0; i < (int)(projectiles.size()); i++) {
-		projectiles[i]->Update(frame_delta);
-		projectiles[i]->UpdateProjectile(curr_time);
+		if (projectiles[i]->is_active) {
+			projectiles[i]->Update(frame_delta);
+			projectiles[i]->UpdateProjectile(curr_time);
+		}
+	}
+}
+
+void Drone::DrawProjectiles(sf::Vector2f camera_position, sf::Int64 curr_time) {
+	for (int i = 0; i < (int)(projectiles.size()); i++) {
+		projectiles[i]->Draw(camera_position, curr_time);
 	}
 }
 
 void Drone::Draw(sf::Vector2f camera_position) {
 	rectangle_shape.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
 	render_window->draw(rectangle_shape);
-
-	for (int i = 0; i < (int)(projectiles.size()); i++) {
-		projectiles[i]->Draw(camera_position);
-	}
 
 #ifdef _DEBUG
 	sf::Color base_color(sf::Color::Blue);

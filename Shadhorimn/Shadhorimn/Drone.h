@@ -21,6 +21,7 @@ public:
 	void UpdateBehavior(sf::Int64 curr_time);
 	void Draw(sf::Vector2f camera_position);
 	void UpdateProjectiles(sf::Int64 curr_time, sf::Int64 frame_delta);
+	void DrawProjectiles(sf::Vector2f camera_position, sf::Int64 curr_time);
 };
 
 #endif

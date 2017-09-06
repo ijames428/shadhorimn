@@ -30,13 +30,15 @@ void Creature::Draw(sf::Vector2f camera_position) {
 }
 
 void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur) {
+#ifdef _DEBUG
+	if (entity_type == "PlayerCharacter") {
+		damage = 0;
+	}
+#endif
+	
 	sf::Int16 adjusted_damage = (sf::Int16)damage;
 
 	if (hit_points - adjusted_damage <= 0) {
-		//if (entity_type == "PlayerCharacter") {
-		//	Singleton<World>::Get()->number_of_lives--;
-		//}
-		
 		hit_points = 0;
 	} else {
 		hit_points = hit_points - adjusted_damage;

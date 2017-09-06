@@ -20,7 +20,8 @@ public:
 	Gunner(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);
 	void UpdateBehavior(sf::Int64 curr_time);
 	void Draw(sf::Vector2f camera_position);
-	void UpdateProjectiles(sf::Int64 curr_time, sf::Int64 frame_delta);
+	void UpdateProjectiles(sf::Int64 curr_time, sf::Int64 frame_delta); 
+	void DrawProjectiles(sf::Vector2f camera_position, sf::Int64 curr_time);
 };
 
 #endif

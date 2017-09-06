@@ -19,6 +19,7 @@ Grunt::Grunt(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimen
 	time_between_attacks = 1500;
 
 	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 10.0f), false, false);
+	HitBox->entity_type = "HitBox";
 
 	sf::RectangleShape shape(dimensions);
 	shape.setFillColor(sf::Color::Magenta);

@@ -11,8 +11,12 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	hit_points = 10;
 
 	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 10.0f), false, false);
+	HitBox->entities_excluded_from_collision.push_back(entity_type);
+	HitBox->entity_type = "HitBox";
+
 	test_projectile = new Projectile(window, position, sf::Vector2f(10.0f, 10.0f), false);
 	test_projectile->ExcludeFromCollision(entity_type);
+	test_projectile->ExcludeFromCollision(HitBox->entity_type);
 
 	entities_excluded_from_collision.push_back("Projectile");
 

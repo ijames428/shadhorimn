@@ -12,6 +12,10 @@ using namespace std;
 
 class World {
 	private:
+		sf::Vector2f screen_shake_amount;
+		sf::Vector2f camera_position;
+		sf::Vector2f viewport_position_with_screen_shake;
+		sf::Vector2f parallax_background_viewport_position;
 		bool player_is_in_combat;
 		EndOfTheGame* end_of_the_game_trigger;
 		bool player_beat_the_game = false;
@@ -64,4 +68,5 @@ class World {
 		bool IsPlayerInCombat();
 		void BuildDevLevel();
 		void BuildTestLevel();
+		bool IsObjectInUpdateRange(RigidBody* rb);
 };

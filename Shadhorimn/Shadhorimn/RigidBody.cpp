@@ -103,7 +103,7 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 		for (int h = grid_top_left_y; h <= grid_bot_right_y; h++) {
 			std::vector<RigidBody*> colliders = Singleton<World>::Get()->GetObjectsInGridLocation(w, h);
 
-			if (!colliders.empty()) {
+			if (colliders.size() > 1) {
 				for (int c = 0; c < (int)colliders.size(); c++) {
 					if (id != colliders[c]->id && colliders[c]->collision_enabled &&
 						(std::find(entities_excluded_from_collision.begin(), entities_excluded_from_collision.end(), colliders[c]->entity_type) == entities_excluded_from_collision.end())) {
@@ -113,18 +113,8 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 						if (horizontal_collision) {
 							if (x + (width / 2.0f) < colliders[c]->x + (colliders[c]->width / 2.0f)) {
 								future_x = x + (colliders[c]->x - (x + future_width));
-								//float move = abs(x - abs(x + (colliders[c]->x - (x + future_width))));
-								//float absVelX = abs(velocity.x);
-								//if (move > absVelX) {
-								//	cout << "moved like crazy\n";
-								//}
 							} else {
 								future_x = x - (x - (colliders[c]->x + colliders[c]->width));
-								//float move = abs(x - abs(x - (x - (colliders[c]->x + colliders[c]->width))));
-								//float absVelX = abs(velocity.x);
-								//if (move > absVelX) {
-								//	cout << "moved like crazy\n";
-								//}
 							}
 							velocity.x = 0.0f;
 						}
@@ -184,13 +174,8 @@ std::vector<RigidBody*> RigidBody::GetCollidersRigidBodyIsCollidingWith() {
 	for (int w = grid_top_left_x; w <= grid_bot_right_x; w++) {
 		for (int h = grid_top_left_y; h <= grid_bot_right_y; h++) {
 			std::vector<RigidBody*> colliders = Singleton<World>::Get()->GetObjectsInGridLocation(w, h);
-			//std::vector<RigidBody*> unique_colliders = std::vector<RigidBody*>();
-			//
-			//for (int i = 0; i < (int)colliders.size(); i++) {
-			//
-			//}
 
-			if (!colliders.empty()) {
+			if (colliders.size() > 1) {
 				for (int c = 0; c < (int)colliders.size(); c++) {
 					if (id != colliders[c]->id && (std::find(entities_excluded_from_collision.begin(), entities_excluded_from_collision.end(), colliders[c]->entity_type) == entities_excluded_from_collision.end())) {
 						if (AreTheRigidBodiesCollidingHorizontally(this, colliders[c], true) && 
@@ -232,9 +217,5 @@ void RigidBody::SetGridBotRightY(int new_value) {
 };
 
 float RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f point_a, sf::Vector2f point_b) {
-	float distance = 0.0f;
-
-	distance = sqrt((point_a.x - point_b.x) * (point_a.x - point_b.x) + (point_a.y - point_b.y) * (point_a.y - point_b.y));
-
-	return distance;
+	return sqrt((point_a.x - point_b.x) * (point_a.x - point_b.x) + (point_a.y - point_b.y) * (point_a.y - point_b.y));
 }
