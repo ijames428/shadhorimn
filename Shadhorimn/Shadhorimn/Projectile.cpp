@@ -69,7 +69,8 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 			if (hit_objects[i]->entity_type == "Drone" ||
 				hit_objects[i]->entity_type == "Grunt" ||
 				hit_objects[i]->entity_type == "PlayerCharacter" ||
-				hit_objects[i]->entity_type == "Gunner") {
+				hit_objects[i]->entity_type == "Gunner" ||
+				hit_objects[i]->entity_type == "Charger") {
 				hit_objects[i]->velocity.x = velocity.x;
 				hit_objects[i]->velocity.y = -velocity.y;
 				((Creature*)(hit_objects[i]))->TakeHit(1, 500);
