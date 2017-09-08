@@ -60,8 +60,6 @@ void Gunner::UpdateBehavior(sf::Int64 curr_time) {
 					}
 
 					for (int i = 0; i < 3; i++) {
-						float deltaX = target->x - x;
-						float deltaY = target->y - y;
 						float spread = 1.5f;
 						sf::Vector2f vel = sf::Vector2f(6.0f, -spread + spread * i);
 						sf::Vector2f starting_position = sf::Vector2f(x - shotgun_projectiles_to_be_fired[i]->width, y);

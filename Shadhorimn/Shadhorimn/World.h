@@ -33,7 +33,8 @@ class World {
 		sf::Texture hit_point_texture;
 		sf::Texture parallax_background_texture;
 		sf::Sprite parallax_background_sprite;
-		std::vector<sf::Sprite> hit_point_sprites = std::vector<sf::Sprite>();
+		std::vector<sf::Sprite> players_hit_point_sprites = std::vector<sf::Sprite>();
+		std::vector<sf::Sprite> chargers_hit_point_sprites = std::vector<sf::Sprite>();
 		sf::Int64 current_time;
 		bool screen_shaking;
 		sf::Int64 screen_shake_start_time;
@@ -46,6 +47,8 @@ class World {
 		std::vector<Gunner*> gunners = std::vector<Gunner*>();
 		std::vector<Grunt*> grunts = std::vector<Grunt*>();
 		std::vector<Drone*> drones = std::vector<Drone*>();
+		RigidBody* boss_health_trigger;
+		bool show_boss_health;
 		Charger* charger;
 		int grid_width = 100;
 		int grid_height = 100;

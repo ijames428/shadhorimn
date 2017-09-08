@@ -14,6 +14,7 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	paused = false;
 	game_over_screen_sprite_transparency = 0;
 	player_is_in_combat = false;
+	show_boss_health = false;
 
 	current_time = 0;
 	screen_shaking = false;
@@ -24,9 +25,15 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	//BuildDevLevel();
 
 	hit_point_texture.loadFromFile("Images/HitPoint.png");
+
 	for (int i = 0; i < main_character->hit_points; i++) {
-		hit_point_sprites.push_back(sf::Sprite(hit_point_texture));
-		hit_point_sprites[i].setPosition(sf::Vector2f(10.0f + 27.0f * (float)i, 10.0f));
+		players_hit_point_sprites.push_back(sf::Sprite(hit_point_texture));
+		players_hit_point_sprites[i].setPosition(sf::Vector2f(10.0f + 25.0f * (float)i, 10.0f));
+	}
+
+	for (int i = 0; i < charger->hit_points; i++) {
+		chargers_hit_point_sprites.push_back(sf::Sprite(hit_point_texture));
+		chargers_hit_point_sprites[i].setPosition(sf::Vector2f(camera->viewport_dimensions.x - 10.0f - 25.0f * (float)(i + 1), 10.0f));
 	}
 
 	blank_screen_texture.loadFromFile("Images/StartMenuBackground.png");
@@ -61,6 +68,25 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 
 			if (frame_delta > 250) {
 				frame_delta = 50;
+			}
+
+			if (!show_boss_health) {
+				boss_health_trigger->Update(frame_delta);
+
+				std::vector<RigidBody*> colliders = boss_health_trigger->GetCollidersRigidBodyIsCollidingWith();
+
+				for (int i = 0; i < (int)(colliders.size()); i++) {
+					if (colliders[i]->entity_type == main_character->entity_type) {
+						show_boss_health = true;
+						break;
+					}
+				}
+
+				sf::RectangleShape shape(sf::Vector2f(boss_health_trigger->width, boss_health_trigger->height));
+				shape.setFillColor(sf::Color::Magenta);
+				shape.setPosition(sf::Vector2f(boss_health_trigger->x, boss_health_trigger->y));
+
+				render_window->draw(shape);
 			}
 
 			screen_shake_amount.x = screen_shake_magnitude * 5.0f * (rand() % 2 == 0 ? 1.0f : -1.0f);
@@ -163,12 +189,20 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			player_is_in_combat = false;
 
 			for (int i = 0; i < main_character->hit_points; i++) {
-				render_window->draw(hit_point_sprites[i]);
+				render_window->draw(players_hit_point_sprites[i]);
 			}
 
+			if (show_boss_health) {
+				for (int i = 0; i < charger->hit_points; i++) {
+					render_window->draw(chargers_hit_point_sprites[i]);
+				}
+			}
+
+			lives_counter_text.setString("Lives: " + std::to_string(current_number_of_lives));
+			lives_counter_text.setPosition(10.0f, 40.0f);
 			render_window->draw(lives_counter_text);
 		} else {
-			lives_counter_text.setString(std::to_string(current_number_of_lives));
+			//lives_counter_text.setString(std::to_string(current_number_of_lives));
 
 			if (game_over_screen_sprite_transparency >= 255) {
 				game_over_screen_sprite_transparency = 255;
@@ -311,8 +345,9 @@ bool World::IsNewGame() {
 void World::BuildTestLevel() {
 	if (IsNewGame()) {
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position
-		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(2700.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false);//first checkpoint
-		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);//boss room
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(2700.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false);//first checkpoint
+		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(4405.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false);//second checkpoint
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);//boss room platform
 		current_checkpoint = starting_checkpoint;
 	}
 
@@ -367,6 +402,8 @@ void World::BuildTestLevel() {
 	checkpoints.erase(checkpoints.begin(), checkpoints.end());
 	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(2700.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false));
 	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(4405.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false));
+
+	boss_health_trigger = new RigidBody(sf::Vector2f(4450.0f, 1600.0f), sf::Vector2f(200.0f, 50.0f), false, false);
 
 	grunts.erase(grunts.begin(), grunts.end());
 	grunts.push_back(new Grunt(render_window, sf::Vector2f(3380.0f, 700.0f), sf::Vector2f(40.0f, 80.0f), true));
