@@ -23,9 +23,9 @@ Gunner::Gunner(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dim
 
 	target = Singleton<World>::Get()->main_character;
 
-	time_between_firing = 250;
+	time_between_firing = 1500;
 	time_of_last_firing = 0;
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 15; i++) {
 		projectiles.push_back(new Projectile(window, position, sf::Vector2f(10.0f, 10.0f), false));
 		projectiles[i]->ExcludeFromCollision("Gunner");
 	}
@@ -46,26 +46,35 @@ void Gunner::UpdateBehavior(sf::Int64 curr_time) {
 					velocity.x = -movement_speed;
 				}
 
+				std::vector<Projectile*> shotgun_projectiles_to_be_fired = std::vector<Projectile*>();
+
 				if (time_of_last_firing + time_between_firing < current_time) {
 					for (int i = 0; i < (int)(projectiles.size()); i++) {
 						if (!projectiles[i]->is_active) {
-							float deltaX = target->x - x;
-							float deltaY = target->y - y;
-							sf::Vector2f vel = sf::Vector2f(6.0f, 0.0f);
-							sf::Vector2f starting_position = sf::Vector2f(x - projectiles[i]->width, y);
+							shotgun_projectiles_to_be_fired.push_back(projectiles[i]);
+						}
 
-							if (facing_right) {
-								starting_position.x += width + projectiles[i]->width;
-							} else {
-								vel.x *= -1.0f;
-							}
-
-							projectiles[i]->Fire(current_time, starting_position, vel);
-
-							time_of_last_firing = current_time;
-
+						if (shotgun_projectiles_to_be_fired.size() >= 3) {
 							break;
 						}
+					}
+
+					for (int i = 0; i < 3; i++) {
+						float deltaX = target->x - x;
+						float deltaY = target->y - y;
+						float spread = 1.5f;
+						sf::Vector2f vel = sf::Vector2f(6.0f, -spread + spread * i);
+						sf::Vector2f starting_position = sf::Vector2f(x - shotgun_projectiles_to_be_fired[i]->width, y);
+
+						if (facing_right) {
+							starting_position.x += width + shotgun_projectiles_to_be_fired[i]->width;
+						} else {
+							vel.x *= -1.0f;
+						}
+
+						shotgun_projectiles_to_be_fired[i]->Fire(current_time, starting_position, vel);
+
+						time_of_last_firing = current_time;
 					}
 				}
 			} else {
