@@ -20,6 +20,7 @@ class World {
 		bool player_is_in_combat;
 		EndOfTheGame* end_of_the_game_trigger;
 		bool player_beat_the_game = false;
+		Checkpoint* starting_checkpoint;
 		Checkpoint* current_checkpoint;
 		sf::Font ringbearer_font = sf::Font();
 		sf::Text continue_text;
@@ -71,4 +72,6 @@ class World {
 		void BuildDevLevel();
 		void BuildTestLevel();
 		bool IsObjectInUpdateRange(RigidBody* rb);
+		bool IsNewGame();
+		void StartNewGame();
 };

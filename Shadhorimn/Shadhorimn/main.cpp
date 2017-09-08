@@ -28,6 +28,7 @@ enum GameStates
 {
 	GAME_STATE_LOGOS,
 	GAME_STATE_START_MENU,
+	GAME_STATE_NEW_GAME,
 	GAME_STATE_INITILIZATION,
 	GAME_STATE_IN_GAME,
 	GAME_STATE_CREDITS
@@ -163,6 +164,9 @@ int main()
 				UpdateGameStateLogos();
 			} else if (GameState == GAME_STATE_START_MENU) {
 				UpdateGameStateStartMenu();
+			} else if (GameState == GAME_STATE_NEW_GAME) {
+				Singleton<World>::Get()->StartNewGame();
+				GameState = GAME_STATE_INITILIZATION;
 			} else if (GameState == GAME_STATE_INITILIZATION) {
 				Singleton<World>::Get()->Init(window, camera, main_character);
 				GameState = GAME_STATE_IN_GAME;
@@ -244,7 +248,7 @@ void UpdateGameStateStartMenu() {
 	window->draw(start_text);
 
 	if (WasButtonAPressed() || WasButtonStartPressed()) {
-		GameState = GAME_STATE_INITILIZATION;
+		GameState = GAME_STATE_NEW_GAME;
 	}
 
 	HandleClosingEvent();

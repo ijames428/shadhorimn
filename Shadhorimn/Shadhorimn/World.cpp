@@ -299,10 +299,20 @@ bool World::IsPlayerInCombat() {
 	return player_is_in_combat;
 }
 
+void World::StartNewGame() {
+	player_beat_the_game = false;
+	current_number_of_lives = starting_number_of_lives;
+}
+
+bool World::IsNewGame() {
+	return current_number_of_lives == starting_number_of_lives;
+}
+
 void World::BuildTestLevel() {
-	if (current_number_of_lives == starting_number_of_lives) {
-		current_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(40.0f, 10.0f), false);
-		//current_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);
+	if (IsNewGame()) {
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(40.0f, 10.0f), false);
+		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);
+		current_checkpoint = starting_checkpoint;
 	}
 
 	main_character->x = current_checkpoint->x;
@@ -389,7 +399,7 @@ void World::BuildTestLevel() {
 void World::BuildDevLevel() {
 	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(1560.0f, 590.0f), sf::Vector2f(40.0f, 10.0f), false);
 
-	if (current_number_of_lives == starting_number_of_lives) {
+	if (IsNewGame()) {
 		current_checkpoint = new Checkpoint(render_window, sf::Vector2f(500.0f, 590.0f), sf::Vector2f(40.0f, 10.0f), false);
 	}
 
