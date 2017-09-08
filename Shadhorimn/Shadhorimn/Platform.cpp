@@ -10,6 +10,8 @@ Platform::Platform(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f
 	shape.setFillColor(sf::Color::Green);
 	shape.setPosition(position);
 
+	entities_excluded_from_collision.push_back(entity_type);
+
 	rectangle_shape = shape;
 }
 

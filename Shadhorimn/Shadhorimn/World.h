@@ -48,6 +48,7 @@ class World {
 		std::vector<Grunt*> grunts = std::vector<Grunt*>();
 		std::vector<Drone*> drones = std::vector<Drone*>();
 		RigidBody* boss_health_trigger;
+		Platform* end_of_game_door;
 		bool show_boss_health;
 		Charger* charger;
 		int grid_width = 100;

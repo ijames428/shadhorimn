@@ -81,12 +81,13 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 						break;
 					}
 				}
+			}
 
-				sf::RectangleShape shape(sf::Vector2f(boss_health_trigger->width, boss_health_trigger->height));
-				shape.setFillColor(sf::Color::Magenta);
-				shape.setPosition(sf::Vector2f(boss_health_trigger->x, boss_health_trigger->y));
-
-				render_window->draw(shape);
+			if (charger->hit_points <= 0 && end_of_game_door->y > 1800.0f) {
+				end_of_game_door->velocity = sf::Vector2f(0.0f, -1.0f);
+				ScreenShake(0.5f);
+			} else {
+				end_of_game_door->velocity = sf::Vector2f(0.0f, 0.0f);
 			}
 
 			screen_shake_amount.x = screen_shake_magnitude * 5.0f * (rand() % 2 == 0 ? 1.0f : -1.0f);
@@ -154,6 +155,11 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 					grunts[i]->Draw(viewport_position_with_screen_shake);
 				}
 			}
+			
+			if (IsObjectInUpdateRange((RigidBody*)end_of_game_door)) {
+				end_of_game_door->Update(frame_delta);
+				end_of_game_door->Draw(viewport_position_with_screen_shake);
+			}
 			for (int i = 0; i < (int)platforms.size(); i++) {
 				if (IsObjectInUpdateRange((RigidBody*)platforms[i])) {
 					platforms[i]->Update(frame_delta);
@@ -198,8 +204,6 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				}
 			}
 
-			lives_counter_text.setString("Lives: " + std::to_string(current_number_of_lives));
-			lives_counter_text.setPosition(10.0f, 40.0f);
 			render_window->draw(lives_counter_text);
 		} else {
 			//lives_counter_text.setString(std::to_string(current_number_of_lives));
@@ -396,8 +400,9 @@ void World::BuildTestLevel() {
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2600.0f, 2000.0f), sf::Vector2f(400.0f, 10.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(3000.0f, 1600.0f), sf::Vector2f(10.0f, 400.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(3000.0f, 1600.0f), sf::Vector2f(1450.0f, 10.0f)));
-
 	platforms.push_back(new Platform(render_window, sf::Vector2f(3600.0f, 2100.0f), sf::Vector2f(400.0f, 10.0f))); // Platform for viewing boss behavior
+
+	end_of_game_door = new Platform(render_window, sf::Vector2f(2990.0f, 2000.0f), sf::Vector2f(10.0f, 200.0f)); // Platform for viewing boss behavior
 
 	checkpoints.erase(checkpoints.begin(), checkpoints.end());
 	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(2700.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false));
@@ -429,7 +434,7 @@ void World::BuildTestLevel() {
 	drones.push_back(new Drone(render_window, sf::Vector2f(3085.0f, 600.0f), sf::Vector2f(30.0f, 30.0f), false));
 	drones.push_back(new Drone(render_window, sf::Vector2f(3985.0f, 700.0f), sf::Vector2f(30.0f, 30.0f), false));
 
-	charger = new Charger(render_window, sf::Vector2f(2650.0f, 2100.0f), sf::Vector2f(40.0f, 80.0f), true);
+	charger = new Charger(render_window, sf::Vector2f(3400.0f, 2100.0f), sf::Vector2f(40.0f, 80.0f), true);
 
 	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(2650.0f, 2050.0f), sf::Vector2f(40.0f, 100.0f), false);
 }
