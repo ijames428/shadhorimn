@@ -14,6 +14,7 @@ RigidBody::RigidBody(sf::Vector2f position, sf::Vector2f dimensions, bool subjec
 	gravity_enabled = subject_to_gravity;
 	collision_enabled = subject_to_collision;
 	facing_right = true;
+	only_collide_with_platforms = false;
 
 	weight = 10.0f;
 
@@ -106,6 +107,7 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 			if (colliders.size() > 1) {
 				for (int c = 0; c < (int)colliders.size(); c++) {
 					if (id != colliders[c]->id && colliders[c]->collision_enabled &&
+						!colliders[c]->only_collide_with_platforms &&
 						(std::find(entities_excluded_from_collision.begin(), entities_excluded_from_collision.end(), colliders[c]->entity_type) == entities_excluded_from_collision.end())) {
 						bool horizontal_collision = AreTheRigidBodiesCollidingHorizontally(this, colliders[c]);
 						bool vertical_collision = AreTheRigidBodiesCollidingVertically(this, colliders[c]);

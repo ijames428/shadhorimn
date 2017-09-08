@@ -35,11 +35,15 @@ void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur) {
 		damage = 0;
 	}
 #endif
+
+	if (hit_points <= 0) {
+		return;
+	}
 	
 	sf::Int16 adjusted_damage = (sf::Int16)damage;
 
 	if (hit_points - adjusted_damage <= 0) {
-		hit_points = 0;
+		OnDeath();
 	} else {
 		hit_points = hit_points - adjusted_damage;
 	}
@@ -48,4 +52,17 @@ void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur) {
 	sf::sleep(sf::Time(sleep_time));
 	hit_stun_duration = hit_stun_dur;
 	hit_stun_start_time = current_time;
+}
+
+void Creature::OnDeath() {
+	hit_points = 0;
+	only_collide_with_platforms = true;
+	entities_excluded_from_collision.push_back("PlayerCharacter");
+	entities_excluded_from_collision.push_back("RigidBody");
+	entities_excluded_from_collision.push_back("Drone");
+	entities_excluded_from_collision.push_back("Grunt");
+	entities_excluded_from_collision.push_back("Gunner");
+	entities_excluded_from_collision.push_back("Charger");
+	entities_excluded_from_collision.push_back("Projectile");
+	entities_excluded_from_collision.push_back("HitBox");
 }

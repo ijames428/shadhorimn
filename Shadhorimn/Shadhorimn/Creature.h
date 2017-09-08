@@ -19,6 +19,7 @@ class Creature : public RigidBody {
 		sf::RenderWindow *render_window;
 		void Draw(sf::Vector2f camera_position);
 		void TakeHit(sf::Int64 damage, sf::Int64 hit_stun_duration);
+		void OnDeath();
 };
 
 #endif

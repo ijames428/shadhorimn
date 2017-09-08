@@ -301,8 +301,8 @@ bool World::IsPlayerInCombat() {
 
 void World::BuildTestLevel() {
 	if (current_number_of_lives == starting_number_of_lives) {
-		//current_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(40.0f, 10.0f), false);
-		current_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);
+		current_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(40.0f, 10.0f), false);
+		//current_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);
 	}
 
 	main_character->x = current_checkpoint->x;
