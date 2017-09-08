@@ -5,7 +5,7 @@ using namespace std;
 #include "World.h"  
 
 EndOfTheGame::EndOfTheGame(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : RigidBody::RigidBody(position, dimensions, subject_to_gravity) {
-	entity_type = "EndOfTheGame";
+	entity_type = Singleton<World>::Get()->ENTITY_TYPE_END_OF_THE_GAME;
 	collision_enabled = false;
 	render_window = window;
 
@@ -26,7 +26,7 @@ void EndOfTheGame::UpdateEndOfTheGame() {
 	std::vector<RigidBody*> hit_objects = GetCollidersRigidBodyIsCollidingWith();
 
 	for (int i = 0; i < (int)hit_objects.size(); i++) {
-		if (hit_objects[i]->entity_type == "PlayerCharacter") {
+		if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 			Singleton<World>::Get()->EndTheGame();
 			break;
 		}

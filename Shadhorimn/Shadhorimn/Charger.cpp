@@ -6,7 +6,7 @@ using namespace std;
 #define PI 3.14159265
 
 Charger::Charger(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : Creature::Creature(window, position, dimensions, subject_to_gravity) {
-	entity_type = "Charger";
+	entity_type = Singleton<World>::Get()->ENTITY_TYPE_CHARGER;
 	starting_hit_points = 30;
 	hit_points = starting_hit_points;
 
@@ -20,14 +20,14 @@ Charger::Charger(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f d
 	time_between_attacks = 1500;
 
 	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 10.0f), false, false);
-	HitBox->entity_type = "HitBox";
+	HitBox->entity_type = Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX;
 
 	WallDetector = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(5.0f, 10.0f), false, false);
-	WallDetector->entity_type = "WallDetector";// charger endofthegame hitbox
+	WallDetector->entity_type = Singleton<World>::Get()->ENTITY_TYPE_WALL_DETECTOR;
 	WallDetector->entities_excluded_from_collision.push_back(entity_type);
 	WallDetector->entities_excluded_from_collision.push_back(HitBox->entity_type);
-	WallDetector->entities_excluded_from_collision.push_back("Projectile");
-	WallDetector->entities_excluded_from_collision.push_back("EndOfTheGame");
+	WallDetector->entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
+	WallDetector->entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_END_OF_THE_GAME);
 
 	movement_speed = 1.0f;
 	charge_speed = 8.0f;
@@ -49,8 +49,8 @@ Charger::Charger(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f d
 		projectiles.push_back(new Projectile(window, position, sf::Vector2f(10.0f, 10.0f), false));
 		projectiles[i]->ExcludeFromCollision(entity_type);
 		projectiles[i]->ExcludeFromCollision(HitBox->entity_type);
-		projectiles[i]->ExcludeFromCollision("Projectile");
-		projectiles[i]->ExcludeFromCollision("EndOfTheGame");
+		projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
+		projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_END_OF_THE_GAME);
 	}
 }
 
@@ -85,14 +85,14 @@ void Charger::UpdateBehavior(sf::Int64 curr_time) {
 				std::vector<RigidBody*> hit_objects = WallDetector->GetCollidersRigidBodyIsCollidingWith();
 
 				for (int i = 0; i < (int)hit_objects.size(); i++) {
-					if (hit_objects[i]->entity_type == "Platform") {
+					if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLATFORM) {
 						velocity.x = -knock_back_x;
 						velocity.y = -knock_back_y;
 						TakeHit(0, 3000);
 						if (IsInSecondStage()) {
 							FireSecondStageProjectiles();
 						}
-					} else if (hit_objects[i]->entity_type == "PlayerCharacter") {
+					} else if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 						hit_objects[i]->velocity.x = knock_back_x;
 						hit_objects[i]->velocity.y = -knock_back_y;
 						velocity.x = -knock_back_x / 3.0f;

@@ -6,7 +6,7 @@ using namespace std;
 #define PI 3.14159265
 
 Drone::Drone(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : Creature::Creature(window, position, dimensions, subject_to_gravity) {
-	entity_type = "Drone";
+	entity_type = Singleton<World>::Get()->ENTITY_TYPE_DRONE;
 	hit_points = 2;
 
 	jump_power = 1.0f;
@@ -23,11 +23,11 @@ Drone::Drone(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimen
 
 	target = Singleton<World>::Get()->main_character;
 
-	time_between_firing = 250;
+	time_between_firing = 750;
 	time_of_last_firing = 0;
 	for (int i = 0; i < 10; i++) {
 		projectiles.push_back(new Projectile(window, position, sf::Vector2f(10.0f, 10.0f), false));
-		projectiles[i]->ExcludeFromCollision("Drone");
+		projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_DRONE);
 	}
 }
 

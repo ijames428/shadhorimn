@@ -5,7 +5,7 @@ using namespace std;
 #include "World.h"
 
 Creature::Creature(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : RigidBody::RigidBody(position, dimensions, subject_to_gravity) {
-	entity_type = "Creature"; 
+	entity_type = Singleton<World>::Get()->ENTITY_TYPE_CREATURE;
 	hit_points = 1;
 
 	speed = 2.0f;
@@ -31,7 +31,7 @@ void Creature::Draw(sf::Vector2f camera_position) {
 
 void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur) {
 #ifdef _DEBUG
-	if (entity_type == "PlayerCharacter") {
+	if (entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 		damage = 0;
 	}
 #endif
@@ -57,12 +57,12 @@ void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur) {
 void Creature::OnDeath() {
 	hit_points = 0;
 	only_collide_with_platforms = true;
-	entities_excluded_from_collision.push_back("PlayerCharacter");
-	entities_excluded_from_collision.push_back("RigidBody");
-	entities_excluded_from_collision.push_back("Drone");
-	entities_excluded_from_collision.push_back("Grunt");
-	entities_excluded_from_collision.push_back("Gunner");
-	entities_excluded_from_collision.push_back("Charger");
-	entities_excluded_from_collision.push_back("Projectile");
-	entities_excluded_from_collision.push_back("HitBox");
+	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER);
+	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY);
+	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_DRONE);
+	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_GRUNT);
+	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_GUNNER);
+	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_CHARGER);
+	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
+	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX);
 }

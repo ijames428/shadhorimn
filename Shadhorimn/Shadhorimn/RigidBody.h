@@ -9,8 +9,8 @@ class RigidBody {
 		bool AreTheRigidBodiesCollidingVertically(RigidBody* rb1, RigidBody* rb2, bool just_check_no_response = false);
 	public:
 		bool only_collide_with_platforms;
-		std::vector<std::string> entities_excluded_from_collision;
-		std::string entity_type;
+		std::vector<int> entities_excluded_from_collision;
+		int entity_type;
 		float x;
 		float y;
 		float width;

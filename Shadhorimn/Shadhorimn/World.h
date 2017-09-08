@@ -58,6 +58,19 @@ class World {
 		int cell_height = 100;
 		std::vector<std::vector<std::vector<RigidBody*>>> Grid = std::vector<std::vector<std::vector<RigidBody*>>>(grid_width, std::vector<std::vector<RigidBody*>>(grid_height, std::vector<RigidBody*>()));
 	public:
+		const int ENTITY_TYPE_CHARGER = 0;
+		const int ENTITY_TYPE_CHECKPOINT = 1;
+		const int ENTITY_TYPE_CREATURE = 2;
+		const int ENTITY_TYPE_DRONE = 3;
+		const int ENTITY_TYPE_END_OF_THE_GAME = 4;
+		const int ENTITY_TYPE_GRUNT = 5;
+		const int ENTITY_TYPE_GUNNER = 6;
+		const int ENTITY_TYPE_PLATFORM = 7;
+		const int ENTITY_TYPE_PLAYER_CHARACTER = 8;
+		const int ENTITY_TYPE_PROJECTILE = 9;
+		const int ENTITY_TYPE_RIGID_BODY = 10;
+		const int ENTITY_TYPE_HIT_BOX = 11;
+		const int ENTITY_TYPE_WALL_DETECTOR = 12;
 		int starting_number_of_lives = 2;
 		int current_number_of_lives = 2;
 		bool paused;

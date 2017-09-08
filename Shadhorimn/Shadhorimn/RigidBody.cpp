@@ -5,7 +5,7 @@ using namespace std;
 #include "World.h"
 
 RigidBody::RigidBody(sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity, bool subject_to_collision) {
-	entity_type = "RigidBody";
+	entity_type = Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY;
 
 	x = position.x;
 	y = position.y;
@@ -24,7 +24,7 @@ RigidBody::RigidBody(sf::Vector2f position, sf::Vector2f dimensions, bool subjec
 	velocity.x = 0.0f;
 	velocity.y = 0.0f;
 
-	entities_excluded_from_collision = std::vector<std::string>();
+	entities_excluded_from_collision = std::vector<int>();
 	Singleton<World>::Get()->AddRigidBodyToGrid(this);
 }
 
@@ -73,7 +73,7 @@ void RigidBody::Update(sf::Int64 delta_time) {
 	}
 
 	future_x = x + velocity.x;// * mMovementSpeedTimefactor;
-	if (entity_type == "PlayerCharacter") {
+	if (entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 		future_y = y + velocity.y;// * mMovementSpeedTimefactor;
 	} else {
 		future_y = y + velocity.y;// * mMovementSpeedTimefactor;
@@ -179,21 +179,30 @@ std::vector<RigidBody*> RigidBody::GetCollidersRigidBodyIsCollidingWith() {
 
 			if (colliders.size() > 1) {
 				for (int c = 0; c < (int)colliders.size(); c++) {
-					if (id != colliders[c]->id && (std::find(entities_excluded_from_collision.begin(), entities_excluded_from_collision.end(), colliders[c]->entity_type) == entities_excluded_from_collision.end())) {
-						if (AreTheRigidBodiesCollidingHorizontally(this, colliders[c], true) && 
-							AreTheRigidBodiesCollidingVertically(this, colliders[c], true)) {
-							bool already_in_list = false;
+					if (colliders[c]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE && 
+						(entity_type == Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE || entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE)) {
+						continue;
+					}
+					if (id != colliders[c]->id) {
+						if ((std::find(entities_excluded_from_collision.begin(), entities_excluded_from_collision.end(), colliders[c]->entity_type) == entities_excluded_from_collision.end())) {
+							if (AreTheRigidBodiesCollidingHorizontally(this, colliders[c], true) &&
+								AreTheRigidBodiesCollidingVertically(this, colliders[c], true)) {
+								//bool already_in_list = false;
 
-							for (int i = 0; i < (int)collidersBeingCollidedWith.size(); i++) {
-								if (collidersBeingCollidedWith[i]->entity_type == colliders[c]->entity_type &&
-									collidersBeingCollidedWith[i]->id == colliders[c]->id) {
-									already_in_list = true;
-									break;
+								if (std::find(collidersBeingCollidedWith.begin(), collidersBeingCollidedWith.end(), colliders[c]) == collidersBeingCollidedWith.end()) {
+									collidersBeingCollidedWith.push_back(colliders[c]);
 								}
-							}
-
-							if (!already_in_list) {
-								collidersBeingCollidedWith.push_back(colliders[c]);
+								//for (int i = 0; i < (int)collidersBeingCollidedWith.size(); i++) {
+								//	if (collidersBeingCollidedWith[i]->entity_type == colliders[c]->entity_type &&
+								//		collidersBeingCollidedWith[i]->id == colliders[c]->id) {
+								//		already_in_list = true;
+								//		break;
+								//	}
+								//}
+								//
+								//if (!already_in_list) {
+								//	collidersBeingCollidedWith.push_back(colliders[c]);
+								//}
 							}
 						}
 					}

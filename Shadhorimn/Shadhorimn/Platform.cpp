@@ -1,9 +1,11 @@
 using namespace std;
 #include <iostream>
 #include "Platform.h"
+#include "Singleton.h"
+#include "World.h"
 
 Platform::Platform(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : RigidBody::RigidBody(position, dimensions, subject_to_gravity) {
-	entity_type = "Platform";
+	entity_type = Singleton<World>::Get()->ENTITY_TYPE_PLATFORM;
 	render_window = window;
 
 	sf::RectangleShape shape(dimensions);

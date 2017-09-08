@@ -32,7 +32,7 @@ public:
 	void Draw(sf::Vector2f camera_position, sf::Int64 curr_time);
 	void UpdateProjectile(sf::Int64 curr_time);
 	void Fire(sf::Int64 curr_time, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f velocity = sf::Vector2f(0.0f, 0.0f));
-	void ExcludeFromCollision(std::string entity_type);
+	void ExcludeFromCollision(int ent_typ);
 };
 
 #endif

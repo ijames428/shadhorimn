@@ -3,9 +3,10 @@ using namespace std;
 #include "Projectile.h"
 #include "Singleton.h"
 #include "Settings.h"
+#include "World.h"
 
 Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : RigidBody::RigidBody(position, dimensions, subject_to_gravity) {
-	entity_type = "Projectile";
+	entity_type = Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE;
 	speed = 2.0f;
 	current_time = 0;
 	fired_position = sf::Vector2f(0.0f, 0.0f);
@@ -17,8 +18,8 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 	time_of_impact = 0;
 	duration_of_impact_animation = 50;
 
-	ExcludeFromCollision("Projectile");
-	ExcludeFromCollision("Rigidbody");
+	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
+	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY);
 
 	render_window = window;
 
@@ -66,11 +67,11 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 		for (int i = 0; i < (int)hit_objects.size(); i++) {
 			hit_sound.play();
 
-			if (hit_objects[i]->entity_type == "Drone" ||
-				hit_objects[i]->entity_type == "Grunt" ||
-				hit_objects[i]->entity_type == "PlayerCharacter" ||
-				hit_objects[i]->entity_type == "Gunner" ||
-				hit_objects[i]->entity_type == "Charger") {
+			if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE ||
+				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GRUNT ||
+				//hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER ||
+				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
+				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER) {
 				hit_objects[i]->velocity.x = velocity.x;
 				hit_objects[i]->velocity.y = -velocity.y;
 				((Creature*)(hit_objects[i]))->TakeHit(1, 500);
@@ -99,6 +100,6 @@ void Projectile::Fire(sf::Int64 curr_time, sf::Vector2f position, sf::Vector2f v
 	is_active = true;
 }
 
-void Projectile::ExcludeFromCollision(std::string entity_type) {
-	entities_excluded_from_collision.push_back(entity_type);
+void Projectile::ExcludeFromCollision(int ent_typ) {
+	entities_excluded_from_collision.push_back(ent_typ);
 }

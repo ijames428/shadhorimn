@@ -6,7 +6,7 @@ using namespace std;
 #define PI 3.14159265
 
 Grunt::Grunt(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : Creature::Creature(window, position, dimensions, subject_to_gravity) {
-	entity_type = "Grunt";
+	entity_type = Singleton<World>::Get()->ENTITY_TYPE_GRUNT;
 	hit_points = 3;
 	jump_power = 1.0f;
 	aggro_radius = 200.0f;
@@ -19,7 +19,7 @@ Grunt::Grunt(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimen
 	time_between_attacks = 1500;
 
 	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 10.0f), false, false);
-	HitBox->entity_type = "HitBox";
+	HitBox->entity_type = Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX;
 
 	sf::RectangleShape shape(dimensions);
 	shape.setFillColor(sf::Color::Magenta);
@@ -67,7 +67,7 @@ void Grunt::UpdateBehavior(sf::Int64 curr_time) {
 					std::vector<RigidBody*> hit_objects = HitBox->GetCollidersRigidBodyIsCollidingWith();
 
 					for (int i = 0; i < (int)hit_objects.size(); i++) {
-						if (hit_objects[i]->entity_type == "PlayerCharacter") {
+						if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 							hit_objects[i]->velocity.x = knock_back_x;
 							hit_objects[i]->velocity.y = -knock_back_y;
 							((Creature*)(hit_objects[i]))->TakeHit(1, 1000);

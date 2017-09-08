@@ -7,18 +7,18 @@ using namespace std;
 
 PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : 
 	Creature::Creature(window, position, dimensions, subject_to_gravity) {
-	entity_type = "PlayerCharacter";
+	entity_type = Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER;
 	hit_points = 10;
 
 	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 10.0f), false, false);
 	HitBox->entities_excluded_from_collision.push_back(entity_type);
-	HitBox->entity_type = "HitBox";
+	HitBox->entity_type = Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER;
 
 	test_projectile = new Projectile(window, position, sf::Vector2f(10.0f, 10.0f), false);
 	test_projectile->ExcludeFromCollision(entity_type);
 	test_projectile->ExcludeFromCollision(HitBox->entity_type);
 
-	entities_excluded_from_collision.push_back("Projectile");
+	entities_excluded_from_collision.push_back(test_projectile->entity_type);
 
 	speed = 5.0f;
 	jump_power = 12.0f;
@@ -137,10 +137,10 @@ void PlayerCharacter::HandleButtonXPress() {
 		}
 
 		if (!hit_objects[i]->only_collide_with_platforms &&
-			(hit_objects[i]->entity_type == "Drone" || 
-			hit_objects[i]->entity_type == "Grunt" ||
-			hit_objects[i]->entity_type == "Gunner" ||
-			hit_objects[i]->entity_type == "Charger")) {
+			(hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE ||
+			hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GRUNT ||
+			hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
+			hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER)) {
 			hit_objects[i]->velocity.x = knock_back_x;
 			hit_objects[i]->velocity.y = -knock_back_y;
 			((Creature*)(hit_objects[i]))->TakeHit(1, 1000);

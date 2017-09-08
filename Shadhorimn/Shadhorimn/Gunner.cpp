@@ -6,7 +6,7 @@ using namespace std;
 #define PI 3.14159265
 
 Gunner::Gunner(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : Creature::Creature(window, position, dimensions, subject_to_gravity) {
-	entity_type = "Gunner";
+	entity_type = Singleton<World>::Get()->ENTITY_TYPE_GUNNER;
 	hit_points = 2;
 
 	jump_power = 1.0f;
@@ -27,7 +27,7 @@ Gunner::Gunner(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dim
 	time_of_last_firing = 0;
 	for (int i = 0; i < 15; i++) {
 		projectiles.push_back(new Projectile(window, position, sf::Vector2f(10.0f, 10.0f), false));
-		projectiles[i]->ExcludeFromCollision("Gunner");
+		projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_GUNNER);
 	}
 }
 
