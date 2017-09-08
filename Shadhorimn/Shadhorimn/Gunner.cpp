@@ -41,8 +41,7 @@ void Gunner::UpdateBehavior(sf::Int64 curr_time) {
 			if (is_aggroed) {
 				if (target->x > x) {
 					velocity.x = movement_speed;
-				}
-				else if (target->x < x) {
+				} else if (target->x < x) {
 					velocity.x = -movement_speed;
 				}
 
@@ -64,7 +63,7 @@ void Gunner::UpdateBehavior(sf::Int64 curr_time) {
 						sf::Vector2f vel = sf::Vector2f(6.0f, -spread + spread * i);
 						sf::Vector2f starting_position = sf::Vector2f(x - shotgun_projectiles_to_be_fired[i]->width, y);
 
-						if (facing_right) {
+						if (target->x > x) {
 							starting_position.x += width + shotgun_projectiles_to_be_fired[i]->width;
 						} else {
 							vel.x *= -1.0f;

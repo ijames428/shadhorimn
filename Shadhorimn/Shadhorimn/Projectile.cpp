@@ -11,7 +11,7 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 	current_time = 0;
 	fired_position = sf::Vector2f(0.0f, 0.0f);
 	fired_time = 0;
-	range = 1000;
+	range = 300;
 	is_active = false;
 	fired_velocity = sf::Vector2f(0.0f, 0.0f);
 	collision_enabled = false;
@@ -20,6 +20,7 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 
 	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
 	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY);
+	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX);
 
 	render_window = window;
 
@@ -63,18 +64,19 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 		velocity = fired_velocity;
 
 		std::vector<RigidBody*> hit_objects = GetCollidersRigidBodyIsCollidingWith();
+		sf::Vector2f knock_back = sf::Vector2f();
+		knock_back.x = velocity.x/3.0f;
+		knock_back.y = -velocity.y/3.0f;
 
 		for (int i = 0; i < (int)hit_objects.size(); i++) {
 			hit_sound.play();
 
 			if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE ||
 				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GRUNT ||
-				//hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER ||
+				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER ||
 				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
 				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER) {
-				hit_objects[i]->velocity.x = velocity.x;
-				hit_objects[i]->velocity.y = -velocity.y;
-				((Creature*)(hit_objects[i]))->TakeHit(1, 500);
+				((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back);
 			}
 
 			is_active = false;

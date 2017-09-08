@@ -29,7 +29,7 @@ void Creature::Draw(sf::Vector2f camera_position) {
 	render_window->draw(rectangle_shape);
 }
 
-void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur) {
+void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur, sf::Vector2f knock_back) {
 #ifdef _DEBUG
 	if (entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 		damage = 0;
@@ -39,6 +39,9 @@ void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur) {
 	if (hit_points <= 0) {
 		return;
 	}
+
+	velocity.x = knock_back.x;
+	velocity.y = -knock_back.y;
 	
 	sf::Int16 adjusted_damage = (sf::Int16)damage;
 
@@ -55,14 +58,16 @@ void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur) {
 }
 
 void Creature::OnDeath() {
-	hit_points = 0;
-	only_collide_with_platforms = true;
-	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER);
-	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY);
-	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_DRONE);
-	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_GRUNT);
-	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_GUNNER);
-	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_CHARGER);
-	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
-	entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX);
+	if (entity_type != Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
+		hit_points = 0;
+		only_collide_with_platforms = true;
+		entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER);
+		entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY);
+		entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_DRONE);
+		entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_GRUNT);
+		entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_GUNNER);
+		entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_CHARGER);
+		entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
+		entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX);
+	}
 }

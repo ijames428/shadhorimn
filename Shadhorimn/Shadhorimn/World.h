@@ -49,13 +49,14 @@ class World {
 		std::vector<Drone*> drones = std::vector<Drone*>();
 		RigidBody* boss_health_trigger;
 		Platform* end_of_game_door;
-		bool show_boss_health;
+		bool fighting_boss;
 		Charger* charger;
 		int grid_width = 100;
 		int grid_height = 100;
 		int grid_depth = 10;
 		int cell_width = 100;
 		int cell_height = 100;
+		float combat_music_range;
 		std::vector<std::vector<std::vector<RigidBody*>>> Grid = std::vector<std::vector<std::vector<RigidBody*>>>(grid_width, std::vector<std::vector<RigidBody*>>(grid_height, std::vector<RigidBody*>()));
 	public:
 		const int ENTITY_TYPE_CHARGER = 0;

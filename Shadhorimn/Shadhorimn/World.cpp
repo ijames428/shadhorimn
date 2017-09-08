@@ -14,7 +14,8 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	paused = false;
 	game_over_screen_sprite_transparency = 0;
 	player_is_in_combat = false;
-	show_boss_health = false;
+	fighting_boss = false;
+	combat_music_range = 400.0f;
 
 	current_time = 0;
 	screen_shaking = false;
@@ -65,19 +66,20 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 
 		if (main_character->hit_points > 0) {
 			current_time = curr_time;
+			player_is_in_combat = false;
 
 			if (frame_delta > 250) {
 				frame_delta = 50;
 			}
 
-			if (!show_boss_health) {
+			if (!fighting_boss && charger->hit_points > 0) {
 				boss_health_trigger->Update(frame_delta);
 
 				std::vector<RigidBody*> colliders = boss_health_trigger->GetCollidersRigidBodyIsCollidingWith();
 
 				for (int i = 0; i < (int)(colliders.size()); i++) {
 					if (colliders[i]->entity_type == main_character->entity_type) {
-						show_boss_health = true;
+						fighting_boss = true;
 						break;
 					}
 				}
@@ -86,6 +88,7 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			if (charger->hit_points <= 0 && end_of_game_door->y > 1800.0f) {
 				end_of_game_door->velocity = sf::Vector2f(0.0f, -1.0f);
 				ScreenShake(0.5f);
+				fighting_boss = false;
 			} else {
 				end_of_game_door->velocity = sf::Vector2f(0.0f, 0.0f);
 			}
@@ -130,6 +133,10 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			charger->Draw(viewport_position_with_screen_shake);
 			charger->DrawProjectiles(viewport_position_with_screen_shake, current_time);
 
+			if (fighting_boss) {
+				player_is_in_combat = true;
+			}
+
 			//if (charger->test_projectile->is_active) {
 			//	charger->test_projectile->Update(frame_delta);
 			//	charger->test_projectile->UpdateProjectile(current_time);
@@ -153,6 +160,10 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 					grunts[i]->Update(frame_delta);
 					grunts[i]->UpdateBehavior(current_time);
 					grunts[i]->Draw(viewport_position_with_screen_shake);
+
+					if (grunts[i]->hit_points > 0 && RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(main_character->x, main_character->y), sf::Vector2f(grunts[i]->x, grunts[i]->y)) < combat_music_range) {
+						player_is_in_combat = true;
+					}
 				}
 			}
 			
@@ -174,6 +185,10 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 					gunners[i]->Update(frame_delta);
 					gunners[i]->UpdateBehavior(current_time);
 					gunners[i]->Draw(viewport_position_with_screen_shake);
+
+					if (gunners[i]->hit_points > 0 && RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(main_character->x, main_character->y), sf::Vector2f(gunners[i]->x, gunners[i]->y)) < combat_music_range) {
+						player_is_in_combat = true;
+					}
 				}
 			}
 			for (int i = 0; i < (int)drones.size(); i++) {
@@ -183,22 +198,19 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				if (IsObjectInUpdateRange((RigidBody*)drones[i])) {
 					drones[i]->Update(frame_delta);
 					drones[i]->UpdateBehavior(current_time);
+					drones[i]->Draw(viewport_position_with_screen_shake);
 
-					if (drones[i]->hit_points > 0 && RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(main_character->x, main_character->y), sf::Vector2f(drones[i]->x, drones[i]->y)) < 600.0f) {
+					if (drones[i]->hit_points > 0 && RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(main_character->x, main_character->y), sf::Vector2f(drones[i]->x, drones[i]->y)) < combat_music_range) {
 						player_is_in_combat = true;
 					}
-
-					drones[i]->Draw(viewport_position_with_screen_shake);
 				}
 			}
-
-			player_is_in_combat = false;
 
 			for (int i = 0; i < main_character->hit_points; i++) {
 				render_window->draw(players_hit_point_sprites[i]);
 			}
 
-			if (show_boss_health) {
+			if (fighting_boss) {
 				for (int i = 0; i < charger->hit_points; i++) {
 					render_window->draw(chargers_hit_point_sprites[i]);
 				}
@@ -424,7 +436,6 @@ void World::BuildTestLevel() {
 	gunners.push_back(new Gunner(render_window, sf::Vector2f(4200.0f, 1000.0f), sf::Vector2f(40.0f, 80.0f), true));
 
 	drones.erase(drones.begin(), drones.end());
-	drones.push_back(new Drone(render_window, sf::Vector2f(500.0f, 300.0f), sf::Vector2f(30.0f, 30.0f), false));
 	drones.push_back(new Drone(render_window, sf::Vector2f(700.0f, 700.0f), sf::Vector2f(30.0f, 30.0f), false));
 	drones.push_back(new Drone(render_window, sf::Vector2f(900.0f, 700.0f), sf::Vector2f(30.0f, 30.0f), false));
 	drones.push_back(new Drone(render_window, sf::Vector2f(1100.0f, 700.0f), sf::Vector2f(30.0f, 30.0f), false));

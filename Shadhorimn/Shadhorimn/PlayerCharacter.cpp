@@ -118,13 +118,14 @@ void PlayerCharacter::HandleButtonBRelease() {
 }
 
 void PlayerCharacter::HandleButtonXPress() {
-	float knock_back_x = 2.0f;
-	float knock_back_y = 6.0f;
+	sf::Vector2f knock_back = sf::Vector2f();
+	knock_back.x = 2.0f;
+	knock_back.y = 6.0f;
 
 	if (facing_right) {
 		HitBox->x = x + width;
 	} else {
-		knock_back_x *= -1.0f;
+		knock_back.x *= -1.0f;
 		HitBox->x = x - HitBox->width;
 	}
 	HitBox->y = y;
@@ -141,9 +142,7 @@ void PlayerCharacter::HandleButtonXPress() {
 			hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GRUNT ||
 			hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
 			hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER)) {
-			hit_objects[i]->velocity.x = knock_back_x;
-			hit_objects[i]->velocity.y = -knock_back_y;
-			((Creature*)(hit_objects[i]))->TakeHit(1, 1000);
+			((Creature*)(hit_objects[i]))->TakeHit(1, 1000, knock_back);
 		}
 	}
 

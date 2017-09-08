@@ -179,8 +179,9 @@ std::vector<RigidBody*> RigidBody::GetCollidersRigidBodyIsCollidingWith() {
 
 			if (colliders.size() > 1) {
 				for (int c = 0; c < (int)colliders.size(); c++) {
-					if (colliders[c]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE && 
-						(entity_type == Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE || entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE)) {
+					if (colliders[c]->only_collide_with_platforms ||
+						(colliders[c]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE && 
+						(entity_type == Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE || entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE))) {
 						continue;
 					}
 					if (id != colliders[c]->id) {

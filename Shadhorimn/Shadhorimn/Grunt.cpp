@@ -51,14 +51,15 @@ void Grunt::UpdateBehavior(sf::Int64 curr_time) {
 
 				if (time_of_last_attack + time_between_attacks <= curr_time && 
 					RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(target->x + target->width / 2.0f, target->y + target->height / 2.0f), sf::Vector2f(x + width / 2.0f, y + height / 2.0f)) < attack_radius) {
-					float knock_back_x = 2.0f;
-					float knock_back_y = 6.0f;
+					sf::Vector2f knock_back = sf::Vector2f();
+					knock_back.x = 2.0f;
+					knock_back.y = 6.0f;
 
 					if (facing_right) {
 						HitBox->x = x + width;
 					}
 					else {
-						knock_back_x *= -1.0f;
+						knock_back.x *= -1.0f;
 						HitBox->x = x - HitBox->width;
 					}
 
@@ -68,9 +69,7 @@ void Grunt::UpdateBehavior(sf::Int64 curr_time) {
 
 					for (int i = 0; i < (int)hit_objects.size(); i++) {
 						if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
-							hit_objects[i]->velocity.x = knock_back_x;
-							hit_objects[i]->velocity.y = -knock_back_y;
-							((Creature*)(hit_objects[i]))->TakeHit(1, 1000);
+							((Creature*)(hit_objects[i]))->TakeHit(1, 1000, knock_back);
 						}
 					}
 

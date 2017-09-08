@@ -43,8 +43,6 @@ Charger::Charger(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f d
 
 	target = Singleton<World>::Get()->main_character;
 
-	//time_between_firing = 250;
-	//time_of_last_firing = 0;
 	for (int i = 0; i < 5; i++) {
 		projectiles.push_back(new Projectile(window, position, sf::Vector2f(10.0f, 10.0f), false));
 		projectiles[i]->ExcludeFromCollision(entity_type);
@@ -59,14 +57,15 @@ void Charger::UpdateBehavior(sf::Int64 curr_time) {
 
 	if (hit_points > 0) {
 		if (hit_stun_start_time + hit_stun_duration <= current_time) {
-			float knock_back_x = 2.0f;
-			float knock_back_y = 6.0f;
+			sf::Vector2f knock_back = sf::Vector2f();
+			knock_back.x = 2.0f;
+			knock_back.y = 6.0f;
 
 			if (facing_right) {
 				HitBox->x = x + width;
 				WallDetector->x = x + width;
 			} else {
-				knock_back_x *= -1.0f;
+				knock_back.x *= -1.0f;
 				HitBox->x = x - HitBox->width;
 				WallDetector->x = x - WallDetector->width;
 			}
@@ -79,26 +78,20 @@ void Charger::UpdateBehavior(sf::Int64 curr_time) {
 			if (is_charging) {
 				velocity = charge_velocity;
 
-				knock_back_x = 4.0f * (knock_back_x < 0.0f ? -1.0f : 1.0f);
-				knock_back_y = 10.0f;
+				knock_back.x = 4.0f * (knock_back.x < 0.0f ? -1.0f : 1.0f);
+				knock_back.y = 10.0f;
 
 				std::vector<RigidBody*> hit_objects = WallDetector->GetCollidersRigidBodyIsCollidingWith();
 
 				for (int i = 0; i < (int)hit_objects.size(); i++) {
 					if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLATFORM) {
-						velocity.x = -knock_back_x;
-						velocity.y = -knock_back_y;
-						TakeHit(0, 3000);
+						TakeHit(0, 3000, knock_back);
 						if (IsInSecondStage()) {
 							FireSecondStageProjectiles();
 						}
 					} else if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
-						hit_objects[i]->velocity.x = knock_back_x;
-						hit_objects[i]->velocity.y = -knock_back_y;
-						velocity.x = -knock_back_x / 3.0f;
-						velocity.y = -knock_back_y / 3.0f;
-						((Creature*)(hit_objects[i]))->TakeHit(3, 1000);
-						TakeHit(0, 1500);
+						((Creature*)(hit_objects[i]))->TakeHit(3, 1000, knock_back);
+						TakeHit(0, 1500, knock_back);
 						if (IsInSecondStage()) {
 							FireSecondStageProjectiles();
 						}
@@ -108,25 +101,6 @@ void Charger::UpdateBehavior(sf::Int64 curr_time) {
 				}
 			} else {
 				StartCharge();
-				//if (target->x > x) {
-				//	velocity.x = movement_speed;
-				//} else if (target->x < x) {
-				//	velocity.x = -movement_speed;
-				//}
-				//
-				//if (time_of_last_attack + time_between_attacks <= curr_time &&
-				//	RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(target->x + target->width / 2.0f, target->y + target->height / 2.0f), sf::Vector2f(x + width / 2.0f, y + height / 2.0f)) < attack_radius) {
-				//
-				//	std::vector<RigidBody*> hit_objects = WallDetector->GetCollidersRigidBodyIsCollidingWith();
-				//
-				//	for (int i = 0; i < (int)hit_objects.size(); i++) {
-				//		if (hit_objects[i]->entity_type == "PlayerCharacter") {
-				//			hit_objects[i]->velocity.x = knock_back_x;
-				//			hit_objects[i]->velocity.y = -knock_back_y;
-				//			((Creature*)(hit_objects[i]))->TakeHit(3, 1000);
-				//		}
-				//	}
-				//}
 			}
 		}
 	}
