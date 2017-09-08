@@ -4,6 +4,11 @@ using namespace std;
 
 InputHandler::InputHandler(PlayerCharacter* pc) {
 	player_character = pc;
+	number_of_frames_to_eat_inputs = 0;
+}
+
+void InputHandler::EatInputsForNumberOfFrames(int number_of_frames) {
+	number_of_frames_to_eat_inputs = number_of_frames;
 }
 
 void InputHandler::Update() {
@@ -34,7 +39,9 @@ void InputHandler::Update() {
 
 		float mystery = sf::Joystick::getAxisPosition(0, sf::Joystick::V);
 
-		if (player_character->hit_points > 0) {
+		if (number_of_frames_to_eat_inputs > 0) {
+			number_of_frames_to_eat_inputs--;
+		} else if (player_character->hit_points > 0) {
 			if (a_button_current && !a_button_previous) {
 				player_character->HandleButtonAPress();
 			}

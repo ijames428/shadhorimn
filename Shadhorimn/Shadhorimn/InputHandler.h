@@ -4,6 +4,7 @@ using namespace std;
 
 class InputHandler {
 	private:
+		int number_of_frames_to_eat_inputs;
 		int a_button = 0;
 		int b_button = 1;
 		int x_button = 2;
@@ -25,4 +26,5 @@ class InputHandler {
 	public:
 		InputHandler(PlayerCharacter* pc);
 		void Update();
+		void EatInputsForNumberOfFrames(int number_of_frames);
 };

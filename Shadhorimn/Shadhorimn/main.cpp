@@ -168,9 +168,10 @@ int main()
 				Singleton<World>::Get()->StartNewGame();
 				GameState = GAME_STATE_INITILIZATION;
 			} else if (GameState == GAME_STATE_INITILIZATION) {
+				window->clear();
 				Singleton<World>::Get()->Init(window, camera, main_character);
 				GameState = GAME_STATE_IN_GAME;
-				window->clear();
+				input_handler->EatInputsForNumberOfFrames(1);
 			} else if (GameState == GAME_STATE_IN_GAME) {
 				input_handler->Update();
 				Singleton<World>::Get()->Update(time_current / 1000, frame_delta / 1000);
