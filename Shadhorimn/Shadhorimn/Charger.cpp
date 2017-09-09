@@ -85,16 +85,20 @@ void Charger::UpdateBehavior(sf::Int64 curr_time) {
 
 				for (int i = 0; i < (int)hit_objects.size(); i++) {
 					if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLATFORM) {
+						knock_back.x = -knock_back.x;
 						TakeHit(0, 3000, knock_back);
 						if (IsInSecondStage()) {
 							FireSecondStageProjectiles();
 						}
+						Singleton<World>::Get()->ScreenShake(2.0f);
 					} else if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 						((Creature*)(hit_objects[i]))->TakeHit(3, 1000, knock_back);
+						knock_back.x = -knock_back.x;
 						TakeHit(0, 1500, knock_back);
 						if (IsInSecondStage()) {
 							FireSecondStageProjectiles();
 						}
+						Singleton<World>::Get()->ScreenShake(2.0f);
 					}
 
 					is_charging = false;
