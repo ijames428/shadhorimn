@@ -100,6 +100,12 @@ void Projectile::Fire(sf::Int64 curr_time, sf::Vector2f position, sf::Vector2f v
 	y = position.y;
 	fired_velocity = vel;
 	is_active = true;
+
+	entities_excluded_from_collision.erase(entities_excluded_from_collision.begin(), entities_excluded_from_collision.end());
+
+	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
+	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY);
+	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX);
 }
 
 void Projectile::ExcludeFromCollision(int ent_typ) {

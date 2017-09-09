@@ -17,7 +17,7 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	fire_cooldown = 1000;
 	fire_duration = 200;
 
-	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 10.0f), false, false);
+	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(60.0f, 10.0f), false, false);
 	HitBox->entities_excluded_from_collision.push_back(entity_type);
 	HitBox->entity_type = Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX;
 
@@ -103,8 +103,8 @@ void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
 	} else if (time_of_last_fire + fire_duration > current_time) {
 		can_take_input = false;
 	} else {
-		lock_facing_direction_when_hit = false;
-		can_take_input = true;
+lock_facing_direction_when_hit = false;
+can_take_input = true;
 	}
 }
 
@@ -113,7 +113,8 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 		idle_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 		attack_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 		fire_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
-	} else {
+	}
+	else {
 		idle_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 		attack_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 		fire_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
@@ -126,22 +127,27 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 	if (time_of_last_attack + attack_duration > current_time) {
 		if (facing_right) {
 			attack_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
-		} else {
+		}
+		else {
 			attack_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
 		}
 		render_window->draw(attack_sprite);
-	} else if (time_of_last_fire + fire_duration > current_time) {
+	}
+	else if (time_of_last_fire + fire_duration > current_time) {
 		if (facing_right) {
 			fire_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
-		} else {
+		}
+		else {
 			fire_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
 		}
 		render_window->draw(fire_sprite);
-	} else if (velocity.x == 0) {
+	}
+	else if (velocity.x == 0) {
 		idle_sprite.setPosition(sf::Vector2f((x + width / 2.0f) - (idle_texture.getSize().x * idle_sprite.getScale().x / 2.0f) - camera_position.x,
 			(y + height / 2.0f) - (idle_texture.getSize().y * idle_sprite.getScale().y / 2.0f) - camera_position.y));
 		render_window->draw(idle_sprite);
-	} else {
+	}
+	else {
 		running_animation->Draw(camera_position, sf::Vector2f(x + width / 2.0f, y + height / 2.0f));
 	}
 }
@@ -197,6 +203,26 @@ void PlayerCharacter::HandleButtonXPress() {
 					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
 					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER)) {
 				((Creature*)(hit_objects[i]))->TakeHit(1, 1000, knock_back);
+			}
+
+			if (!hit_objects[i]->only_collide_with_platforms &&
+				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE) {
+				((Projectile*)(hit_objects[i]))->fired_velocity.x *= -1.0f;
+
+				//std::vector<int> temp_entities_excluded_from_collision = ((Projectile*)(hit_objects[i]))->entities_excluded_from_collision;
+				((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.erase(((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.begin(), ((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.end());
+
+				((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
+				((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY);
+				((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX);
+				//
+				//for (int eefc = 0; eefc < (int)temp_entities_excluded_from_collision.size(); eefc++) {
+				//	if (temp_entities_excluded_from_collision[eefc] != Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
+				//		((Projectile*)(hit_objects[i]))->ExcludeFromCollision(temp_entities_excluded_from_collision[eefc]);
+				//	}
+				//}
+				//
+				//((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_DRONE);
 			}
 		}
 

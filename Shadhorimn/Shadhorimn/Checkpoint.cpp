@@ -18,8 +18,10 @@ Checkpoint::Checkpoint(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 }
 
 void Checkpoint::Draw(sf::Vector2f camera_position) {
+#ifdef _DEBUG
 	rectangle_shape.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
 	render_window->draw(rectangle_shape);
+#endif
 }
 
 void Checkpoint::UpdateCheckPoint() {

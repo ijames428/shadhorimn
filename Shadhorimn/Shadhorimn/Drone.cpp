@@ -78,6 +78,7 @@ void Drone::UpdateBehavior(sf::Int64 curr_time) {
 							}
 
 							projectiles[i]->Fire(current_time, starting_position, vel * 4.0f);
+							projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_DRONE);
 
 							time_of_last_firing = current_time;
 

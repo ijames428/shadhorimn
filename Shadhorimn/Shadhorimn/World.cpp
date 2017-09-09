@@ -128,15 +128,17 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			}
 			main_character->test_projectile->Draw(viewport_position_with_screen_shake, current_time);
 
-			charger->Update(frame_delta);
-			charger->UpdateBehavior(current_time);
-			charger->UpdateProjectiles(current_time, frame_delta);
-			charger->Draw(viewport_position_with_screen_shake);
-			charger->DrawProjectiles(viewport_position_with_screen_shake, current_time);
 
 			if (fighting_boss) {
 				player_is_in_combat = true;
+
+				charger->Update(frame_delta);
+				charger->UpdateBehavior(current_time);
 			}
+
+			charger->UpdateProjectiles(current_time, frame_delta);
+			charger->Draw(viewport_position_with_screen_shake);
+			charger->DrawProjectiles(viewport_position_with_screen_shake, current_time);
 
 			//if (charger->test_projectile->is_active) {
 			//	charger->test_projectile->Update(frame_delta);
@@ -361,10 +363,10 @@ bool World::IsNewGame() {
 
 void World::BuildTestLevel() {
 	if (IsNewGame()) {
-		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position
+		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(2700.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false);//first checkpoint
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(4405.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false);//second checkpoint
-		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);//boss room platform
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);//boss room platform
 		current_checkpoint = starting_checkpoint;
 	}
 

@@ -15,7 +15,6 @@ protected:
 	sf::SoundBuffer buffer0;
 	sf::SoundBuffer buffer1;
 	sf::SoundBuffer buffer2;
-	sf::Vector2f fired_velocity;
 	sf::Int64 current_time;
 	sf::Int64 fired_time;
 	sf::Vector2f fired_position;
@@ -25,6 +24,7 @@ protected:
 	sf::Int64 time_of_impact;
 	sf::Int64 duration_of_impact_animation;
 public:
+	sf::Vector2f fired_velocity;
 	bool is_active;
 	Projectile(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);
 	sf::CircleShape circle_shape;
