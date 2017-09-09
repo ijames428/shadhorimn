@@ -24,6 +24,8 @@ class PlayerCharacter : public Creature {
 		sf::SoundBuffer bufferJump;
 		RigidBody* HitBox;
 		bool was_in_air;
+		sf::Int64 time_of_last_attack;
+		sf::Int64 attack_cooldown;
 	public:
 		bool can_take_input;
 		int max_hit_points = 10;

@@ -10,10 +10,12 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	entity_type = Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER;
 	hit_points = 10;
 	can_take_input = true;
+	time_of_last_attack = 0;
+	attack_cooldown = 1000;
 
 	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 10.0f), false, false);
 	HitBox->entities_excluded_from_collision.push_back(entity_type);
-	HitBox->entity_type = Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER;
+	HitBox->entity_type = Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX;
 
 	test_projectile = new Projectile(window, position, sf::Vector2f(10.0f, 10.0f), false);
 	test_projectile->ExcludeFromCollision(entity_type);
@@ -130,35 +132,40 @@ void PlayerCharacter::HandleButtonBRelease() {
 }
 
 void PlayerCharacter::HandleButtonXPress() {
-	sf::Vector2f knock_back = sf::Vector2f();
-	knock_back.x = 2.0f;
-	knock_back.y = 6.0f;
+	if (time_of_last_attack + attack_cooldown < current_time) {
+		time_of_last_attack = current_time;
 
-	if (facing_right) {
-		HitBox->x = x + width;
-	} else {
-		knock_back.x *= -1.0f;
-		HitBox->x = x - HitBox->width;
-	}
-	HitBox->y = y;
-	HitBox->Update(0);
-	std::vector<RigidBody*> hit_objects = HitBox->GetCollidersRigidBodyIsCollidingWith();
-	
-	for (int i = 0; i < (int)hit_objects.size(); i++) {
-		if (hit_sounds.size() > 0) {
-			hit_sounds[rand() % 3].play();
+		sf::Vector2f knock_back = sf::Vector2f();
+		knock_back.x = 2.0f;
+		knock_back.y = 6.0f;
+
+		if (facing_right) {
+			HitBox->x = x + width;
+		}
+		else {
+			knock_back.x *= -1.0f;
+			HitBox->x = x - HitBox->width;
+		}
+		HitBox->y = y;
+		HitBox->Update(0);
+		std::vector<RigidBody*> hit_objects = HitBox->GetCollidersRigidBodyIsCollidingWith();
+
+		for (int i = 0; i < (int)hit_objects.size(); i++) {
+			if (hit_sounds.size() > 0) {
+				hit_sounds[rand() % 3].play();
+			}
+
+			if (!hit_objects[i]->only_collide_with_platforms &&
+				(hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE ||
+					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GRUNT ||
+					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
+					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER)) {
+				((Creature*)(hit_objects[i]))->TakeHit(1, 1000, knock_back);
+			}
 		}
 
-		if (!hit_objects[i]->only_collide_with_platforms &&
-			(hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE ||
-			hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GRUNT ||
-			hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
-			hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER)) {
-			((Creature*)(hit_objects[i]))->TakeHit(1, 1000, knock_back);
-		}
+		Singleton<World>::Get()->ScreenShake(hit_objects.size() > 0 ? 1.0f : 0.0f);
 	}
-
-	Singleton<World>::Get()->ScreenShake(hit_objects.size() > 0 ? 1.0f : 0.0f);
 }
 
 void PlayerCharacter::HandleButtonXRelease() {
