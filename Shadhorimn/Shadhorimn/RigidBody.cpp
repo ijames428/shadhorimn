@@ -41,6 +41,7 @@ void RigidBody::Update(sf::Int64 delta_time) {
 	future_height = height;
 
 	float pregravity_velocity_y = velocity.y;
+	in_the_air = true;
 
 	if (gravity_enabled) {
 		velocity.y = velocity.y + gravity_acceleration;// * mMovementSpeedTimefactor;

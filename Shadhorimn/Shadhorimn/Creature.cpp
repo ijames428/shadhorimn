@@ -58,8 +58,9 @@ void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur, sf::Vector2f kn
 }
 
 void Creature::OnDeath() {
+	hit_points = 0;
+
 	if (entity_type != Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
-		hit_points = 0;
 		only_collide_with_platforms = true;
 		entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER);
 		entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY);

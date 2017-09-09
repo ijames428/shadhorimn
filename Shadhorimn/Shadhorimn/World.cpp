@@ -360,8 +360,8 @@ bool World::IsNewGame() {
 
 void World::BuildTestLevel() {
 	if (IsNewGame()) {
-		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position
-		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(2700.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false);//first checkpoint
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position
+		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(2700.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false);//first checkpoint
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(4405.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false);//second checkpoint
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);//boss room platform
 		current_checkpoint = starting_checkpoint;

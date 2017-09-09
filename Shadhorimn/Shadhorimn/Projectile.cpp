@@ -65,8 +65,8 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 
 		std::vector<RigidBody*> hit_objects = GetCollidersRigidBodyIsCollidingWith();
 		sf::Vector2f knock_back = sf::Vector2f();
-		knock_back.x = velocity.x/3.0f;
-		knock_back.y = -velocity.y/3.0f;
+		knock_back.x = velocity.x / 2.0f;
+		knock_back.y = -velocity.y / 2.0f;
 
 		for (int i = 0; i < (int)hit_objects.size(); i++) {
 			hit_sound.play();

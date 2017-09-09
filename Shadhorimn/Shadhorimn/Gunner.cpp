@@ -74,7 +74,7 @@ void Gunner::UpdateBehavior(sf::Int64 curr_time) {
 						time_of_last_firing = current_time;
 					}
 				}
-			} else {
+			} else if (!in_the_air) {
 				velocity.x = 0.0f;
 				velocity.y = 0.0f;
 			}
