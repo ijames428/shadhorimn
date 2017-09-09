@@ -7,6 +7,8 @@ using namespace std;
 Creature::Creature(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : RigidBody::RigidBody(position, dimensions, subject_to_gravity) {
 	entity_type = Singleton<World>::Get()->ENTITY_TYPE_CREATURE;
 	hit_points = 1;
+	facing_right_when_hit = false;
+	lock_facing_direction_when_hit = false;
 
 	speed = 2.0f;
 	jump_power = 1.0f;
@@ -29,7 +31,7 @@ void Creature::Draw(sf::Vector2f camera_position) {
 	render_window->draw(rectangle_shape);
 }
 
-void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur, sf::Vector2f knock_back) {
+void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur, sf::Vector2f knock_back, bool lock_facing_direction) {
 #ifdef _DEBUG
 	if (entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 		damage = 0;
@@ -38,6 +40,11 @@ void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur, sf::Vector2f kn
 
 	if (hit_points <= 0) {
 		return;
+	}
+
+	if (lock_facing_direction) {
+		facing_right_when_hit = facing_right;
+		lock_facing_direction_when_hit = true;
 	}
 
 	velocity.x = knock_back.x;

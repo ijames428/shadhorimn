@@ -8,6 +8,8 @@ class RigidBody {
 		bool AreTheRigidBodiesCollidingHorizontally(RigidBody* rb1, RigidBody* rb2, bool just_check_no_response = false);
 		bool AreTheRigidBodiesCollidingVertically(RigidBody* rb1, RigidBody* rb2, bool just_check_no_response = false);
 	public:
+		bool facing_right_when_hit;
+		bool lock_facing_direction_when_hit;
 		bool only_collide_with_platforms;
 		std::vector<int> entities_excluded_from_collision;
 		int entity_type;

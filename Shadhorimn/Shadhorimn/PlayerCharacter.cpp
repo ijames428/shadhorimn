@@ -9,6 +9,7 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	Creature::Creature(window, position, dimensions, subject_to_gravity) {
 	entity_type = Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER;
 	hit_points = 10;
+	can_take_input = true;
 
 	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 10.0f), false, false);
 	HitBox->entities_excluded_from_collision.push_back(entity_type);
@@ -73,6 +74,17 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	} else {
 		soundJump.setBuffer(bufferJump);
 		soundJump.setVolume(20 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
+	}
+}
+
+void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
+	current_time = curr_time;
+
+	if (hit_stun_start_time + hit_stun_duration > curr_time) {
+		can_take_input = false;
+	} else {
+		lock_facing_direction_when_hit = false;
+		can_take_input = true;
 	}
 }
 
@@ -154,12 +166,15 @@ void PlayerCharacter::HandleButtonXRelease() {
 
 void PlayerCharacter::HandleButtonYPress() {
 	float x_velocity = 10.0f;
+	sf::Vector2f kick_back = sf::Vector2f(1.6f, 0.0f);
 	sf::Vector2f starting_position = sf::Vector2f(x - test_projectile->width, y);
 	if (!facing_right) {
 		x_velocity *= -1.0f;
 	} else {
+		kick_back.x *= -1.0f;
 		starting_position.x += width + test_projectile->width;
 	}
+	TakeHit(0, 200, kick_back, true);
 	test_projectile->Fire(current_time, starting_position, sf::Vector2f(x_velocity, 0.0f));
 }
 

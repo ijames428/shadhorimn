@@ -52,7 +52,9 @@ void RigidBody::Update(sf::Int64 delta_time) {
 	}
 
 	if (velocity.x > 0.0f) {
-		facing_right = true;
+		if (!lock_facing_direction_when_hit) {
+			facing_right = true;
+		}
 		if (pregravity_velocity_y == 0.0f && future_y == old_y) {
 			if (velocity.x > 0.2f) {
 				velocity.x = velocity.x - 0.2f;
@@ -63,7 +65,9 @@ void RigidBody::Update(sf::Int64 delta_time) {
 		}
 	} else if (velocity.x < 0.0f) {
 		if (pregravity_velocity_y == 0.0f && future_y == old_y) {
-			facing_right = false;
+			if (!lock_facing_direction_when_hit) {
+				facing_right = false;
+			}
 			if (velocity.x < -0.2f) {
 				velocity.x = velocity.x + 0.2f;
 			}

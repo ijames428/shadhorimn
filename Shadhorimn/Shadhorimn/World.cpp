@@ -119,6 +119,7 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			render_window->draw(parallax_background_sprite);
 
 			main_character->Update(frame_delta);
+			main_character->UpdatePlayerCharacter(current_time);
 			main_character->Draw(viewport_position_with_screen_shake);
 
 			if (main_character->test_projectile->is_active) {

@@ -41,7 +41,7 @@ void InputHandler::Update() {
 
 		if (number_of_frames_to_eat_inputs > 0) {
 			number_of_frames_to_eat_inputs--;
-		} else if (player_character->hit_points > 0) {
+		} else if (player_character->hit_points > 0 && player_character->can_take_input) {
 			if (a_button_current && !a_button_previous) {
 				player_character->HandleButtonAPress();
 			}
