@@ -11,7 +11,11 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	hit_points = 10;
 	can_take_input = true;
 	time_of_last_attack = 0;
-	attack_cooldown = 1000;
+	attack_cooldown = 500;
+	attack_duration = 100;
+	time_of_last_fire = 0;
+	fire_cooldown = 1000;
+	fire_duration = 200;
 
 	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 10.0f), false, false);
 	HitBox->entities_excluded_from_collision.push_back(entity_type);
@@ -39,6 +43,16 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	idle_sprite.setColor(sf::Color::Cyan);
 
 	running_animation = new SpriteAnimation(render_window, "Images/Kaltar_Running.png", 582, 522, 91, 9, 11, 0.12f, sf::Color::Cyan);
+
+	attack_texture.loadFromFile("Images/Kaltar_Attack.png");
+	attack_sprite = sf::Sprite(attack_texture);
+	attack_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
+	attack_sprite.setColor(sf::Color::Cyan);
+
+	fire_texture.loadFromFile("Images/Kaltar_Fire.png");
+	fire_sprite = sf::Sprite(fire_texture);
+	fire_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
+	fire_sprite.setColor(sf::Color::Cyan);
 
 	if (!buffer0.loadFromFile("Sound/Hit0.wav")) {
 		throw exception("Sound file not found");
@@ -84,6 +98,10 @@ void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
 
 	if (hit_stun_start_time + hit_stun_duration > curr_time) {
 		can_take_input = false;
+	} else if (time_of_last_attack + attack_duration > current_time) {
+		can_take_input = false;
+	} else if (time_of_last_fire + fire_duration > current_time) {
+		can_take_input = false;
 	} else {
 		lock_facing_direction_when_hit = false;
 		can_take_input = true;
@@ -93,15 +111,33 @@ void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
 void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 	if (facing_right) {
 		idle_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
+		attack_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
+		fire_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 	} else {
 		idle_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
+		attack_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
+		fire_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 	}
 
 	if (facing_right != running_animation->IsFacingRight()) {
 		running_animation->Flip();
 	}
 
-	if (velocity.x == 0) {
+	if (time_of_last_attack + attack_duration > current_time) {
+		if (facing_right) {
+			attack_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		} else {
+			attack_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+		}
+		render_window->draw(attack_sprite);
+	} else if (time_of_last_fire + fire_duration > current_time) {
+		if (facing_right) {
+			fire_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		} else {
+			fire_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+		}
+		render_window->draw(fire_sprite);
+	} else if (velocity.x == 0) {
 		idle_sprite.setPosition(sf::Vector2f((x + width / 2.0f) - (idle_texture.getSize().x * idle_sprite.getScale().x / 2.0f) - camera_position.x,
 			(y + height / 2.0f) - (idle_texture.getSize().y * idle_sprite.getScale().y / 2.0f) - camera_position.y));
 		render_window->draw(idle_sprite);
@@ -172,17 +208,22 @@ void PlayerCharacter::HandleButtonXRelease() {
 }
 
 void PlayerCharacter::HandleButtonYPress() {
-	float x_velocity = 10.0f;
-	sf::Vector2f kick_back = sf::Vector2f(1.6f, 0.0f);
-	sf::Vector2f starting_position = sf::Vector2f(x - test_projectile->width, y);
-	if (!facing_right) {
-		x_velocity *= -1.0f;
-	} else {
-		kick_back.x *= -1.0f;
-		starting_position.x += width + test_projectile->width;
+	if (time_of_last_fire + fire_duration < current_time) {
+		time_of_last_fire = current_time;
+
+		float x_velocity = 10.0f;
+		sf::Vector2f kick_back = sf::Vector2f(1.6f, 0.0f);
+		sf::Vector2f starting_position = sf::Vector2f(x - test_projectile->width, y);
+		if (!facing_right) {
+			x_velocity *= -1.0f;
+		}
+		else {
+			kick_back.x *= -1.0f;
+			starting_position.x += width + test_projectile->width;
+		}
+		TakeHit(0, 200, kick_back, true);
+		test_projectile->Fire(current_time, starting_position, sf::Vector2f(x_velocity, 0.0f));
 	}
-	TakeHit(0, 200, kick_back, true);
-	test_projectile->Fire(current_time, starting_position, sf::Vector2f(x_velocity, 0.0f));
 }
 
 void PlayerCharacter::HandleButtonYRelease() {
