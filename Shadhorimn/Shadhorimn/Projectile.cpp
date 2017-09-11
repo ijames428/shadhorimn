@@ -70,21 +70,32 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 
 		for (int i = 0; i < (int)hit_objects.size(); i++) {
 			hit_sound.play();
+			
+			bool deactivate = true;
 
 			if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE ||
 				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GRUNT ||
-				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER ||
 				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
 				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER) {
 				((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back);
 			}
 
-			is_active = false;
-			time_of_impact = current_time;
-			impact_position.x = x;
-			impact_position.y = y;
-			velocity.x = 0.0f;
-			velocity.y = 0.0f;
+			if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
+				if (((Creature*)(hit_objects[i]))->IsInPostHitInvincibility()) {
+					deactivate = false;
+				} else {
+					((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back);
+				}
+			}
+
+			if (deactivate) {
+				is_active = false;
+				time_of_impact = current_time;
+				impact_position.x = x;
+				impact_position.y = y;
+				velocity.x = 0.0f;
+				velocity.y = 0.0f;
+			}
 		}
 
 		if (GetDistanceBetweenTwoPoints(sf::Vector2f(x, y), fired_position) > range) {

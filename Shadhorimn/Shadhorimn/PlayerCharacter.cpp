@@ -114,12 +114,33 @@ void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
 }
 
 void PlayerCharacter::Draw(sf::Vector2f camera_position) {
+	sf::Color players_color_half_transparent = sf::Color(idle_sprite.getColor());
+
+	if (IsInPostHitInvincibility()) {
+		if (players_color_half_transparent.a != 50) {
+			players_color_half_transparent.a = 50;
+
+			idle_sprite.setColor(players_color_half_transparent);
+			attack_sprite.setColor(players_color_half_transparent);
+			fire_sprite.setColor(players_color_half_transparent);
+			running_animation->SetColor(players_color_half_transparent);
+		}
+	} else {
+		if (players_color_half_transparent.a != 255) {
+			players_color_half_transparent.a = 255;
+
+			idle_sprite.setColor(players_color_half_transparent);
+			attack_sprite.setColor(players_color_half_transparent);
+			fire_sprite.setColor(players_color_half_transparent);
+			running_animation->SetColor(players_color_half_transparent);
+		}
+	}
+
 	if (facing_right) {
 		idle_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 		attack_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 		fire_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
-	}
-	else {
+	} else {
 		idle_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 		attack_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 		fire_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
@@ -151,8 +172,7 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 		idle_sprite.setPosition(sf::Vector2f((x + width / 2.0f) - (idle_texture.getSize().x * idle_sprite.getScale().x / 2.0f) - camera_position.x,
 			(y + height / 2.0f) - (idle_texture.getSize().y * idle_sprite.getScale().y / 2.0f) - camera_position.y));
 		render_window->draw(idle_sprite);
-	}
-	else {
+	} else {
 		running_animation->Draw(camera_position, sf::Vector2f(x + width / 2.0f, y + height / 2.0f));
 	}
 }

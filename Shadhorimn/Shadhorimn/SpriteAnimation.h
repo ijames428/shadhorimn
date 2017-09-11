@@ -23,6 +23,7 @@ public:
 	void Draw(sf::Vector2f camera_position, sf::Vector2f parent_object_mid_position);
 	void Flip();
 	bool IsFacingRight();
+	void SetColor(sf::Color new_color);
 };
 
 #endif

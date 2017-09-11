@@ -12,6 +12,8 @@ class Creature : public RigidBody {
 		sf::Int64 hit_stun_duration;
 		float speed;
 		float jump_power;
+		sf::Int64 invincibility_start_time;
+		sf::Int64 invincibility_duration;
 	public:
 		sf::Int16 hit_points;
 		Creature(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);
@@ -20,6 +22,7 @@ class Creature : public RigidBody {
 		void Draw(sf::Vector2f camera_position);
 		void TakeHit(sf::Int64 damage, sf::Int64 hit_stun_duration, sf::Vector2f knock_back, bool lock_facing_direction = false);
 		void OnDeath();
+		bool IsInPostHitInvincibility();
 };
 
 #endif

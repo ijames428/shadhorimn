@@ -51,6 +51,10 @@ void SpriteAnimation::Flip() {
 	}
 }
 
+void SpriteAnimation::SetColor(sf::Color new_color) {
+	sprite.setColor(new_color);
+}
+
 bool SpriteAnimation::IsFacingRight() {
 	return facing_right;
 }

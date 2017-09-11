@@ -9,6 +9,8 @@ Creature::Creature(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f
 	hit_points = 1;
 	facing_right_when_hit = false;
 	lock_facing_direction_when_hit = false;
+	invincibility_start_time = 0;
+	invincibility_duration = 2000;
 
 	speed = 2.0f;
 	jump_power = 1.0f;
@@ -31,15 +33,28 @@ void Creature::Draw(sf::Vector2f camera_position) {
 	render_window->draw(rectangle_shape);
 }
 
+
+bool Creature::IsInPostHitInvincibility() {
+	return invincibility_start_time + invincibility_duration > current_time;
+}
+
 void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur, sf::Vector2f knock_back, bool lock_facing_direction) {
 #ifdef _DEBUG
 	if (entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
-		damage = 0;
+		//damage = 0;
 	}
 #endif
 
 	if (hit_points <= 0) {
 		return;
+	}
+
+	if (entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
+		if (IsInPostHitInvincibility()) {
+			return;
+		}
+
+		invincibility_start_time = current_time;
 	}
 
 	if (lock_facing_direction) {
