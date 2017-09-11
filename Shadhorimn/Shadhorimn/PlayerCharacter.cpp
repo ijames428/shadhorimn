@@ -260,7 +260,7 @@ void PlayerCharacter::HandleButtonXPress() {
 
 			if (!hit_objects[i]->only_collide_with_platforms &&
 				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE) {
-				((Projectile*)(hit_objects[i]))->fired_velocity.x *= -1.0f;
+				((Projectile*)(hit_objects[i]))->fired_velocity.x *= -1.5f;
 
 				//std::vector<int> temp_entities_excluded_from_collision = ((Projectile*)(hit_objects[i]))->entities_excluded_from_collision;
 				((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.erase(((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.begin(), ((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.end());
