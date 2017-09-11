@@ -306,6 +306,8 @@ void PlayerCharacter::HandleButtonYPress() {
 		}
 		TakeHit(0, 200, kick_back, false, true);
 		test_projectile->Fire(current_time, starting_position, sf::Vector2f(x_velocity, 0.0f));
+		test_projectile->ExcludeFromCollision(entity_type);
+		test_projectile->ExcludeFromCollision(HitBox->entity_type);
 	}
 }
 
