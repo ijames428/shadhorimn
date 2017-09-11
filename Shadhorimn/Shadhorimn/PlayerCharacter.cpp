@@ -100,11 +100,16 @@ void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
 		can_take_input = false;
 	} else if (time_of_last_attack + attack_duration > current_time) {
 		can_take_input = false;
+
+		if (!in_the_air) {
+			velocity.x = 0.0f;
+			velocity.y = 0.0f;
+		}
 	} else if (time_of_last_fire + fire_duration > current_time) {
 		can_take_input = false;
 	} else {
-lock_facing_direction_when_hit = false;
-can_take_input = true;
+		lock_facing_direction_when_hit = false;
+		can_take_input = true;
 	}
 }
 
@@ -153,7 +158,9 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 }
 
 void PlayerCharacter::HandleLeftStickInput(float horizontal, float vertical) {
-	velocity.x = (horizontal / 100.0f) * speed;
+	if (can_take_input) {
+		velocity.x = (horizontal / 100.0f) * speed;
+	}
 }
 
 void PlayerCharacter::HandleButtonAPress() {
@@ -235,6 +242,11 @@ void PlayerCharacter::HandleButtonXRelease() {
 
 void PlayerCharacter::HandleButtonYPress() {
 	if (time_of_last_fire + fire_duration < current_time) {
+		if (!in_the_air) {
+			velocity.x = 0.0f;
+			velocity.y = 0.0f;
+		}
+
 		time_of_last_fire = current_time;
 
 		float x_velocity = 10.0f;
