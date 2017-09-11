@@ -3,6 +3,7 @@ using namespace std;
 #include "Grunt.h"
 #include "World.h"
 #include "Singleton.h"
+#include "AssetManager.h"
 #define PI 3.14159265
 
 Grunt::Grunt(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : Creature::Creature(window, position, dimensions, subject_to_gravity) {
@@ -17,15 +18,29 @@ Grunt::Grunt(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimen
 	time_of_last_attack = 0;
 	duration_of_attack = 1000;
 	time_between_attacks = 1500;
+	attack_animation_duration = 100;
 
 	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 10.0f), false, false);
 	HitBox->entity_type = Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX;
 
-	sf::RectangleShape shape(dimensions);
-	shape.setFillColor(sf::Color::Magenta);
-	shape.setPosition(position);
+	grunt_color = sf::Color::Magenta;
 
-	rectangle_shape = shape;
+	idle_sprite_scale = 0.12f;
+	//idle_texture.loadFromFile("Images/Kaltar_Idle.png");
+	//idle_texture = Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Idle.png");
+	//idle_sprite = sf::Sprite(idle_texture);
+	idle_sprite = sf::Sprite(*Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Idle.png"));
+	idle_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
+	idle_sprite.setColor(grunt_color);
+
+	running_animation = new SpriteAnimation(render_window, "Images/Kaltar_Running.png", 582, 522, 91, 9, 11, 0.12f, grunt_color);
+
+	//attack_texture.loadFromFile("Images/Kaltar_Attack.png");
+	//attack_texture = Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Attack.png");
+	//attack_sprite = sf::Sprite(attack_texture);
+	attack_sprite = sf::Sprite(*Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Attack.png"));
+	attack_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
+	attack_sprite.setColor(grunt_color);
 
 	target = Singleton<World>::Get()->main_character;
 }
@@ -88,8 +103,35 @@ void Grunt::UpdateBehavior(sf::Int64 curr_time) {
 }
 
 void Grunt::Draw(sf::Vector2f camera_position) {
-	rectangle_shape.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
-	render_window->draw(rectangle_shape);
+	if (facing_right) {
+		idle_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
+		attack_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
+	} else {
+		idle_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
+		attack_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
+	}
+
+	if (facing_right != running_animation->IsFacingRight()) {
+		running_animation->Flip();
+	}
+
+	if (time_of_last_attack + attack_animation_duration > current_time) {
+		if (facing_right) {
+			attack_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		} else {
+			attack_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+		}
+		render_window->draw(attack_sprite);
+	} else if (velocity.x == 0) {
+		if (facing_right) {
+			idle_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		} else {
+			idle_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+		}
+		render_window->draw(idle_sprite);
+	} else {
+		running_animation->Draw(camera_position, sf::Vector2f(x + width / 2.0f, y + height / 2.0f));
+	}
 
 #ifdef _DEBUG
 	sf::Color base_color(sf::Color::Blue);

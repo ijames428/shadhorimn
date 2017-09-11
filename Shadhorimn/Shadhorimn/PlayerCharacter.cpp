@@ -1,6 +1,7 @@
 using namespace std;
 #include <iostream>
 #include "PlayerCharacter.h"
+#include "AssetManager.h"
 #include "Singleton.h"
 #include "Settings.h"
 #include "World.h"
@@ -39,20 +40,24 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	player_color = sf::Color::Cyan;
 
 	idle_sprite_scale = 0.12f;
-	idle_texture.loadFromFile("Images/Kaltar_Idle.png");
+
+	idle_texture = *Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Idle.png");
 	idle_sprite = sf::Sprite(idle_texture);
+	//idle_sprite = sf::Sprite(Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Idle.png"));
 	idle_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
 	idle_sprite.setColor(player_color);
 
 	running_animation = new SpriteAnimation(render_window, "Images/Kaltar_Running.png", 582, 522, 91, 9, 11, 0.12f, player_color);
 
-	attack_texture.loadFromFile("Images/Kaltar_Attack.png");
+	attack_texture = *Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Attack.png");
 	attack_sprite = sf::Sprite(attack_texture);
+	//attack_sprite = sf::Sprite(Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Attack.png"));
 	attack_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
 	attack_sprite.setColor(player_color);
 
-	fire_texture.loadFromFile("Images/Kaltar_Fire.png");
+	fire_texture = *Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Fire.png");
 	fire_sprite = sf::Sprite(fire_texture);
+	//fire_sprite = sf::Sprite(Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Fire.png"));
 	fire_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
 	fire_sprite.setColor(player_color);
 
@@ -191,8 +196,14 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 		}
 		render_window->draw(fire_sprite);
 	} else if (velocity.x == 0) {
-		idle_sprite.setPosition(sf::Vector2f((x + width / 2.0f) - (idle_texture.getSize().x * idle_sprite.getScale().x / 2.0f) - camera_position.x,
-			(y + height / 2.0f) - (idle_texture.getSize().y * idle_sprite.getScale().y / 2.0f) - camera_position.y));
+		if (facing_right) {
+			idle_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		}
+		else {
+			idle_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+		}
+		//idle_sprite.setPosition(sf::Vector2f((x + width / 2.0f) - (idle_texture.getSize().x * idle_sprite.getScale().x / 2.0f) - camera_position.x,
+		//	(y + height / 2.0f) - (idle_texture.getSize().y * idle_sprite.getScale().y / 2.0f) - camera_position.y));
 		render_window->draw(idle_sprite);
 	} else {
 		running_animation->Draw(camera_position, sf::Vector2f(x + width / 2.0f, y + height / 2.0f));

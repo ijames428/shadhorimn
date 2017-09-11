@@ -14,8 +14,8 @@ private:
 	int number_of_columns;
 	int number_of_rows;
 	float sprite_scale;
-	sf::Texture texture;
-	sf::Sprite sprite;
+	sf::Texture * texture;
+	sf::Sprite * sprite;
 	sf::IntRect texture_rect;
 public:
 	sf::RenderWindow *render_window;

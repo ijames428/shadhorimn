@@ -3,6 +3,7 @@ using namespace std;
 #include "Gunner.h"
 #include "World.h"
 #include "Singleton.h"
+#include "AssetManager.h"
 #define PI 3.14159265
 
 Gunner::Gunner(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : Creature::Creature(window, position, dimensions, subject_to_gravity) {
@@ -12,14 +13,26 @@ Gunner::Gunner(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dim
 	jump_power = 1.0f;
 	aggro_radius = 200.0f;
 	is_aggroed = false;
-
+	fire_duration = 200;
 	movement_speed = 1.0f;
+	gunner_color = sf::Color::Green;
 
-	sf::RectangleShape shape(dimensions);
-	shape.setFillColor(sf::Color::Cyan);
-	shape.setPosition(position);
+	idle_sprite_scale = 0.12f;
+	//idle_texture.loadFromFile("Images/Kaltar_Idle.png");
+	idle_texture = *Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Idle.png");
+	idle_sprite = sf::Sprite(idle_texture);
+	//idle_sprite = sf::Sprite(Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Idle.png"));
+	idle_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
+	idle_sprite.setColor(gunner_color);
 
-	rectangle_shape = shape;
+	running_animation = new SpriteAnimation(render_window, "Images/Kaltar_Running.png", 582, 522, 91, 9, 11, 0.12f, gunner_color);
+
+	fire_texture = *Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Fire.png");
+	//fire_texture.loadFromFile("Images/Kaltar_Fire.png");
+	fire_sprite = sf::Sprite(fire_texture);
+	//fire_sprite = sf::Sprite(Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Fire.png"));
+	fire_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
+	fire_sprite.setColor(gunner_color);
 
 	target = Singleton<World>::Get()->main_character;
 
@@ -98,8 +111,36 @@ void Gunner::DrawProjectiles(sf::Vector2f camera_position, sf::Int64 curr_time) 
 }
 
 void Gunner::Draw(sf::Vector2f camera_position) {
-	rectangle_shape.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
-	render_window->draw(rectangle_shape);
+	if (facing_right) {
+		idle_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
+		fire_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
+	} else {
+		idle_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
+		fire_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
+	}
+
+	if (facing_right != running_animation->IsFacingRight()) {
+		running_animation->Flip();
+	}
+
+	if (time_of_last_firing + fire_duration > current_time) {
+		if (facing_right) {
+			fire_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		} else {
+			fire_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+		}
+		render_window->draw(fire_sprite);
+	} else if (velocity.x == 0) {
+		if (facing_right) {
+			idle_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		}
+		else {
+			idle_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+		}
+		render_window->draw(idle_sprite);
+	} else {
+		running_animation->Draw(camera_position, sf::Vector2f(x + width / 2.0f, y + height / 2.0f));
+	}
 
 #ifdef _DEBUG
 	sf::Color base_color(sf::Color::Blue);

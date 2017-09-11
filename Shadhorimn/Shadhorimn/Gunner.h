@@ -15,7 +15,15 @@ private:
 	float aggro_radius;
 	sf::Int64 time_between_firing;
 	sf::Int64 time_of_last_firing;
+	sf::Int64 fire_duration;
 	PlayerCharacter* target;
+	sf::Color gunner_color;
+	SpriteAnimation* running_animation;
+	sf::Texture idle_texture;
+	sf::Sprite idle_sprite;
+	float idle_sprite_scale;
+	sf::Texture fire_texture;
+	sf::Sprite fire_sprite;
 public:
 	Gunner(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);
 	void UpdateBehavior(sf::Int64 curr_time);
