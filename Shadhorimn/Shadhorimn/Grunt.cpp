@@ -69,7 +69,9 @@ void Grunt::UpdateBehavior(sf::Int64 curr_time) {
 
 					for (int i = 0; i < (int)hit_objects.size(); i++) {
 						if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
-							((Creature*)(hit_objects[i]))->TakeHit(1, 1000, knock_back);
+							if (!((Creature*)(hit_objects[i]))->IsInvincible()) {
+								((Creature*)(hit_objects[i]))->TakeHit(1, 1000, knock_back);
+							}
 						}
 					}
 
