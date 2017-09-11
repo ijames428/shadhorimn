@@ -27,7 +27,7 @@ class Creature : public RigidBody {
 		sf::RectangleShape rectangle_shape;
 		sf::RenderWindow *render_window;
 		void Draw(sf::Vector2f camera_position);
-		void TakeHit(sf::Int64 damage, sf::Int64 hit_stun_duration, sf::Vector2f knock_back, bool lock_facing_direction = false);
+		void TakeHit(sf::Int64 damage, sf::Int64 hit_stun_duration, sf::Vector2f knock_back, bool activate_invincibility = true, bool lock_facing_direction = false);
 		void OnDeath();
 		bool IsInPostHitInvincibility();
 		bool IsInRollInvincibility();

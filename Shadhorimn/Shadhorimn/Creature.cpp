@@ -57,7 +57,7 @@ bool Creature::IsInPostHitInvincibility() {
 	return post_hit_invincibility_start_time + post_hit_invincibility_duration > current_time;
 }
 
-void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur, sf::Vector2f knock_back, bool lock_facing_direction) {
+void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur, sf::Vector2f knock_back, bool activate_invincibility, bool lock_facing_direction) {
 #ifdef _DEBUG
 	if (entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 		//damage = 0;
@@ -73,7 +73,9 @@ void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur, sf::Vector2f kn
 			return;
 		}
 
-		post_hit_invincibility_start_time = current_time;
+		if (activate_invincibility) {
+			post_hit_invincibility_start_time = current_time;
+		}
 	}
 
 	if (lock_facing_direction) {

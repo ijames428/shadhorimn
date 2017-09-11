@@ -300,12 +300,11 @@ void PlayerCharacter::HandleButtonYPress() {
 		sf::Vector2f starting_position = sf::Vector2f(x - test_projectile->width, y);
 		if (!facing_right) {
 			x_velocity *= -1.0f;
-		}
-		else {
+		} else {
 			kick_back.x *= -1.0f;
 			starting_position.x += width + test_projectile->width;
 		}
-		TakeHit(0, 200, kick_back, true);
+		TakeHit(0, 200, kick_back, false, true);
 		test_projectile->Fire(current_time, starting_position, sf::Vector2f(x_velocity, 0.0f));
 	}
 }
