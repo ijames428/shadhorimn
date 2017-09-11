@@ -44,7 +44,7 @@ Charger::Charger(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f d
 	target = Singleton<World>::Get()->main_character;
 
 	for (int i = 0; i < 5; i++) {
-		projectiles.push_back(new Projectile(window, position, sf::Vector2f(10.0f, 10.0f), false));
+		projectiles.push_back(new Projectile(window, position, sf::Vector2f(20.0f, 20.0f), false));
 		projectiles[i]->ExcludeFromCollision(entity_type);
 		projectiles[i]->ExcludeFromCollision(HitBox->entity_type);
 		projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);

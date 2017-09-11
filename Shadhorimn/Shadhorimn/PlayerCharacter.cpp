@@ -21,7 +21,7 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	HitBox->entities_excluded_from_collision.push_back(entity_type);
 	HitBox->entity_type = Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX;
 
-	test_projectile = new Projectile(window, position, sf::Vector2f(10.0f, 10.0f), false);
+	test_projectile = new Projectile(window, position, sf::Vector2f(20.0f, 20.0f), false);
 	test_projectile->ExcludeFromCollision(entity_type);
 	test_projectile->ExcludeFromCollision(HitBox->entity_type);
 
@@ -36,23 +36,31 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 
 	rectangle_shape = shape;
 
+	player_color = sf::Color::Cyan;
+
 	idle_sprite_scale = 0.12f;
 	idle_texture.loadFromFile("Images/Kaltar_Idle.png");
 	idle_sprite = sf::Sprite(idle_texture);
 	idle_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
-	idle_sprite.setColor(sf::Color::Cyan);
+	idle_sprite.setColor(player_color);
 
-	running_animation = new SpriteAnimation(render_window, "Images/Kaltar_Running.png", 582, 522, 91, 9, 11, 0.12f, sf::Color::Cyan);
+	running_animation = new SpriteAnimation(render_window, "Images/Kaltar_Running.png", 582, 522, 91, 9, 11, 0.12f, player_color);
 
 	attack_texture.loadFromFile("Images/Kaltar_Attack.png");
 	attack_sprite = sf::Sprite(attack_texture);
 	attack_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
-	attack_sprite.setColor(sf::Color::Cyan);
+	attack_sprite.setColor(player_color);
 
 	fire_texture.loadFromFile("Images/Kaltar_Fire.png");
 	fire_sprite = sf::Sprite(fire_texture);
 	fire_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
-	fire_sprite.setColor(sf::Color::Cyan);
+	fire_sprite.setColor(player_color);
+
+	sf::CircleShape circle_shape(dimensions.x / 2.0f);
+	circle_shape.setFillColor(player_color);
+	circle_shape.setPosition(position);
+
+	rolling_shape = circle_shape;
 
 	if (!buffer0.loadFromFile("Sound/Hit0.wav")) {
 		throw exception("Sound file not found");
@@ -96,7 +104,14 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
 	current_time = curr_time;
 
-	if (hit_stun_start_time + hit_stun_duration > curr_time) {
+	if (IsRolling()) {
+		can_take_input = false;
+		if (facing_right) {
+			velocity.x = roll_velocity_x;
+		} else {
+			velocity.x = -roll_velocity_x;
+		}
+	} else if (hit_stun_start_time + hit_stun_duration > curr_time) {
 		can_take_input = false;
 	} else if (time_of_last_attack + attack_duration > current_time) {
 		can_take_input = false;
@@ -111,28 +126,36 @@ void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
 		lock_facing_direction_when_hit = false;
 		can_take_input = true;
 	}
+
+	if (IsRolling()) {
+		height = roll_height;
+	} else {
+		height = usual_height;
+	}
 }
 
 void PlayerCharacter::Draw(sf::Vector2f camera_position) {
-	sf::Color players_color_half_transparent = sf::Color(idle_sprite.getColor());
+	sf::Color players_color_this_cycle = sf::Color(idle_sprite.getColor());
 
 	if (IsInPostHitInvincibility()) {
-		if (players_color_half_transparent.a != 50) {
-			players_color_half_transparent.a = 50;
+		if (players_color_this_cycle.a != 50) {
+			players_color_this_cycle.a = 50;
 
-			idle_sprite.setColor(players_color_half_transparent);
-			attack_sprite.setColor(players_color_half_transparent);
-			fire_sprite.setColor(players_color_half_transparent);
-			running_animation->SetColor(players_color_half_transparent);
+			idle_sprite.setColor(players_color_this_cycle);
+			attack_sprite.setColor(players_color_this_cycle);
+			fire_sprite.setColor(players_color_this_cycle);
+			running_animation->SetColor(players_color_this_cycle);
+			rolling_shape.setFillColor(players_color_this_cycle);
 		}
 	} else {
-		if (players_color_half_transparent.a != 255) {
-			players_color_half_transparent.a = 255;
+		if (players_color_this_cycle.a != 255) {
+			players_color_this_cycle.a = 255;
 
-			idle_sprite.setColor(players_color_half_transparent);
-			attack_sprite.setColor(players_color_half_transparent);
-			fire_sprite.setColor(players_color_half_transparent);
-			running_animation->SetColor(players_color_half_transparent);
+			idle_sprite.setColor(players_color_this_cycle);
+			attack_sprite.setColor(players_color_this_cycle);
+			fire_sprite.setColor(players_color_this_cycle);
+			running_animation->SetColor(players_color_this_cycle);
+			rolling_shape.setFillColor(players_color_this_cycle);
 		}
 	}
 
@@ -150,25 +173,24 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 		running_animation->Flip();
 	}
 
-	if (time_of_last_attack + attack_duration > current_time) {
+	if (IsRolling()) {
+		rolling_shape.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		render_window->draw(rolling_shape);
+	} else if (time_of_last_attack + attack_duration > current_time) {
 		if (facing_right) {
 			attack_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
-		}
-		else {
+		} else {
 			attack_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
 		}
 		render_window->draw(attack_sprite);
-	}
-	else if (time_of_last_fire + fire_duration > current_time) {
+	} else if (time_of_last_fire + fire_duration > current_time) {
 		if (facing_right) {
 			fire_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
-		}
-		else {
+		} else {
 			fire_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
 		}
 		render_window->draw(fire_sprite);
-	}
-	else if (velocity.x == 0) {
+	} else if (velocity.x == 0) {
 		idle_sprite.setPosition(sf::Vector2f((x + width / 2.0f) - (idle_texture.getSize().x * idle_sprite.getScale().x / 2.0f) - camera_position.x,
 			(y + height / 2.0f) - (idle_texture.getSize().y * idle_sprite.getScale().y / 2.0f) - camera_position.y));
 		render_window->draw(idle_sprite);
@@ -195,6 +217,10 @@ void PlayerCharacter::HandleButtonARelease() {
 }
 
 void PlayerCharacter::HandleButtonBPress() {
+	if (!IsRolling() && !in_the_air) {
+		roll_start_time = current_time;
+		roll_invincibility_start_time = current_time;
+	}
 }
 
 void PlayerCharacter::HandleButtonBRelease() {
@@ -306,7 +332,6 @@ void PlayerCharacter::HandleButtonSelectRelease() {
 }
 
 void PlayerCharacter::HandleButtonStartPress() {
-	//Singleton<World>::Get()->paused = !Singleton<World>::Get()->paused;
 }
 
 void PlayerCharacter::HandleButtonStartRelease() {

@@ -7,10 +7,11 @@ using namespace std;
 RigidBody::RigidBody(sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity, bool subject_to_collision) {
 	entity_type = Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY;
 
-	x = position.x;
-	y = position.y;
-	width = dimensions.x;
-	height = dimensions.y;
+	future_x = old_x = x = position.x;
+	future_y = old_y = y = position.y;
+	future_width = old_width = width = dimensions.x;
+	future_height = old_height = height = dimensions.y;
+	
 	gravity_enabled = subject_to_gravity;
 	collision_enabled = subject_to_collision;
 	facing_right = true;
@@ -35,10 +36,17 @@ void RigidBody::Update(sf::Int64 delta_time) {
 		mMovementSpeedTimefactor = 2.0f;
 	}
 
-	future_x = x;
-	future_y = y;
 	future_width = width;
 	future_height = height;
+
+	if (future_height < old_height) {
+		y += old_height - future_height;
+	} else if (future_height > old_height) {
+		y -= future_height - old_height;
+	}
+
+	future_x = x;
+	future_y = y;
 
 	float pregravity_velocity_y = velocity.y;
 	in_the_air = true;

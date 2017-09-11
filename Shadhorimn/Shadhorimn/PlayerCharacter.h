@@ -10,6 +10,7 @@ using namespace std;
 
 class PlayerCharacter : public Creature {
 	private:
+		sf::Color player_color;
 		SpriteAnimation* running_animation;
 		sf::Texture idle_texture;
 		sf::Sprite idle_sprite;
@@ -34,6 +35,7 @@ class PlayerCharacter : public Creature {
 		sf::Int64 time_of_last_fire;
 		sf::Int64 fire_cooldown;
 		sf::Int64 fire_duration;
+		sf::CircleShape rolling_shape;
 	public:
 		bool can_take_input;
 		int max_hit_points = 10;

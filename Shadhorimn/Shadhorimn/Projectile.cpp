@@ -24,7 +24,7 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 
 	render_window = window;
 
-	sf::CircleShape shape(dimensions.x);
+	sf::CircleShape shape(dimensions.x / 2.0f);
 	shape.setFillColor(sf::Color::White);
 	shape.setPosition(position);
 
@@ -81,7 +81,7 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 			}
 
 			if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
-				if (((Creature*)(hit_objects[i]))->IsInPostHitInvincibility()) {
+				if (((Creature*)(hit_objects[i]))->IsInvincible()) {
 					deactivate = false;
 				} else {
 					((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back);

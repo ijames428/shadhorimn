@@ -9,8 +9,16 @@ Creature::Creature(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f
 	hit_points = 1;
 	facing_right_when_hit = false;
 	lock_facing_direction_when_hit = false;
-	invincibility_start_time = 0;
-	invincibility_duration = 2000;
+	post_hit_invincibility_start_time = 0;
+	post_hit_invincibility_duration = 2000;
+
+	roll_start_time = 0;
+	roll_duration = 300;
+	roll_invincibility_start_time = 0;
+	roll_invincibility_duration = 150;
+	roll_height = dimensions.y / 2.0f;
+	usual_height = dimensions.y;
+	roll_velocity_x = 6.0f;
 
 	speed = 2.0f;
 	jump_power = 1.0f;
@@ -33,9 +41,20 @@ void Creature::Draw(sf::Vector2f camera_position) {
 	render_window->draw(rectangle_shape);
 }
 
+bool Creature::IsRolling() {
+	return roll_start_time + roll_duration > current_time;
+}
+
+bool Creature::IsInvincible() {
+	return IsInRollInvincibility() || IsInPostHitInvincibility();
+}
+
+bool Creature::IsInRollInvincibility() {
+	return roll_invincibility_start_time + roll_invincibility_duration > current_time;
+}
 
 bool Creature::IsInPostHitInvincibility() {
-	return invincibility_start_time + invincibility_duration > current_time;
+	return post_hit_invincibility_start_time + post_hit_invincibility_duration > current_time;
 }
 
 void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur, sf::Vector2f knock_back, bool lock_facing_direction) {
@@ -54,7 +73,7 @@ void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur, sf::Vector2f kn
 			return;
 		}
 
-		invincibility_start_time = current_time;
+		post_hit_invincibility_start_time = current_time;
 	}
 
 	if (lock_facing_direction) {

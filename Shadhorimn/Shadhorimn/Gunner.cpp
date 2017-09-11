@@ -26,7 +26,7 @@ Gunner::Gunner(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dim
 	time_between_firing = 1500;
 	time_of_last_firing = 0;
 	for (int i = 0; i < 15; i++) {
-		projectiles.push_back(new Projectile(window, position, sf::Vector2f(10.0f, 10.0f), false));
+		projectiles.push_back(new Projectile(window, position, sf::Vector2f(20.0f, 20.0f), false));
 		projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_GUNNER);
 	}
 }
