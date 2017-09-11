@@ -54,16 +54,21 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	lives_counter_text.setString("Lives: " + std::to_string(current_number_of_lives));
 	lives_counter_text.setPosition(10.0f, 40.0f);
 
+	paused_text.setFont(ringbearer_font);
+	paused_text.setCharacterSize(90);
+	paused_text.setString("Paused");
+	paused_text.setPosition(camera->viewport_dimensions.x / 2.0f - 150.0f, camera->viewport_dimensions.y / 2.0f - 100.0f);
+
 	continue_text.setFont(ringbearer_font);
 	continue_text.setString("You have " + std::to_string(current_number_of_lives) + " lives left.\nPress Start to continue.");
 	continue_text.setPosition(camera->viewport_dimensions.x / 2.0f - 150.0f, camera->viewport_dimensions.y / 2.0f - 100.0f);
 }
 
 void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
+	render_window->clear();
+
 	if (!paused)
 	{
-		render_window->clear();
-
 		if (main_character->hit_points > 0) {
 			current_time = curr_time;
 			player_is_in_combat = false;
@@ -242,9 +247,13 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				render_window->draw(game_over_sprite);
 			}
 		}
-
-		render_window->display();
+	} else {
+		blank_screen_sprite.setColor(sf::Color(255, 255, 255, 255));
+		render_window->draw(blank_screen_sprite);
+		render_window->draw(paused_text);
 	}
+
+	render_window->display();
 }
 
 bool World::IsObjectInUpdateRange(RigidBody* rb) {

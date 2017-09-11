@@ -306,7 +306,7 @@ void PlayerCharacter::HandleButtonSelectRelease() {
 }
 
 void PlayerCharacter::HandleButtonStartPress() {
-	Singleton<World>::Get()->paused = !Singleton<World>::Get()->paused;
+	//Singleton<World>::Get()->paused = !Singleton<World>::Get()->paused;
 }
 
 void PlayerCharacter::HandleButtonStartRelease() {

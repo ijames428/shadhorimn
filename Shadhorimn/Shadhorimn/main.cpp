@@ -173,6 +173,13 @@ int main()
 				GameState = GAME_STATE_IN_GAME;
 				input_handler->EatInputsForNumberOfFrames(1);
 			} else if (GameState == GAME_STATE_IN_GAME) {
+				if (start_button_current && !start_button_previous) {
+					Singleton<World>::Get()->paused = !Singleton<World>::Get()->paused;
+				}
+				if (Singleton<World>::Get()->paused) {
+					input_handler->EatInputsForNumberOfFrames(1);
+				}
+
 				input_handler->Update();
 				Singleton<World>::Get()->Update(time_current / 1000, frame_delta / 1000);
 

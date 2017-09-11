@@ -25,6 +25,7 @@ class World {
 		sf::Font ringbearer_font = sf::Font();
 		sf::Text continue_text;
 		sf::Text lives_counter_text;
+		sf::Text paused_text;
 		int game_over_screen_sprite_transparency;
 		sf::Texture game_over_texture;
 		sf::Sprite game_over_sprite;
