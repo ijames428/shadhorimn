@@ -43,6 +43,9 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	game_over_texture.loadFromFile("Images/GameOverScreen.png");
 	game_over_sprite = sf::Sprite(game_over_texture);
 
+	level_art_texture.loadFromFile("Images/LevelArt.png");
+	level_art_sprite = sf::Sprite(level_art_texture);
+
 	parallax_background_texture.loadFromFile("Images/parallax_background.jpg");
 	parallax_background_sprite = sf::Sprite(parallax_background_texture);
 	parallax_background_sprite.setPosition(0.0f, 0.0f);
@@ -214,6 +217,9 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				}
 			}
 
+			level_art_sprite.setPosition(sf::Vector2f(-viewport_position_with_screen_shake.x, -viewport_position_with_screen_shake.y));
+			render_window->draw(level_art_sprite);
+
 			for (int i = 0; i < main_character->hit_points; i++) {
 				render_window->draw(players_hit_point_sprites[i]);
 			}
@@ -372,8 +378,8 @@ bool World::IsNewGame() {
 
 void World::BuildTestLevel() {
 	if (IsNewGame()) {
-		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position
-		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(2700.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false);//first checkpoint
+		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 100.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(2700.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false);//first checkpoint
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(4405.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false);//second checkpoint
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);//boss room platform
 		current_checkpoint = starting_checkpoint;

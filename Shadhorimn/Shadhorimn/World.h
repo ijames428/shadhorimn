@@ -27,6 +27,8 @@ class World {
 		sf::Text lives_counter_text;
 		sf::Text paused_text;
 		int game_over_screen_sprite_transparency;
+		sf::Texture level_art_texture;
+		sf::Sprite level_art_sprite;
 		sf::Texture game_over_texture;
 		sf::Sprite game_over_sprite;
 		sf::Texture blank_screen_texture;
