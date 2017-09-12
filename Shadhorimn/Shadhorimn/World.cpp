@@ -435,23 +435,20 @@ void World::BuildTestLevel() {
 	boss_health_trigger = new RigidBody(sf::Vector2f(4450.0f, 1600.0f), sf::Vector2f(200.0f, 50.0f), false, false);
 
 	gunners.erase(gunners.begin(), gunners.end());
-	gunners.push_back(new Gunner(render_window, sf::Vector2f(3980.0f, 700.0f), sf::Vector2f(40.0f, 80.0f), true));
-	gunners.push_back(new Gunner(render_window, sf::Vector2f(3980.0f, 900.0f), sf::Vector2f(40.0f, 80.0f), true));
-	gunners.push_back(new Gunner(render_window, sf::Vector2f(4100.0f, 1000.0f), sf::Vector2f(40.0f, 80.0f), true));
+	//gunners.push_back(new Gunner(render_window, sf::Vector2f(3980.0f, 700.0f), sf::Vector2f(40.0f, 80.0f), true));
+	//gunners.push_back(new Gunner(render_window, sf::Vector2f(3980.0f, 900.0f), sf::Vector2f(40.0f, 80.0f), true));
 	gunners.push_back(new Gunner(render_window, sf::Vector2f(4200.0f, 1000.0f), sf::Vector2f(40.0f, 80.0f), true));
 
 	grunts.erase(grunts.begin(), grunts.end());
 	grunts.push_back(new Grunt(render_window, sf::Vector2f(3380.0f, 700.0f), sf::Vector2f(40.0f, 80.0f), true));
 	grunts.push_back(new Grunt(render_window, sf::Vector2f(3680.0f, 800.0f), sf::Vector2f(40.0f, 80.0f), true));
 	grunts.push_back(new Grunt(render_window, sf::Vector2f(3380.0f, 900.0f), sf::Vector2f(40.0f, 80.0f), true));
-	grunts.push_back(new Grunt(render_window, sf::Vector2f(3500.0f, 1000.0f), sf::Vector2f(40.0f, 80.0f), true));
-	grunts.push_back(new Grunt(render_window, sf::Vector2f(3800.0f, 1000.0f), sf::Vector2f(40.0f, 80.0f), true));
 
 	drones.erase(drones.begin(), drones.end());
-	drones.push_back(new Drone(render_window, sf::Vector2f(700.0f, 700.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(700.0f, 725.0f), sf::Vector2f(30.0f, 30.0f), false));
 	drones.push_back(new Drone(render_window, sf::Vector2f(900.0f, 700.0f), sf::Vector2f(30.0f, 30.0f), false));
-	drones.push_back(new Drone(render_window, sf::Vector2f(1100.0f, 700.0f), sf::Vector2f(30.0f, 30.0f), false));
-	drones.push_back(new Drone(render_window, sf::Vector2f(1300.0f, 700.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(1100.0f, 650.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(1300.0f, 575.0f), sf::Vector2f(30.0f, 30.0f), false));
 	drones.push_back(new Drone(render_window, sf::Vector2f(1660.0f, 600.0f), sf::Vector2f(30.0f, 30.0f), false));
 
 	drones.push_back(new Drone(render_window, sf::Vector2f(3085.0f, 600.0f), sf::Vector2f(30.0f, 30.0f), false));
