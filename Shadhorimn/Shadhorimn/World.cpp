@@ -440,9 +440,6 @@ void World::BuildTestLevel() {
 	gunners.push_back(new Gunner(render_window, sf::Vector2f(4100.0f, 1000.0f), sf::Vector2f(40.0f, 80.0f), true));
 	gunners.push_back(new Gunner(render_window, sf::Vector2f(4200.0f, 1000.0f), sf::Vector2f(40.0f, 80.0f), true));
 
-	gunners.push_back(new Gunner(render_window, sf::Vector2f(2400.0f, 250.0f), sf::Vector2f(40.0f, 80.0f), true));
-	//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(2700.0f, 250.0f), sf::Vector2f(40.0f, 300.0f), false);//first checkpoint
-
 	grunts.erase(grunts.begin(), grunts.end());
 	grunts.push_back(new Grunt(render_window, sf::Vector2f(3380.0f, 700.0f), sf::Vector2f(40.0f, 80.0f), true));
 	grunts.push_back(new Grunt(render_window, sf::Vector2f(3680.0f, 800.0f), sf::Vector2f(40.0f, 80.0f), true));

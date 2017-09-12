@@ -83,6 +83,7 @@ void Gunner::UpdateBehavior(sf::Int64 curr_time) {
 						}
 
 						shotgun_projectiles_to_be_fired[i]->Fire(current_time, starting_position, vel);
+						shotgun_projectiles_to_be_fired[i]->ExcludeFromCollision(entity_type);
 
 						time_of_last_firing = current_time;
 					}
