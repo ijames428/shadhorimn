@@ -14,6 +14,7 @@ int IncrementTransparency(int transparency);
 void SetPreviousButtonValues();
 void UpdateGameStateLogos();
 void UpdateGameStateStartMenu();
+void UpdateGameStateLoadingScreen();
 void UpdateGameStateCredits();
 
 void HandleClosingEvent();
@@ -57,6 +58,7 @@ sf::Sprite start_menu_background_sprite;
 sf::Font ringbearer_font;
 sf::Text title_text;
 sf::Text start_text;
+sf::Text loading_text;
 
 sf::Text credits_text;
 
@@ -144,6 +146,9 @@ int main()
 	start_text = sf::Text("Press Start to begin", ringbearer_font);
 	start_text.setPosition(viewport_width / 2.0f - 120.0f, viewport_height / 2.0f - 60.0f);
 
+	loading_text = sf::Text("Loading...", ringbearer_font, 60);
+	loading_text.setPosition(viewport_width / 2.0f - 150.0f, viewport_height / 2.0f - 100.0f);
+
 	credits_text = sf::Text("Programmed by Ian James\n\nArt by Conor Koenig\n\n\n\n\nThank you for playing Shadhorimn", ringbearer_font);
 	credits_text.setPosition(viewport_width / 2.0f - 220.0f, viewport_height + 50.0f);
 
@@ -169,6 +174,7 @@ int main()
 				GameState = GAME_STATE_INITILIZATION;
 			} else if (GameState == GAME_STATE_INITILIZATION) {
 				window->clear();
+				UpdateGameStateLoadingScreen();
 				Singleton<World>::Get()->Init(window, camera, main_character);
 				GameState = GAME_STATE_IN_GAME;
 				input_handler->EatInputsForNumberOfFrames(1);
@@ -258,6 +264,17 @@ void UpdateGameStateStartMenu() {
 	if (WasButtonAPressed() || WasButtonStartPressed()) {
 		GameState = GAME_STATE_NEW_GAME;
 	}
+
+	HandleClosingEvent();
+	SetPreviousButtonValues();
+
+	window->display();
+}
+
+void UpdateGameStateLoadingScreen() {
+	window->clear();
+
+	window->draw(loading_text);
 
 	HandleClosingEvent();
 	SetPreviousButtonValues();
