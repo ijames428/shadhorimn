@@ -22,7 +22,8 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	screen_shake_start_time = 0;
 	screen_shake_duration = (sf::Int64)(0.01f * 1000); // 1000 is one second in milliseconds.
 
-	BuildTestLevel();
+	BuildReleaseLevel();
+	//BuildTestLevel();
 	//BuildDevLevel();
 
 	hit_point_texture.loadFromFile("Images/HitPoint.png");
@@ -43,7 +44,7 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	game_over_texture.loadFromFile("Images/GameOverScreen.png");
 	game_over_sprite = sf::Sprite(game_over_texture);
 
-	level_art_texture.loadFromFile("Images/LevelArt.png");
+	level_art_texture.loadFromFile("Images/ReleaseLevelArt.png");
 	level_art_sprite = sf::Sprite(level_art_texture);
 
 	parallax_background_texture.loadFromFile("Images/parallax_background.jpg");
@@ -218,7 +219,9 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			}
 
 			level_art_sprite.setPosition(sf::Vector2f(-viewport_position_with_screen_shake.x, -viewport_position_with_screen_shake.y));
+
 			render_window->draw(level_art_sprite);
+
 
 			for (int i = 0; i < main_character->hit_points; i++) {
 				render_window->draw(players_hit_point_sprites[i]);
@@ -374,6 +377,140 @@ void World::StartNewGame() {
 
 bool World::IsNewGame() {
 	return current_number_of_lives == starting_number_of_lives;
+}
+
+void World::BuildReleaseLevel() {
+	if (IsNewGame()) {
+		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 150.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position																												 //starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);//boss room platform
+		current_checkpoint = starting_checkpoint;
+	}
+
+	main_character->x = current_checkpoint->x;
+	main_character->y = current_checkpoint->y + current_checkpoint->height - main_character->height;
+	main_character->hit_points = main_character->max_hit_points;
+	main_character->velocity = sf::Vector2f(0.0f, 0.0f);
+
+	platforms.erase(platforms.begin(), platforms.end());
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(65.0f, 5000.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(5000.0f, 37.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 4966.0f), sf::Vector2f(5000.0f, 34.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4940.0f, 0.0f), sf::Vector2f(60.0f, 5000.0f)));
+
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 246.0f), sf::Vector2f(356.0f, 1701.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(356.0f, 478.0f), sf::Vector2f(241.0f, 1469.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(597.0f, 740.0f), sf::Vector2f(657.0f, 1207.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1254.0f, 940.0f), sf::Vector2f(163.0f, 1008.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1417.0f, 1212.0f), sf::Vector2f(311.0f, 737.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1728.0f, 1484.0f), sf::Vector2f(302.0f, 464.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2030.0f, 1484.0f), sf::Vector2f(412.0f, 277.0f)));
+
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2833.0f, 1482.0f), sf::Vector2f(362.0f, 242.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2504.0f, 2120.0f), sf::Vector2f(208.0f, 65.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1969.0f, 2119.0f), sf::Vector2f(292.0f, 50.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1406.0f, 2119.0f), sf::Vector2f(691.0f, 204.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1184.0f, 2250.0f), sf::Vector2f(798.0f, 309.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(496.0f, 2434.0f), sf::Vector2f(704.0f, 125.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1066.0f, 2554.0f), sf::Vector2f(124.0f, 294.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 1941.0f), sf::Vector2f(282.0f, 1625.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(273.0f, 2874.0f), sf::Vector2f(93.0f, 482.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(366.0f, 3095.0f), sf::Vector2f(106.0f, 265.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 3341.0f), sf::Vector2f(1555.0f, 223.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1552.0f, 2866.0f), sf::Vector2f(116.0f, 698.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(689.0f, 3224.0f), sf::Vector2f(45.0f, 118.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(732.0f, 3119.0f), sf::Vector2f(53.0f, 231.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(784.0f, 2979.0f), sf::Vector2f(64.0f, 370.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1980.0f, 2514.0f), sf::Vector2f(1061.0f, 1467.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2744.0f, 2380.0f), sf::Vector2f(296.0f, 1600.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2828.0f, 2257.0f), sf::Vector2f(110.0f, 145.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2915.0f, 2144.0f), sf::Vector2f(80.0f, 156.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2983.0f, 1722.0f), sf::Vector2f(215.0f, 207.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1364.0f, 2987.0f), sf::Vector2f(117.0f, 70.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1173.0f, 3127.0f), sf::Vector2f(114.0f, 61.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1369.0f, 3223.0f), sf::Vector2f(46.0f, 28.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1938.0f, 2920.0f), sf::Vector2f(43.0f, 889.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1868.0f, 3254.0f), sf::Vector2f(77.0f, 556.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(978.0f, 3793.0f), sf::Vector2f(925.0f, 151.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1120.0f, 3942.0f), sf::Vector2f(94.0f, 183.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1214.0f, 3921.0f), sf::Vector2f(163.0f, 444.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1322.0f, 3970.0f), sf::Vector2f(657.0f, 731.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(46.0f, 3537.0f), sf::Vector2f(114.0f, 594.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(176.0f, 4805.0f), sf::Vector2f(139.0f, 163.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(58.0f, 4566.0f), sf::Vector2f(119.0f, 408.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2394.0f, 4265.0f), sf::Vector2f(573.0f, 128.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2492.0f, 4383.0f), sf::Vector2f(387.0f, 150.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2566.0f, 4531.0f), sf::Vector2f(193.0f, 262.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2158.0f, 4748.0f), sf::Vector2f(1018.0f, 241.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3174.0f, 4134.0f), sf::Vector2f(489.0f, 869.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2103.0f, 4855.0f), sf::Vector2f(59.0f, 114.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2265.0f, 4623.0f), sf::Vector2f(43.0f, 141.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2061.0f, 4507.0f), sf::Vector2f(143.0f, 37.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(1970.0f, 4373.0f), sf::Vector2f(73.0f, 43.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2162.0f, 4267.0f), sf::Vector2f(120.0f, 46.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2893.0f, 4620.0f), sf::Vector2f(95.0f, 36.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3022.0f, 4497.0f), sf::Vector2f(121.0f, 34.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(108.0f, 4361.0f), sf::Vector2f(92.0f, 170.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3079.0f, 4134.0f), sf::Vector2f(116.0f, 32.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3108.0f, 4361.0f), sf::Vector2f(74.0f, 143.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3174.0f, 4134.0f), sf::Vector2f(489.0f, 859.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3658.0f, 4192.0f), sf::Vector2f(430.0f, 804.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4079.0f, 4150.0f), sf::Vector2f(740.0f, 837.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4363.0f, 4040.0f), sf::Vector2f(633.0f, 139.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4417.0f, 3951.0f), sf::Vector2f(579.0f, 99.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4473.0f, 3847.0f), sf::Vector2f(525.0f, 114.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4519.0f, 3744.0f), sf::Vector2f(480.0f, 111.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4555.0f, 3604.0f/**/), sf::Vector2f(441.0f, 153.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4584.0f, 3286.0f), sf::Vector2f(410.0f, 325.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4547.0f, 3361.0f), sf::Vector2f(45.0f, 42.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4268.0f, 3466.0f), sf::Vector2f(196.0f, 97.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4648.0f, 2848.0f), sf::Vector2f(348.0f, 452.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4471.0f, 3160.0f), sf::Vector2f(57.0f, 44.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4266.0f, 3060.0f), sf::Vector2f(99.0f, 66.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4345.0f, 2671.0f), sf::Vector2f(649.0f, 185.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3930.0f, 2995.0f), sf::Vector2f(154.0f, 91.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3622.0f, 3088.0f), sf::Vector2f(138.0f, 69.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3342.0f, 2984.0f), sf::Vector2f(133.0f, 70.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3250.0f, 2868.0f), sf::Vector2f(123.0f, 52.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3200.0f, 2813.0f), sf::Vector2f(110.0f, 72.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3020.0f, 3489.0f), sf::Vector2f(153.0f, 491.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3038.0f, 2610.0f), sf::Vector2f(137.0f, 65.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3146.0f, 2665.0f), sf::Vector2f(29.0f, 82.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3438.0f, 2677.0f), sf::Vector2f(23.0f, 63.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3409.0f, 2721.0f), sf::Vector2f(48.0f, 19.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3438.0f, 2618.0f), sf::Vector2f(1557.0f, 65.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2984.0f, 1920.0f), sf::Vector2f(1587.0f, 499.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4564.0f, 2304.0f), sf::Vector2f(95.0f, 114.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4842.0f, 2295.0f), sf::Vector2f(138.0f, 126.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4334.0f, 335.0f), sf::Vector2f(237.0f, 1590.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3908.0f, 336.0f), sf::Vector2f(482.0f, 979.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3643.0f, 267.0f), sf::Vector2f(456.0f, 94.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(3204.0f, 336.0f), sf::Vector2f(703.0f, 577.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2944.0f, 817.0f), sf::Vector2f(273.0f, 98.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2033.0f, 25.0f), sf::Vector2f(944.0f, 545.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4817.0f, 2405.0f), sf::Vector2f(28.0f, 107.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4790.0f, 2491.0f), sf::Vector2f(53.0f, 21.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4558.0f, 2164.0f), sf::Vector2f(127.0f, 31.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4815.0f, 2033.0f), sf::Vector2f(151.0f, 34.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4551.0f, 1897.0f), sf::Vector2f(136.0f, 34.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4815.0f, 1766.0f), sf::Vector2f(146.0f, 33.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4550.0f, 1630.0f), sf::Vector2f(138.0f, 32.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4817.0f, 1499.0f), sf::Vector2f(135.0f, 33.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4560.0f, 1362.0f), sf::Vector2f(129.0f, 33.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4817.0f, 1231.0f), sf::Vector2f(132.0f, 34.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4565.0f, 1095.0f), sf::Vector2f(125.0f, 36.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4816.0f, 964.0f), sf::Vector2f(131.0f, 34.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4554.0f, 828.0f), sf::Vector2f(135.0f, 32.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4816.0f, 697.0f), sf::Vector2f(134.0f, 33.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4561.0f, 560.0f), sf::Vector2f(129.0f, 34.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4817.0f, 429.0f), sf::Vector2f(128.0f, 35.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4559.0f, 335.0f), sf::Vector2f(131.0f, 35.0f)));
+	//platforms.push_back(new Platform(render_window, sf::Vector2f(.0f, .0f), sf::Vector2f(.0f, .0f)));
+
+
+	charger = new Charger(render_window, sf::Vector2f(3400.0f, 2100.0f), sf::Vector2f(40.0f, 80.0f), true);
+
+	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(4250.0f, 2050.0f), sf::Vector2f(40.0f, 100.0f), false);
+	boss_health_trigger = new RigidBody(sf::Vector2f(4450.0f, 1600.0f), sf::Vector2f(200.0f, 50.0f), false, false);
+	end_of_game_door = new Platform(render_window, sf::Vector2f(3990.0f, 2000.0f), sf::Vector2f(10.0f, 200.0f)); // Platform for viewing boss behavior
 }
 
 void World::BuildTestLevel() {

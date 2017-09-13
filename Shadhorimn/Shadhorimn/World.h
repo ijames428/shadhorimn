@@ -92,6 +92,7 @@ class World {
 		bool IsPlayerInCombat();
 		void BuildDevLevel();
 		void BuildTestLevel();
+		void BuildReleaseLevel();
 		bool IsObjectInUpdateRange(RigidBody* rb);
 		bool IsNewGame();
 		void StartNewGame();
