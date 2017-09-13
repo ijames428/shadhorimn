@@ -47,9 +47,13 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	level_art_texture.loadFromFile("Images/ReleaseLevelArt.png");
 	level_art_sprite = sf::Sprite(level_art_texture);
 
-	parallax_background_texture.loadFromFile("Images/parallax_background.jpg");
+	foreground_behind_layer_texture.loadFromFile("Images/ReleaseLevelArt_rough_overlay.png");
+	foreground_behind_layer_sprite = sf::Sprite(foreground_behind_layer_texture);
+
+	parallax_background_texture.loadFromFile("Images/ReleaseLevelArt_Backdrop.png");
 	parallax_background_sprite = sf::Sprite(parallax_background_texture);
 	parallax_background_sprite.setPosition(0.0f, 0.0f);
+	parallax_background_sprite.setScale(0.4f, 0.4f);
 
 	if (!ringbearer_font.loadFromFile("Images/RingbearerFont.ttf"))
 		return;
@@ -94,7 +98,7 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				}
 			}
 
-			if (charger->hit_points <= 0 && end_of_game_door->y > 1800.0f) {
+			if (charger->hit_points <= 0 && end_of_game_door->y > 1100.0f) {
 				end_of_game_door->velocity = sf::Vector2f(0.0f, -1.0f);
 				ScreenShake(0.5f);
 				fighting_boss = false;
@@ -126,6 +130,9 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			parallax_background_viewport_position = sf::Vector2f(-(viewport_position_with_screen_shake.x / 10.0f), -(viewport_position_with_screen_shake.y / 10.0f));
 			parallax_background_sprite.setPosition(parallax_background_viewport_position);
 			render_window->draw(parallax_background_sprite);
+
+			foreground_behind_layer_sprite.setPosition(sf::Vector2f(-viewport_position_with_screen_shake.x, -viewport_position_with_screen_shake.y));
+			render_window->draw(foreground_behind_layer_sprite);
 
 			main_character->Draw(viewport_position_with_screen_shake);
 			main_character->Update(frame_delta);
@@ -219,7 +226,6 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			}
 
 			level_art_sprite.setPosition(sf::Vector2f(-viewport_position_with_screen_shake.x, -viewport_position_with_screen_shake.y));
-
 			render_window->draw(level_art_sprite);
 
 
@@ -381,7 +387,15 @@ bool World::IsNewGame() {
 
 void World::BuildReleaseLevel() {
 	if (IsNewGame()) {
-		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 150.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position																												 //starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);//boss room platform
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 150.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position	
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(2288.0f, 1200.0f), sf::Vector2f(40.0f, 264.0f), false);
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1440.0f, 1976.0f), sf::Vector2f(40.0f, 120.0f), false);
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1016.0f, 3592.0f), sf::Vector2f(40.0f, 192.0f), false);
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1728.0f, 4752.0f), sf::Vector2f(40.0f, 192.0f), false);
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3192.0f, 4000.0f), sf::Vector2f(40.0f, 120.0f), false);
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3480.0f, 2456.0f), sf::Vector2f(40.0f, 152.0f), false);
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3216.0f, 104.0f), sf::Vector2f(40.0f, 192.0f), false);
+		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3056.0f, 1272.0f), sf::Vector2f(40.0f, 176.0f), false);																											 //starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);//boss room platform
 		current_checkpoint = starting_checkpoint;
 	}
 
@@ -433,9 +447,9 @@ void World::BuildReleaseLevel() {
 	platforms.push_back(new Platform(render_window, sf::Vector2f(1120.0f, 3942.0f), sf::Vector2f(94.0f, 183.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(1214.0f, 3921.0f), sf::Vector2f(163.0f, 444.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(1322.0f, 3970.0f), sf::Vector2f(657.0f, 731.0f)));
-	platforms.push_back(new Platform(render_window, sf::Vector2f(46.0f, 3537.0f), sf::Vector2f(114.0f, 594.0f)));
-	platforms.push_back(new Platform(render_window, sf::Vector2f(176.0f, 4805.0f), sf::Vector2f(139.0f, 163.0f)));
-	platforms.push_back(new Platform(render_window, sf::Vector2f(58.0f, 4566.0f), sf::Vector2f(119.0f, 408.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(46.0f, 3537.0f), sf::Vector2f(114.0f, 594.0f)));//
+	platforms.push_back(new Platform(render_window, sf::Vector2f(176.0f, 4805.0f), sf::Vector2f(139.0f, 163.0f)));//
+	platforms.push_back(new Platform(render_window, sf::Vector2f(58.0f, 4566.0f), sf::Vector2f(119.0f, 408.0f)));//
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2394.0f, 4265.0f), sf::Vector2f(573.0f, 128.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2492.0f, 4383.0f), sf::Vector2f(387.0f, 150.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2566.0f, 4531.0f), sf::Vector2f(193.0f, 262.0f)));
@@ -448,7 +462,6 @@ void World::BuildReleaseLevel() {
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2162.0f, 4267.0f), sf::Vector2f(120.0f, 46.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2893.0f, 4620.0f), sf::Vector2f(95.0f, 36.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(3022.0f, 4497.0f), sf::Vector2f(121.0f, 34.0f)));
-	platforms.push_back(new Platform(render_window, sf::Vector2f(108.0f, 4361.0f), sf::Vector2f(92.0f, 170.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(3079.0f, 4134.0f), sf::Vector2f(116.0f, 32.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(3108.0f, 4361.0f), sf::Vector2f(74.0f, 143.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(3174.0f, 4134.0f), sf::Vector2f(489.0f, 859.0f)));
@@ -458,7 +471,7 @@ void World::BuildReleaseLevel() {
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4417.0f, 3951.0f), sf::Vector2f(579.0f, 99.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4473.0f, 3847.0f), sf::Vector2f(525.0f, 114.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4519.0f, 3744.0f), sf::Vector2f(480.0f, 111.0f)));
-	platforms.push_back(new Platform(render_window, sf::Vector2f(4555.0f, 3604.0f/**/), sf::Vector2f(441.0f, 153.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(4555.0f, 3604.0f), sf::Vector2f(441.0f, 153.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4584.0f, 3286.0f), sf::Vector2f(410.0f, 325.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4547.0f, 3361.0f), sf::Vector2f(45.0f, 42.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4268.0f, 3466.0f), sf::Vector2f(196.0f, 97.0f)));
@@ -503,14 +516,39 @@ void World::BuildReleaseLevel() {
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4561.0f, 560.0f), sf::Vector2f(129.0f, 34.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4817.0f, 429.0f), sf::Vector2f(128.0f, 35.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4559.0f, 335.0f), sf::Vector2f(131.0f, 35.0f)));
-	//platforms.push_back(new Platform(render_window, sf::Vector2f(.0f, .0f), sf::Vector2f(.0f, .0f)));
 
+	checkpoints.erase(checkpoints.begin(), checkpoints.end());
+	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(2288.0f, 1200.0f), sf::Vector2f(40.0f, 264.0f), false));
+	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(1440.0f, 1976.0f), sf::Vector2f(40.0f, 120.0f), false));
+	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(1016.0f, 3592.0f), sf::Vector2f(40.0f, 192.0f), false));
+	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(1728.0f, 4752.0f), sf::Vector2f(40.0f, 192.0f), false));
+	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(3192.0f, 4000.0f), sf::Vector2f(40.0f, 120.0f), false));
+	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(3480.0f, 2456.0f), sf::Vector2f(40.0f, 152.0f), false));
+	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(3216.0f, 104.0f), sf::Vector2f(40.0f, 192.0f), false));
+	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(3056.0f, 1272.0f), sf::Vector2f(40.0f, 176.0f), false));
 
-	charger = new Charger(render_window, sf::Vector2f(3400.0f, 2100.0f), sf::Vector2f(40.0f, 80.0f), true);
+	gunners.erase(gunners.begin(), gunners.end());
+	gunners.push_back(new Gunner(render_window, sf::Vector2f(1224.0f, 3244.0f), sf::Vector2f(40.0f, 80.0f), true));
+	gunners.push_back(new Gunner(render_window, sf::Vector2f(216.0f, 4600.0f), sf::Vector2f(40.0f, 80.0f), true));
+	gunners.push_back(new Gunner(render_window, sf::Vector2f(4096.0f, 3928.0f), sf::Vector2f(40.0f, 80.0f), true));
 
-	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(4250.0f, 2050.0f), sf::Vector2f(40.0f, 100.0f), false);
-	boss_health_trigger = new RigidBody(sf::Vector2f(4450.0f, 1600.0f), sf::Vector2f(200.0f, 50.0f), false, false);
-	end_of_game_door = new Platform(render_window, sf::Vector2f(3990.0f, 2000.0f), sf::Vector2f(10.0f, 200.0f)); // Platform for viewing boss behavior
+	grunts.erase(grunts.begin(), grunts.end());
+	grunts.push_back(new Grunt(render_window, sf::Vector2f(704.0f, 2216.0f), sf::Vector2f(40.0f, 80.0f), true));
+	grunts.push_back(new Grunt(render_window, sf::Vector2f(384.0f, 4760.0f), sf::Vector2f(40.0f, 80.0f), true));
+	grunts.push_back(new Grunt(render_window, sf::Vector2f(1136.0f, 4760.0f), sf::Vector2f(40.0f, 80.0f), true));
+	grunts.push_back(new Grunt(render_window, sf::Vector2f(3512.0f, 3944.0f), sf::Vector2f(40.0f, 80.0f), true));
+
+	drones.erase(drones.begin(), drones.end());
+	drones.push_back(new Drone(render_window, sf::Vector2f(2128.0f, 1944.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(544.0f, 3160.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(1016.0f, 3160.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(2488.0f, 4104.0f), sf::Vector2f(30.0f, 30.0f), false));
+	drones.push_back(new Drone(render_window, sf::Vector2f(2808.0f, 4104.0f), sf::Vector2f(30.0f, 30.0f), false));
+
+	charger = new Charger(render_window, sf::Vector2f(3800.0f, 1820.0f), sf::Vector2f(40.0f, 100.0f), true);
+	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(4080.0f, 1408.0f), sf::Vector2f(200.0f, 488.0f), false);
+	boss_health_trigger = new RigidBody(sf::Vector2f(3224.0f, 1824.0f), sf::Vector2f(672.0f, 88.0f), false, false);
+	end_of_game_door = new Platform(render_window, sf::Vector2f(3912.0f, 1304.0f), sf::Vector2f(112.0f, 640.0f));
 }
 
 void World::BuildTestLevel() {

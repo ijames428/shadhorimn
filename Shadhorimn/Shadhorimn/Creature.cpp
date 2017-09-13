@@ -60,7 +60,7 @@ bool Creature::IsInPostHitInvincibility() {
 void Creature::TakeHit(sf::Int64 damage, sf::Int64 hit_stun_dur, sf::Vector2f knock_back, bool activate_invincibility, bool lock_facing_direction) {
 #ifdef _DEBUG
 	if (entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
-		damage = 0;
+		//damage = 0;
 	}
 #endif
 

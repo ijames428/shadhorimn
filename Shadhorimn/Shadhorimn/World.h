@@ -36,6 +36,8 @@ class World {
 		sf::Texture hit_point_texture;
 		sf::Texture parallax_background_texture;
 		sf::Sprite parallax_background_sprite;
+		sf::Texture foreground_behind_layer_texture;
+		sf::Sprite foreground_behind_layer_sprite;
 		std::vector<sf::Sprite> players_hit_point_sprites = std::vector<sf::Sprite>();
 		std::vector<sf::Sprite> chargers_hit_point_sprites = std::vector<sf::Sprite>();
 		sf::Int64 current_time;
