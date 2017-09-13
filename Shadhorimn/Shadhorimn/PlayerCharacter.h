@@ -19,6 +19,8 @@ class PlayerCharacter : public Creature {
 		sf::Sprite attack_sprite;
 		sf::Texture fire_texture;
 		sf::Sprite fire_sprite;
+		sf::Texture dodge_texture;
+		sf::Sprite dodge_sprite;
 		std::vector<sf::Sound> hit_sounds = std::vector<sf::Sound>();
 		sf::SoundBuffer buffer0;
 		sf::SoundBuffer buffer1;
@@ -35,7 +37,6 @@ class PlayerCharacter : public Creature {
 		sf::Int64 time_of_last_fire;
 		sf::Int64 fire_cooldown;
 		sf::Int64 fire_duration;
-		sf::CircleShape rolling_shape;
 	public:
 		bool can_take_input;
 		int max_hit_points = 10;

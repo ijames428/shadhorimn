@@ -12,13 +12,13 @@ Creature::Creature(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f
 	post_hit_invincibility_start_time = 0;
 	post_hit_invincibility_duration = 2000;
 
-	roll_start_time = 0;
-	roll_duration = 300;
-	roll_invincibility_start_time = 0;
-	roll_invincibility_duration = 150;
-	roll_height = dimensions.y / 2.0f;
+	dodge_start_time = 0;
+	dodge_duration = 300;
+	dodge_invincibility_start_time = 0;
+	dodge_invincibility_duration = 150;
+	dodge_height = dimensions.y / 2.0f;
 	usual_height = dimensions.y;
-	roll_velocity_x = 6.0f;
+	dodge_velocity_x = 6.0f;
 
 	speed = 2.0f;
 	jump_power = 1.0f;
@@ -41,8 +41,8 @@ void Creature::Draw(sf::Vector2f camera_position) {
 	render_window->draw(rectangle_shape);
 }
 
-bool Creature::IsRolling() {
-	return roll_start_time + roll_duration > current_time;
+bool Creature::IsDodging() {
+	return dodge_start_time + dodge_duration > current_time;
 }
 
 bool Creature::IsInvincible() {
@@ -50,7 +50,7 @@ bool Creature::IsInvincible() {
 }
 
 bool Creature::IsInRollInvincibility() {
-	return roll_invincibility_start_time + roll_invincibility_duration > current_time;
+	return dodge_invincibility_start_time + dodge_invincibility_duration > current_time;
 }
 
 bool Creature::IsInPostHitInvincibility() {

@@ -61,11 +61,10 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	fire_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
 	fire_sprite.setColor(player_color);
 
-	sf::CircleShape circle_shape(dimensions.x / 2.0f);
-	circle_shape.setFillColor(player_color);
-	circle_shape.setPosition(position);
-
-	rolling_shape = circle_shape;
+	dodge_texture = *Singleton<AssetManager>().Get()->GetTexture("Images/Kaltar_Dodge.png");
+	dodge_sprite = sf::Sprite(dodge_texture);
+	dodge_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
+	dodge_sprite.setColor(player_color);
 
 	if (!buffer0.loadFromFile("Sound/Hit0.wav")) {
 		throw exception("Sound file not found");
@@ -109,12 +108,12 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
 	current_time = curr_time;
 
-	if (IsRolling()) {
+	if (IsDodging()) {
 		can_take_input = false;
 		if (facing_right) {
-			velocity.x = roll_velocity_x;
+			velocity.x = dodge_velocity_x;
 		} else {
-			velocity.x = -roll_velocity_x;
+			velocity.x = -dodge_velocity_x;
 		}
 	} else if (hit_stun_start_time + hit_stun_duration > curr_time) {
 		can_take_input = false;
@@ -132,11 +131,11 @@ void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
 		can_take_input = true;
 	}
 
-	if (IsRolling()) {
-		height = roll_height;
-	} else {
-		height = usual_height;
-	}
+	//if (IsDodging()) {
+	//	height = dodge_height;
+	//} else {
+	//	height = usual_height;
+	//}
 }
 
 void PlayerCharacter::Draw(sf::Vector2f camera_position) {
@@ -150,7 +149,7 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 			attack_sprite.setColor(players_color_this_cycle);
 			fire_sprite.setColor(players_color_this_cycle);
 			running_animation->SetColor(players_color_this_cycle);
-			rolling_shape.setFillColor(players_color_this_cycle);
+			dodge_sprite.setColor(players_color_this_cycle);
 		}
 	} else {
 		if (players_color_this_cycle.a != 255) {
@@ -160,7 +159,7 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 			attack_sprite.setColor(players_color_this_cycle);
 			fire_sprite.setColor(players_color_this_cycle);
 			running_animation->SetColor(players_color_this_cycle);
-			rolling_shape.setFillColor(players_color_this_cycle);
+			dodge_sprite.setColor(players_color_this_cycle);
 		}
 	}
 
@@ -168,19 +167,26 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 		idle_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 		attack_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 		fire_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
+		dodge_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 	} else {
 		idle_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 		attack_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 		fire_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
+		dodge_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 	}
 
 	if (facing_right != running_animation->IsFacingRight()) {
 		running_animation->Flip();
 	}
 
-	if (IsRolling()) {
-		rolling_shape.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
-		render_window->draw(rolling_shape);
+	if (IsDodging()) {
+		if (facing_right) {
+			dodge_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		}
+		else {
+			dodge_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+		}
+		render_window->draw(dodge_sprite);
 	} else if (time_of_last_attack + attack_duration > current_time) {
 		if (facing_right) {
 			attack_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
@@ -228,9 +234,9 @@ void PlayerCharacter::HandleButtonARelease() {
 }
 
 void PlayerCharacter::HandleButtonBPress() {
-	if (!IsRolling() && !in_the_air) {
-		roll_start_time = current_time;
-		roll_invincibility_start_time = current_time;
+	if (!IsDodging() && !in_the_air) {
+		dodge_start_time = current_time;
+		dodge_invincibility_start_time = current_time;
 	}
 }
 

@@ -14,13 +14,13 @@ class Creature : public RigidBody {
 		float jump_power;
 		sf::Int64 post_hit_invincibility_start_time;
 		sf::Int64 post_hit_invincibility_duration;
-		sf::Int64 roll_start_time;
-		sf::Int64 roll_duration;
-		sf::Int64 roll_invincibility_start_time;
-		sf::Int64 roll_invincibility_duration;
-		float roll_height;
+		sf::Int64 dodge_start_time;
+		sf::Int64 dodge_duration;
+		sf::Int64 dodge_invincibility_start_time;
+		sf::Int64 dodge_invincibility_duration;
+		float dodge_height;
 		float usual_height;
-		float roll_velocity_x;
+		float dodge_velocity_x;
 	public:
 		sf::Int16 hit_points;
 		Creature(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);
@@ -32,7 +32,7 @@ class Creature : public RigidBody {
 		bool IsInPostHitInvincibility();
 		bool IsInRollInvincibility();
 		bool IsInvincible();
-		bool IsRolling();
+		bool IsDodging();
 };
 
 #endif
