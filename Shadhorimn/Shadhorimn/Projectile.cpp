@@ -21,6 +21,7 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
 	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY);
 	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX);
+	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_BOSS_TRIGGER);
 
 	render_window = window;
 
@@ -121,6 +122,7 @@ void Projectile::Fire(sf::Int64 curr_time, sf::Vector2f position, sf::Vector2f v
 	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
 	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY);
 	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX);
+	ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_BOSS_TRIGGER);
 }
 
 void Projectile::ExcludeFromCollision(int ent_typ) {

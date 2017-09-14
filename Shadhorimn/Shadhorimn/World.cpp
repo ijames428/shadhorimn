@@ -413,8 +413,8 @@ void World::BuildReleaseLevel() {
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1728.0f, 4752.0f), sf::Vector2f(40.0f, 192.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3192.0f, 4000.0f), sf::Vector2f(40.0f, 120.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3480.0f, 2456.0f), sf::Vector2f(40.0f, 152.0f), false);
-		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3216.0f, 104.0f), sf::Vector2f(40.0f, 192.0f), false);
-		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3056.0f, 1272.0f), sf::Vector2f(40.0f, 176.0f), false);
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3216.0f, 104.0f), sf::Vector2f(40.0f, 192.0f), false);
+		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3056.0f, 1272.0f), sf::Vector2f(40.0f, 176.0f), false);
 		current_checkpoint = starting_checkpoint;
 
 		stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, 569.0f), sf::Vector2f(420.0f, 236.0f));
@@ -573,6 +573,7 @@ void World::BuildReleaseLevel() {
 	charger = new Charger(render_window, sf::Vector2f(3800.0f, 1820.0f), sf::Vector2f(40.0f, 100.0f), true);
 	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(4080.0f, 1408.0f), sf::Vector2f(200.0f, 488.0f), false);
 	boss_health_trigger = new RigidBody(sf::Vector2f(3224.0f, 1824.0f), sf::Vector2f(672.0f, 88.0f), false, false);
+	boss_health_trigger->entity_type = ENTITY_TYPE_BOSS_TRIGGER;
 	end_of_game_door = new Platform(render_window, sf::Vector2f(3912.0f, 1304.0f), sf::Vector2f(112.0f, 640.0f));
 }
 

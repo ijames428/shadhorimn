@@ -22,12 +22,13 @@ Charger::Charger(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f d
 	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(40.0f, 10.0f), false, false);
 	HitBox->entity_type = Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX;
 
-	WallDetector = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(5.0f, 10.0f), false, false);
+	WallDetector = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(5.0f, dimensions.y - 5.0f), false, false);
 	WallDetector->entity_type = Singleton<World>::Get()->ENTITY_TYPE_WALL_DETECTOR;
 	WallDetector->entities_excluded_from_collision.push_back(entity_type);
 	WallDetector->entities_excluded_from_collision.push_back(HitBox->entity_type);
 	WallDetector->entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
 	WallDetector->entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_END_OF_THE_GAME);
+	WallDetector->entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_BOSS_TRIGGER);
 
 	movement_speed = 1.0f;
 	charge_speed = 8.0f;
@@ -49,6 +50,7 @@ Charger::Charger(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f d
 		projectiles[i]->ExcludeFromCollision(HitBox->entity_type);
 		projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
 		projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_END_OF_THE_GAME);
+		projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_BOSS_TRIGGER);
 	}
 }
 

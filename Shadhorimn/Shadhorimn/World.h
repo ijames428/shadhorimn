@@ -80,6 +80,7 @@ class World {
 		const int ENTITY_TYPE_HIT_BOX = 11;
 		const int ENTITY_TYPE_WALL_DETECTOR = 12;
 		const int ENTITY_TYPE_STALAGTITE = 13;
+		const int ENTITY_TYPE_BOSS_TRIGGER = 14;
 		int starting_number_of_lives = 2;
 		int current_number_of_lives = 2;
 		bool paused;
