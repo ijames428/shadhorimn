@@ -54,6 +54,8 @@ class World {
 		std::vector<Drone*> drones = std::vector<Drone*>();
 		RigidBody* boss_health_trigger;
 		Platform* end_of_game_door;
+		Platform* stalagtite;
+		int stalagtite_hit_points = 3;
 		bool fighting_boss;
 		Charger* charger;
 		int grid_width = 100;
@@ -77,6 +79,7 @@ class World {
 		const int ENTITY_TYPE_RIGID_BODY = 10;
 		const int ENTITY_TYPE_HIT_BOX = 11;
 		const int ENTITY_TYPE_WALL_DETECTOR = 12;
+		const int ENTITY_TYPE_STALAGTITE = 13;
 		int starting_number_of_lives = 2;
 		int current_number_of_lives = 2;
 		bool paused;
@@ -98,4 +101,5 @@ class World {
 		bool IsObjectInUpdateRange(RigidBody* rb);
 		bool IsNewGame();
 		void StartNewGame();
+		void HitStalagtite();
 };

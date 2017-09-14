@@ -106,6 +106,17 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				end_of_game_door->velocity = sf::Vector2f(0.0f, 0.0f);
 			}
 
+			if (stalagtite_hit_points <= 0) {
+				if (stalagtite->y < 1500.0f) {
+					stalagtite->gravity_enabled = true;
+				} else if (stalagtite->velocity.y != 0.0f) {
+					stalagtite->gravity_enabled = false;
+					stalagtite->y = 1501.0f;
+					stalagtite->velocity.y = 0.0f;
+					ScreenShake(5.0f);
+				}
+			}
+
 			screen_shake_amount.x = screen_shake_magnitude * 5.0f * (rand() % 2 == 0 ? 1.0f : -1.0f);
 			screen_shake_amount.y = screen_shake_magnitude * 5.0f * (rand() % 2 == 0 ? 1.0f : -1.0f);
 
@@ -189,6 +200,10 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			if (IsObjectInUpdateRange((RigidBody*)end_of_game_door)) {
 				end_of_game_door->Update(frame_delta);
 				end_of_game_door->Draw(viewport_position_with_screen_shake);
+			}
+			if (IsObjectInUpdateRange((RigidBody*)stalagtite)) {
+				stalagtite->Update(frame_delta);
+				stalagtite->Draw(viewport_position_with_screen_shake);
 			}
 			for (int i = 0; i < (int)platforms.size(); i++) {
 				if (IsObjectInUpdateRange((RigidBody*)platforms[i])) {
@@ -385,6 +400,10 @@ bool World::IsNewGame() {
 	return current_number_of_lives == starting_number_of_lives;
 }
 
+void World::HitStalagtite() {
+	stalagtite_hit_points--;
+}
+
 void World::BuildReleaseLevel() {
 	if (IsNewGame()) {
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 150.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position	
@@ -395,8 +414,14 @@ void World::BuildReleaseLevel() {
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3192.0f, 4000.0f), sf::Vector2f(40.0f, 120.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3480.0f, 2456.0f), sf::Vector2f(40.0f, 152.0f), false);
 		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3216.0f, 104.0f), sf::Vector2f(40.0f, 192.0f), false);
-		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3056.0f, 1272.0f), sf::Vector2f(40.0f, 176.0f), false);																											 //starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);//boss room platform
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3056.0f, 1272.0f), sf::Vector2f(40.0f, 176.0f), false);
 		current_checkpoint = starting_checkpoint;
+
+		stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, 569.0f), sf::Vector2f(420.0f, 236.0f));
+		stalagtite->entity_type = ENTITY_TYPE_STALAGTITE;
+	} else {
+		stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, 1501.0f), sf::Vector2f(420.0f, 236.0f));
+		stalagtite->entity_type = ENTITY_TYPE_STALAGTITE;
 	}
 
 	main_character->x = current_checkpoint->x;

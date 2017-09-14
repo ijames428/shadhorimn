@@ -279,20 +279,15 @@ void PlayerCharacter::HandleButtonXPress() {
 				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE) {
 				((Projectile*)(hit_objects[i]))->fired_velocity.x *= -1.5f;
 
-				//std::vector<int> temp_entities_excluded_from_collision = ((Projectile*)(hit_objects[i]))->entities_excluded_from_collision;
 				((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.erase(((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.begin(), ((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.end());
 
 				((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
 				((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY);
 				((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX);
-				//
-				//for (int eefc = 0; eefc < (int)temp_entities_excluded_from_collision.size(); eefc++) {
-				//	if (temp_entities_excluded_from_collision[eefc] != Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
-				//		((Projectile*)(hit_objects[i]))->ExcludeFromCollision(temp_entities_excluded_from_collision[eefc]);
-				//	}
-				//}
-				//
-				//((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_DRONE);
+			}
+
+			if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_STALAGTITE) {
+				Singleton<World>::Get()->HitStalagtite();
 			}
 		}
 

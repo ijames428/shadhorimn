@@ -88,6 +88,10 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 				}
 			}
 
+			if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_STALAGTITE) {
+				Singleton<World>::Get()->HitStalagtite();
+			}
+
 			if (deactivate) {
 				is_active = false;
 				time_of_impact = current_time;
