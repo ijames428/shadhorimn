@@ -394,8 +394,8 @@ void World::BuildReleaseLevel() {
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1728.0f, 4752.0f), sf::Vector2f(40.0f, 192.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3192.0f, 4000.0f), sf::Vector2f(40.0f, 120.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3480.0f, 2456.0f), sf::Vector2f(40.0f, 152.0f), false);
-		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3216.0f, 104.0f), sf::Vector2f(40.0f, 192.0f), false);
-		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3056.0f, 1272.0f), sf::Vector2f(40.0f, 176.0f), false);																											 //starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);//boss room platform
+		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3216.0f, 104.0f), sf::Vector2f(40.0f, 192.0f), false);
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3056.0f, 1272.0f), sf::Vector2f(40.0f, 176.0f), false);																											 //starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3780.0f, 2100.0f), sf::Vector2f(1.0f, 1.0f), false);//boss room platform
 		current_checkpoint = starting_checkpoint;
 	}
 
@@ -497,7 +497,7 @@ void World::BuildReleaseLevel() {
 	platforms.push_back(new Platform(render_window, sf::Vector2f(3908.0f, 336.0f), sf::Vector2f(482.0f, 979.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(3643.0f, 267.0f), sf::Vector2f(456.0f, 94.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(3204.0f, 336.0f), sf::Vector2f(703.0f, 577.0f)));
-	platforms.push_back(new Platform(render_window, sf::Vector2f(2944.0f, 817.0f), sf::Vector2f(273.0f, 98.0f)));
+	platforms.push_back(new Platform(render_window, sf::Vector2f(2871.0f, 681.0f), sf::Vector2f(343.0f, 233.0f)));//
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2033.0f, 25.0f), sf::Vector2f(944.0f, 545.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4817.0f, 2405.0f), sf::Vector2f(28.0f, 107.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4790.0f, 2491.0f), sf::Vector2f(53.0f, 21.0f)));
