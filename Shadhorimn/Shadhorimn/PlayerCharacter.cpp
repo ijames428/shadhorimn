@@ -12,7 +12,7 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	hit_points = 10;
 	can_take_input = true;
 	time_of_last_attack = 0;
-	attack_cooldown = 500;
+	attack_cooldown = 600;
 	attack_duration = 100;
 	time_of_last_fire = 0;
 	fire_cooldown = 1000;
@@ -283,7 +283,7 @@ void PlayerCharacter::HandleButtonXPress() {
 					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GRUNT ||
 					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
 					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER)) {
-				((Creature*)(hit_objects[i]))->TakeHit(1, 750, knock_back);
+				((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back);
 			}
 
 			if (!hit_objects[i]->only_collide_with_platforms &&
