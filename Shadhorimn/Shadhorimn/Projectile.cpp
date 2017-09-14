@@ -76,8 +76,7 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 
 			if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE ||
 				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GRUNT ||
-				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
-				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER) {
+				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER) {
 				((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back);
 			}
 

@@ -22,11 +22,13 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	HitBox->entities_excluded_from_collision.push_back(entity_type);
 	HitBox->entity_type = Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX;
 
-	test_projectile = new Projectile(window, position, sf::Vector2f(20.0f, 20.0f), false);
-	test_projectile->ExcludeFromCollision(entity_type);
-	test_projectile->ExcludeFromCollision(HitBox->entity_type);
+	for (int i = 0; i < 10; i++) {
+		projectiles.push_back(new Projectile(window, position, sf::Vector2f(20.0f, 20.0f), false));
+		projectiles[i]->ExcludeFromCollision(entity_type);
+		projectiles[i]->ExcludeFromCollision(HitBox->entity_type);
+	}
 
-	entities_excluded_from_collision.push_back(test_projectile->entity_type);
+	entities_excluded_from_collision.push_back(projectiles[0]->entity_type);
 
 	speed = 5.0f;
 	jump_power = 12.0f;
@@ -130,12 +132,21 @@ void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
 		lock_facing_direction_when_hit = false;
 		can_take_input = true;
 	}
+}
 
-	//if (IsDodging()) {
-	//	height = dodge_height;
-	//} else {
-	//	height = usual_height;
-	//}
+void PlayerCharacter::UpdateProjectiles(sf::Int64 curr_time, sf::Int64 frame_delta) {
+	for (int i = 0; i < (int)(projectiles.size()); i++) {
+		if (projectiles[i]->is_active) {
+			projectiles[i]->Update(frame_delta);
+			projectiles[i]->UpdateProjectile(curr_time);
+		}
+	}
+}
+
+void PlayerCharacter::DrawProjectiles(sf::Vector2f camera_position, sf::Int64 curr_time) {
+	for (int i = 0; i < (int)(projectiles.size()); i++) {
+		projectiles[i]->Draw(camera_position, curr_time);
+	}
 }
 
 void PlayerCharacter::Draw(sf::Vector2f camera_position) {
@@ -272,7 +283,7 @@ void PlayerCharacter::HandleButtonXPress() {
 					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GRUNT ||
 					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
 					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER)) {
-				((Creature*)(hit_objects[i]))->TakeHit(1, 1000, knock_back);
+				((Creature*)(hit_objects[i]))->TakeHit(1, 750, knock_back);
 			}
 
 			if (!hit_objects[i]->only_collide_with_platforms &&
@@ -305,21 +316,29 @@ void PlayerCharacter::HandleButtonYPress() {
 			velocity.y = 0.0f;
 		}
 
-		time_of_last_fire = current_time;
+		for (int i = 0; i < (int)(projectiles.size()); i++) {
+			if (!projectiles[i]->is_active) {
+				float x_velocity = 10.0f;
+				sf::Vector2f kick_back = sf::Vector2f(1.6f, 0.0f);
+				sf::Vector2f starting_position = sf::Vector2f(x - projectiles[i]->width, y);
 
-		float x_velocity = 10.0f;
-		sf::Vector2f kick_back = sf::Vector2f(1.6f, 0.0f);
-		sf::Vector2f starting_position = sf::Vector2f(x - test_projectile->width, y);
-		if (!facing_right) {
-			x_velocity *= -1.0f;
-		} else {
-			kick_back.x *= -1.0f;
-			starting_position.x += width + test_projectile->width;
+				if (!facing_right) {
+					x_velocity *= -1.0f;
+				} else {
+					kick_back.x *= -1.0f;
+					starting_position.x += width + projectiles[i]->width;
+				}
+
+				TakeHit(0, 200, kick_back, false, true);
+				projectiles[i]->Fire(current_time, starting_position, sf::Vector2f(x_velocity, 0.0f));
+				projectiles[i]->ExcludeFromCollision(entity_type);
+				projectiles[i]->ExcludeFromCollision(HitBox->entity_type);
+
+				time_of_last_fire = current_time;
+
+				break;
+			}
 		}
-		TakeHit(0, 200, kick_back, false, true);
-		test_projectile->Fire(current_time, starting_position, sf::Vector2f(x_velocity, 0.0f));
-		test_projectile->ExcludeFromCollision(entity_type);
-		test_projectile->ExcludeFromCollision(HitBox->entity_type);
 	}
 }
 

@@ -148,13 +148,8 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			main_character->Draw(viewport_position_with_screen_shake);
 			main_character->Update(frame_delta);
 			main_character->UpdatePlayerCharacter(current_time);
-
-			if (main_character->test_projectile->is_active) {
-				main_character->test_projectile->Update(frame_delta);
-				main_character->test_projectile->UpdateProjectile(current_time);
-			}
-			main_character->test_projectile->Draw(viewport_position_with_screen_shake, current_time);
-
+			main_character->UpdateProjectiles(current_time, frame_delta);
+			main_character->DrawProjectiles(viewport_position_with_screen_shake, current_time);
 
 			if (fighting_boss) {
 				player_is_in_combat = true;
