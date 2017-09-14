@@ -23,6 +23,7 @@ Charger::Charger(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f d
 	HitBox->entity_type = Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX;
 
 	WallDetector = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(5.0f, dimensions.y - 5.0f), false, false);
+	WallDetector->collision_enabled = false;
 	WallDetector->entity_type = Singleton<World>::Get()->ENTITY_TYPE_WALL_DETECTOR;
 	WallDetector->entities_excluded_from_collision.push_back(entity_type);
 	WallDetector->entities_excluded_from_collision.push_back(HitBox->entity_type);
@@ -93,6 +94,7 @@ void Charger::UpdateBehavior(sf::Int64 curr_time) {
 							FireSecondStageProjectiles();
 						}
 						Singleton<World>::Get()->ScreenShake(2.0f);
+						is_charging = false;
 					} else if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 						if (!((Creature*)(hit_objects[i]))->IsInvincible()) {
 							((Creature*)(hit_objects[i]))->TakeHit(3, 1000, knock_back);
@@ -103,9 +105,9 @@ void Charger::UpdateBehavior(sf::Int64 curr_time) {
 							}
 							Singleton<World>::Get()->ScreenShake(2.0f);
 						}
-					}
 
-					is_charging = false;
+						is_charging = false;
+					}
 				}
 			} else {
 				StartCharge();

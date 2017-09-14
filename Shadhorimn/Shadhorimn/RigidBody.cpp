@@ -132,9 +132,9 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 								future_x = x - (x - (colliders[c]->x + colliders[c]->width));
 							}
 
-							if (abs(future_x - x) > velocity.x * 1.5f) {
-								future_x = x;
-							}
+							//if (abs(future_x - x) > abs(velocity.x)) {
+							//	future_x = x;
+							//}
 
 							velocity.x = 0.0f;
 						}
@@ -147,9 +147,9 @@ void RigidBody::ChangeFutureValuesAndVelocityBasedOnCollisions() {
 								future_y = y - (y - (colliders[c]->y + colliders[c]->height));
 							}
 
-							if (abs(future_y - y) > velocity.y * 1.5f) {
-								future_y = y;
-							}
+							//if (abs(future_y - y) > abs(velocity.y)) {
+							//	future_y = y;
+							//}
 
 							velocity.y = 0.0f;
 						}
