@@ -3,6 +3,7 @@ using namespace std;
 #include "Charger.h"
 #include "World.h"
 #include "Singleton.h"
+#include "Settings.h"
 #define PI 3.14159265
 
 Charger::Charger(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : Creature::Creature(window, position, dimensions, subject_to_gravity) {
@@ -53,6 +54,14 @@ Charger::Charger(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f d
 		projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_END_OF_THE_GAME);
 		projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_BOSS_TRIGGER);
 	}
+
+	if (!hitting_wall_buffer.loadFromFile("Sound/charger_hitting_wall.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		hitting_wall_sound.setBuffer(hitting_wall_buffer);
+		hitting_wall_sound.setVolume(50 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
+		hitting_wall_sound.setLoop(false);
+	}
 }
 
 void Charger::UpdateBehavior(sf::Int64 curr_time) {
@@ -94,6 +103,7 @@ void Charger::UpdateBehavior(sf::Int64 curr_time) {
 							FireSecondStageProjectiles();
 						}
 						Singleton<World>::Get()->ScreenShake(2.0f);
+						hitting_wall_sound.play();
 						is_charging = false;
 					} else if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 						if (!((Creature*)(hit_objects[i]))->IsInvincible()) {

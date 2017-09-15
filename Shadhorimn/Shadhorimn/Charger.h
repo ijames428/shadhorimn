@@ -9,6 +9,8 @@ using namespace std;
 
 class Charger : public Creature {
 private:
+	sf::Sound hitting_wall_sound;
+	sf::SoundBuffer hitting_wall_buffer;
 	std::vector<Projectile*> projectiles = std::vector<Projectile*>();
 	float movement_speed;
 	bool is_charging;
