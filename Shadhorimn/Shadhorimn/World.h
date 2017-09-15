@@ -13,6 +13,8 @@ using namespace std;
 
 class World {
 	private:
+		sf::Sound sound_stalagtite_landing;
+		sf::SoundBuffer buffer_stalagtite_landing;
 		sf::Vector2f screen_shake_amount;
 		sf::Vector2f camera_position;
 		sf::Vector2f viewport_position_with_screen_shake;

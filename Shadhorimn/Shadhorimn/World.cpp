@@ -1,6 +1,8 @@
 using namespace std;
 #include <iostream>
 #include "World.h"
+#include "Singleton.h"
+#include "Settings.h"
 
 World::World() {
 }
@@ -70,6 +72,14 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	continue_text.setFont(ringbearer_font);
 	continue_text.setString("You have " + std::to_string(current_number_of_lives) + " lives left.\nPress Start to continue.");
 	continue_text.setPosition(camera->viewport_dimensions.x / 2.0f - 150.0f, camera->viewport_dimensions.y / 2.0f - 100.0f);
+
+	if (!buffer_stalagtite_landing.loadFromFile("Sound/stalagtite_landing.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		sound_stalagtite_landing.setBuffer(buffer_stalagtite_landing);
+		sound_stalagtite_landing.setVolume(50 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
+		sound_stalagtite_landing.setLoop(false);
+	}
 }
 
 void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
@@ -114,6 +124,7 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 					stalagtite->y = 1501.0f;
 					stalagtite->velocity.y = 0.0f;
 					ScreenShake(5.0f);
+					sound_stalagtite_landing.play();
 				}
 			}
 
@@ -401,23 +412,23 @@ void World::HitStalagtite() {
 
 void World::BuildReleaseLevel() {
 	if (IsNewGame()) {
-		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 150.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position	
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 150.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position	
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(2288.0f, 1200.0f), sf::Vector2f(40.0f, 264.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1440.0f, 1976.0f), sf::Vector2f(40.0f, 120.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1016.0f, 3592.0f), sf::Vector2f(40.0f, 192.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1728.0f, 4752.0f), sf::Vector2f(40.0f, 192.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3192.0f, 4000.0f), sf::Vector2f(40.0f, 120.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3480.0f, 2456.0f), sf::Vector2f(40.0f, 152.0f), false);
-		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3216.0f, 104.0f), sf::Vector2f(40.0f, 192.0f), false);
+		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3216.0f, 104.0f), sf::Vector2f(40.0f, 192.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3056.0f, 1272.0f), sf::Vector2f(40.0f, 176.0f), false);
 		current_checkpoint = starting_checkpoint;
 
 		stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, 569.0f), sf::Vector2f(420.0f, 236.0f));
 		stalagtite->entity_type = ENTITY_TYPE_STALAGTITE;
+	} else {
+		stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, stalagtite->y), sf::Vector2f(420.0f, 236.0f));
+		stalagtite->entity_type = ENTITY_TYPE_STALAGTITE;
 	}
-
-	stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, stalagtite->y), sf::Vector2f(420.0f, 236.0f));
-	stalagtite->entity_type = ENTITY_TYPE_STALAGTITE;
 
 	main_character->x = current_checkpoint->x;
 	main_character->y = current_checkpoint->y + current_checkpoint->height - main_character->height;
