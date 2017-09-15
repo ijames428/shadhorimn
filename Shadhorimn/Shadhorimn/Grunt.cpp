@@ -10,7 +10,7 @@ Grunt::Grunt(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimen
 	entity_type = Singleton<World>::Get()->ENTITY_TYPE_GRUNT;
 	hit_points = 3;
 	jump_power = 1.0f;
-	aggro_radius = 200.0f;
+	aggro_radius = 500.0f;
 	attack_radius = 75.0f;
 	is_aggroed = false;
 	movement_speed = 1.0f;

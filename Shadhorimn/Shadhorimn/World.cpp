@@ -414,10 +414,10 @@ void World::BuildReleaseLevel() {
 
 		stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, 569.0f), sf::Vector2f(420.0f, 236.0f));
 		stalagtite->entity_type = ENTITY_TYPE_STALAGTITE;
-	} else {
-		stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, 1501.0f), sf::Vector2f(420.0f, 236.0f));
-		stalagtite->entity_type = ENTITY_TYPE_STALAGTITE;
 	}
+
+	stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, stalagtite->y), sf::Vector2f(420.0f, 236.0f));
+	stalagtite->entity_type = ENTITY_TYPE_STALAGTITE;
 
 	main_character->x = current_checkpoint->x;
 	main_character->y = current_checkpoint->y + current_checkpoint->height - main_character->height;

@@ -11,7 +11,7 @@ Gunner::Gunner(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dim
 	hit_points = 2;
 
 	jump_power = 1.0f;
-	aggro_radius = 200.0f;
+	aggro_radius = 500.0f;
 	is_aggroed = false;
 	fire_duration = 200;
 	movement_speed = 1.0f;
