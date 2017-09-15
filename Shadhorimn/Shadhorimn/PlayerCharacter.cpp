@@ -105,6 +105,13 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 		soundJump.setBuffer(bufferJump);
 		soundJump.setVolume(20 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
 	}
+
+	if (!sword_whiffing_buffer.loadFromFile("Sound/sword_whiffing.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		sword_whiffing_sound.setBuffer(sword_whiffing_buffer);
+		sword_whiffing_sound.setVolume(Singleton<Settings>().Get()->effects_volume);
+	}
 }
 
 void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
@@ -273,33 +280,37 @@ void PlayerCharacter::HandleButtonXPress() {
 		HitBox->Update(0);
 		std::vector<RigidBody*> hit_objects = HitBox->GetCollidersRigidBodyIsCollidingWith();
 
-		for (int i = 0; i < (int)hit_objects.size(); i++) {
-			if (hit_sounds.size() > 0) {
-				hit_sounds[rand() % 3].play();
+		if (hit_objects.size() > 0) {
+			for (int i = 0; i < (int)hit_objects.size(); i++) {
+				if (hit_sounds.size() > 0) {
+					hit_sounds[rand() % 3].play();
+				}
+
+				if (!hit_objects[i]->only_collide_with_platforms &&
+					(hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE ||
+						hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GRUNT ||
+						hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
+						hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER)) {
+					((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back);
+				}
+
+				if (!hit_objects[i]->only_collide_with_platforms &&
+					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE) {
+					((Projectile*)(hit_objects[i]))->fired_velocity.x *= -1.5f;
+
+					((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.erase(((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.begin(), ((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.end());
+
+					((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
+					((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY);
+					((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX);
+				}
+
+				if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_STALAGTITE) {
+					Singleton<World>::Get()->HitStalagtite();
+				}
 			}
-
-			if (!hit_objects[i]->only_collide_with_platforms &&
-				(hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE ||
-					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GRUNT ||
-					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
-					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER)) {
-				((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back);
-			}
-
-			if (!hit_objects[i]->only_collide_with_platforms &&
-				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE) {
-				((Projectile*)(hit_objects[i]))->fired_velocity.x *= -1.5f;
-
-				((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.erase(((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.begin(), ((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.end());
-
-				((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
-				((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY);
-				((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX);
-			}
-
-			if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_STALAGTITE) {
-				Singleton<World>::Get()->HitStalagtite();
-			}
+		} else {
+			sword_whiffing_sound.play();
 		}
 
 		Singleton<World>::Get()->ScreenShake(hit_objects.size() > 0 ? 1.0f : 0.0f);
