@@ -157,9 +157,9 @@ int main()
 		time = clock.getElapsedTime();
 		time_current = time.asMicroseconds();
 
-		a_button_current = sf::Joystick::isButtonPressed(0, a_button);
-		b_button_current = sf::Joystick::isButtonPressed(0, b_button);
-		start_button_current = sf::Joystick::isButtonPressed(0, start_button);
+		a_button_current = sf::Joystick::isButtonPressed(0, a_button) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+		b_button_current = sf::Joystick::isButtonPressed(0, b_button) || sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+		start_button_current = sf::Joystick::isButtonPressed(0, start_button) || sf::Keyboard::isKeyPressed(sf::Keyboard::Return);
 
 		if (time_previous + microseconds_per_frame < time_current) {
 			frame_delta = time_current - time_previous;
