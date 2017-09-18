@@ -33,8 +33,8 @@ Charger::Charger(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f d
 	WallDetector->entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_BOSS_TRIGGER);
 
 	movement_speed = 1.0f;
-	charge_speed = 8.0f;
-	charge_speed_second_stage = 12.0f;
+	charge_speed = 7.0f;
+	charge_speed_second_stage = 10.0f;
 
 	charge_velocity = sf::Vector2f(0.0f, 0.0f);
 
@@ -145,6 +145,11 @@ void Charger::FireSecondStageProjectiles() {
 	projectiles[2]->Fire(current_time, starting_position, sf::Vector2f(0.0f, -projectile_speed));
 	projectiles[3]->Fire(current_time, starting_position, sf::Vector2f(angled_speed, -angled_speed));
 	projectiles[4]->Fire(current_time, starting_position, sf::Vector2f(projectile_speed, 0.0f));
+
+	for (int i = 0; i < (int)(projectiles.size()); i++) {
+		projectiles[i]->ExcludeFromCollision(entity_type);
+		projectiles[i]->ExcludeFromCollision(HitBox->entity_type);
+	}
 }
 
 bool Charger::IsInSecondStage() {
