@@ -4,6 +4,7 @@ using namespace std;
 #include "World.h"
 #include "Singleton.h"
 #include "AssetManager.h"
+#include "Settings.h"
 #define PI 3.14159265
 
 Grunt::Grunt(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : Creature::Creature(window, position, dimensions, subject_to_gravity) {
@@ -43,6 +44,20 @@ Grunt::Grunt(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimen
 	attack_sprite.setColor(grunt_color);
 
 	target = Singleton<World>::Get()->main_character;
+
+	if (!sword_whiffing_buffer.loadFromFile("Sound/sword_whiffing.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		sword_whiffing_sound.setBuffer(sword_whiffing_buffer);
+		sword_whiffing_sound.setVolume(Singleton<Settings>().Get()->effects_volume);
+	}
+
+	if (!sword_hitting_enemy_buffer.loadFromFile("Sound/sword_hitting.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		sword_hitting_enemy_sound.setBuffer(sword_hitting_enemy_buffer);
+		sword_hitting_enemy_sound.setVolume(Singleton<Settings>().Get()->effects_volume);
+	}
 }
 
 void Grunt::UpdateBehavior(sf::Int64 curr_time) {
@@ -82,12 +97,21 @@ void Grunt::UpdateBehavior(sf::Int64 curr_time) {
 					HitBox->Update(0);
 					std::vector<RigidBody*> hit_objects = HitBox->GetCollidersRigidBodyIsCollidingWith();
 
+					bool hit_player = false;
+
 					for (int i = 0; i < (int)hit_objects.size(); i++) {
 						if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 							if (!((Creature*)(hit_objects[i]))->IsInvincible()) {
 								((Creature*)(hit_objects[i]))->TakeHit(1, 1000, knock_back);
+								hit_player = true;
 							}
 						}
+					}
+
+					if (hit_player) {
+						sword_hitting_enemy_sound.play();
+					} else {
+						sword_whiffing_sound.play();
 					}
 
 					time_of_last_attack = current_time;

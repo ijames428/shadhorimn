@@ -26,6 +26,10 @@ private:
 	float idle_sprite_scale;
 	sf::Texture attack_texture;
 	sf::Sprite attack_sprite;
+	sf::Sound sword_hitting_enemy_sound;
+	sf::SoundBuffer sword_hitting_enemy_buffer;
+	sf::Sound sword_whiffing_sound;
+	sf::SoundBuffer sword_whiffing_buffer;
 public:
 	Grunt(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);
 	void UpdateBehavior(sf::Int64 curr_time);
