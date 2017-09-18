@@ -13,6 +13,9 @@ using namespace std;
 
 class World {
 	private:
+		float door_opening_volume;
+		sf::Sound door_opening_sound;
+		sf::SoundBuffer door_opening_buffer;
 		sf::Sound sound_stalagtite_landing;
 		sf::SoundBuffer buffer_stalagtite_landing;
 		sf::Vector2f screen_shake_amount;

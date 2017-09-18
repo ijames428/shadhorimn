@@ -80,6 +80,15 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 		sound_stalagtite_landing.setVolume(50 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
 		sound_stalagtite_landing.setLoop(false);
 	}
+
+	if (!door_opening_buffer.loadFromFile("Sound/door_opening.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		door_opening_volume = 0.0f;
+		door_opening_sound.setBuffer(door_opening_buffer);
+		door_opening_sound.setVolume(door_opening_volume * (Singleton<Settings>().Get()->effects_volume / 100.0f));
+		door_opening_sound.setLoop(true);
+	}
 }
 
 void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
@@ -112,8 +121,18 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				end_of_game_door->velocity = sf::Vector2f(0.0f, -1.0f);
 				ScreenShake(0.5f);
 				fighting_boss = false;
+				door_opening_volume = door_opening_volume > 100.0f ? 100.0f : door_opening_volume + 5.0f;
+				door_opening_sound.setVolume(door_opening_volume * (Singleton<Settings>().Get()->effects_volume / 100.0f));
+				if (door_opening_sound.getStatus() != sf::Sound::Status::Playing) {
+					door_opening_sound.play();
+				}
 			} else {
 				end_of_game_door->velocity = sf::Vector2f(0.0f, 0.0f);
+				door_opening_volume = door_opening_volume < 0.0f ? 0.0f : door_opening_volume - 5.0f;
+				door_opening_sound.setVolume(door_opening_volume * (Singleton<Settings>().Get()->effects_volume / 100.0f));
+				if (door_opening_volume == 0.0f) {
+					door_opening_sound.stop();
+				}
 			}
 
 			if (stalagtite_hit_points <= 0) {
@@ -412,7 +431,7 @@ void World::HitStalagtite() {
 
 void World::BuildReleaseLevel() {
 	if (IsNewGame()) {
-		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 150.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position	
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 150.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position	
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(2288.0f, 1200.0f), sf::Vector2f(40.0f, 264.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1440.0f, 1976.0f), sf::Vector2f(40.0f, 120.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1016.0f, 3592.0f), sf::Vector2f(40.0f, 192.0f), false);
@@ -420,7 +439,7 @@ void World::BuildReleaseLevel() {
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3192.0f, 4000.0f), sf::Vector2f(40.0f, 120.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3480.0f, 2456.0f), sf::Vector2f(40.0f, 152.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3216.0f, 104.0f), sf::Vector2f(40.0f, 192.0f), false);
-		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3056.0f, 1272.0f), sf::Vector2f(40.0f, 176.0f), false);
+		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3056.0f, 1272.0f), sf::Vector2f(40.0f, 176.0f), false);
 		current_checkpoint = starting_checkpoint;
 
 		stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, 569.0f), sf::Vector2f(420.0f, 236.0f));
