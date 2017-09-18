@@ -119,6 +119,13 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 		sword_hitting_enemy_sound.setBuffer(sword_hitting_enemy_buffer);
 		sword_hitting_enemy_sound.setVolume(Singleton<Settings>().Get()->effects_volume);
 	}
+
+	if (!firing_projectile_buffer.loadFromFile("Sound/kaltar_firing.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		firing_projectile_sound.setBuffer(firing_projectile_buffer);
+		firing_projectile_sound.setVolume(Singleton<Settings>().Get()->effects_volume * 2.0f);
+	}
 }
 
 void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
@@ -358,6 +365,8 @@ void PlayerCharacter::HandleButtonYPress() {
 				projectiles[i]->ExcludeFromCollision(HitBox->entity_type);
 
 				time_of_last_fire = current_time;
+
+				firing_projectile_sound.play();
 
 				break;
 			}
