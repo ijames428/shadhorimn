@@ -218,9 +218,17 @@ int main()
 						}
 					}
 				} else if (Singleton<World>::Get()->DidThePlayerBeatTheGame()) {
-					GameState = GAME_STATE_CREDITS;
-					credits_text.setPosition(viewport_width / 2.0f - 120.0f, viewport_height + 50.0f);
-				}
+					frames_per_second = 10;
+					microseconds_per_frame = microseconds_in_a_second / frames_per_second;
+					input_handler->EatInputsForNumberOfFrames(1);
+					
+					if (Singleton<World>::Get()->ShouldGoToCredits()) {
+						frames_per_second = 60;
+						microseconds_per_frame = microseconds_in_a_second / frames_per_second;
+						GameState = GAME_STATE_CREDITS;
+						credits_text.setPosition(viewport_width / 2.0f - 120.0f, viewport_height + 50.0f);
+					}
+				} 
 
 				HandleClosingEvent();
 				SetPreviousButtonValues();

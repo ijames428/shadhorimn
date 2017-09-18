@@ -15,6 +15,7 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	main_character = character;
 	paused = false;
 	game_over_screen_sprite_transparency = 0;
+	end_game_fade_transparency = 0;
 	player_is_in_combat = false;
 	fighting_boss = false;
 	combat_music_range = 400.0f;
@@ -272,7 +273,6 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			level_art_sprite.setPosition(sf::Vector2f(-viewport_position_with_screen_shake.x, -viewport_position_with_screen_shake.y));
 			render_window->draw(level_art_sprite);
 
-
 			for (int i = 0; i < main_character->hit_points; i++) {
 				render_window->draw(players_hit_point_sprites[i]);
 			}
@@ -284,6 +284,25 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			}
 
 			render_window->draw(lives_counter_text);
+
+			if (player_beat_the_game) {
+				if (end_game_fade_transparency >= 255) {
+					end_game_fade_transparency = 255;
+				} else {
+					end_game_fade_transparency += 5;
+				}
+
+				main_character->velocity = sf::Vector2f(3.0f, main_character->velocity.y);
+
+				blank_screen_sprite.setColor(sf::Color(255, 255, 255, end_game_fade_transparency));
+				blank_screen_sprite.setScale(2.0f, 2.0f);
+				//blank_screen_sprite.setPosition(0.0f, 0.0f);
+				render_window->draw(blank_screen_sprite);
+
+				if (main_character->x > 4075.0f) {
+					go_to_credits = true;
+				}
+			}
 		} else {
 			//lives_counter_text.setString(std::to_string(current_number_of_lives));
 
@@ -292,6 +311,8 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 			} else {
 				game_over_screen_sprite_transparency += 1;
 			}
+
+			blank_screen_sprite.setScale(1.0f, 1.0f);
 
 			if (current_number_of_lives > 0) {
 				blank_screen_sprite.setColor(sf::Color(255, 255, 255, game_over_screen_sprite_transparency));
@@ -422,12 +443,17 @@ bool World::DidThePlayerBeatTheGame() {
 	return player_beat_the_game;
 }
 
+bool World::ShouldGoToCredits() {
+	return go_to_credits;
+}
+
 bool World::IsPlayerInCombat() {
 	return player_is_in_combat;
 }
 
 void World::StartNewGame() {
 	player_beat_the_game = false;
+	go_to_credits = false;
 	current_number_of_lives = starting_number_of_lives;
 }
 
@@ -441,7 +467,7 @@ void World::HitStalagtite() {
 
 void World::BuildReleaseLevel() {
 	if (IsNewGame()) {
-		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 150.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position	
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 150.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position	
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(2288.0f, 1200.0f), sf::Vector2f(40.0f, 264.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1440.0f, 1976.0f), sf::Vector2f(40.0f, 120.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1016.0f, 3592.0f), sf::Vector2f(40.0f, 192.0f), false);
@@ -449,7 +475,7 @@ void World::BuildReleaseLevel() {
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3192.0f, 4000.0f), sf::Vector2f(40.0f, 120.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3480.0f, 2456.0f), sf::Vector2f(40.0f, 152.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3216.0f, 104.0f), sf::Vector2f(40.0f, 192.0f), false);
-		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3056.0f, 1272.0f), sf::Vector2f(40.0f, 176.0f), false);
+		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(3056.0f, 1272.0f), sf::Vector2f(40.0f, 176.0f), false);
 		current_checkpoint = starting_checkpoint;
 
 		stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, 569.0f), sf::Vector2f(420.0f, 236.0f));
@@ -609,7 +635,7 @@ void World::BuildReleaseLevel() {
 	drones.push_back(new Drone(render_window, sf::Vector2f(2808.0f, 4104.0f), sf::Vector2f(30.0f, 30.0f), false));
 
 	charger = new Charger(render_window, sf::Vector2f(3800.0f, 1820.0f), sf::Vector2f(40.0f, 100.0f), true);
-	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(4080.0f, 1408.0f), sf::Vector2f(200.0f, 488.0f), false);
+	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(3950.0f, 1408.0f), sf::Vector2f(200.0f, 488.0f), false);
 	boss_health_trigger = new RigidBody(sf::Vector2f(3224.0f, 1824.0f), sf::Vector2f(672.0f, 88.0f), false, false);
 	boss_health_trigger->entity_type = ENTITY_TYPE_BOSS_TRIGGER;
 	end_of_game_door = new Platform(render_window, sf::Vector2f(3912.0f, 1304.0f), sf::Vector2f(112.0f, 640.0f));

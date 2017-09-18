@@ -24,6 +24,7 @@ class World {
 		sf::Vector2f parallax_background_viewport_position;
 		bool player_is_in_combat;
 		EndOfTheGame* end_of_the_game_trigger;
+		bool go_to_credits = false;
 		bool player_beat_the_game = false;
 		Checkpoint* starting_checkpoint;
 		Checkpoint* current_checkpoint;
@@ -32,6 +33,7 @@ class World {
 		sf::Text lives_counter_text;
 		sf::Text paused_text;
 		int game_over_screen_sprite_transparency;
+		int end_game_fade_transparency;
 		sf::Texture level_art_texture;
 		sf::Sprite level_art_sprite;
 		sf::Texture game_over_texture;
@@ -100,6 +102,7 @@ class World {
 		void SetCurrentCheckPoint(Checkpoint* cp);
 		void EndTheGame();
 		bool DidThePlayerBeatTheGame();
+		bool ShouldGoToCredits();
 		bool IsPlayerInCombat();
 		void BuildDevLevel();
 		void BuildTestLevel();
