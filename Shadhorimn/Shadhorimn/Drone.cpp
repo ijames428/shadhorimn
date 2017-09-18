@@ -3,6 +3,7 @@ using namespace std;
 #include "Drone.h"
 #include "World.h"
 #include "Singleton.h"
+#include "Settings.h"
 #define PI 3.14159265
 
 Drone::Drone(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : Creature::Creature(window, position, dimensions, subject_to_gravity) {
@@ -28,6 +29,13 @@ Drone::Drone(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimen
 	for (int i = 0; i < 10; i++) {
 		projectiles.push_back(new Projectile(window, position, sf::Vector2f(20.0f, 20.0f), false));
 		projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_DRONE);
+	}
+
+	if (!firing_projectile_buffer.loadFromFile("Sound/drone_firing.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		firing_projectile_sound.setBuffer(firing_projectile_buffer);
+		firing_projectile_sound.setVolume(Singleton<Settings>().Get()->effects_volume);
 	}
 }
 
@@ -81,6 +89,7 @@ void Drone::UpdateBehavior(sf::Int64 curr_time) {
 							projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_DRONE);
 
 							time_of_last_firing = current_time;
+							firing_projectile_sound.play();
 
 							break;
 						}

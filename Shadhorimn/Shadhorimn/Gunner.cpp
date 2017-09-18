@@ -4,6 +4,7 @@ using namespace std;
 #include "World.h"
 #include "Singleton.h"
 #include "AssetManager.h"
+#include "Settings.h"
 #define PI 3.14159265
 
 Gunner::Gunner(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : Creature::Creature(window, position, dimensions, subject_to_gravity) {
@@ -41,6 +42,13 @@ Gunner::Gunner(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dim
 	for (int i = 0; i < 15; i++) {
 		projectiles.push_back(new Projectile(window, position, sf::Vector2f(20.0f, 20.0f), false));
 		projectiles[i]->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_GUNNER);
+	}
+
+	if (!firing_projectile_buffer.loadFromFile("Sound/gunner_firing.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		firing_projectile_sound.setBuffer(firing_projectile_buffer);
+		firing_projectile_sound.setVolume(Singleton<Settings>().Get()->effects_volume);
 	}
 }
 
@@ -86,6 +94,8 @@ void Gunner::UpdateBehavior(sf::Int64 curr_time) {
 						shotgun_projectiles_to_be_fired[i]->ExcludeFromCollision(entity_type);
 
 						time_of_last_firing = current_time;
+						
+						firing_projectile_sound.play();
 					}
 				}
 			} else if (!in_the_air) {

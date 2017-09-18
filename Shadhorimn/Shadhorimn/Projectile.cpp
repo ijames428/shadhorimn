@@ -33,8 +33,7 @@ Projectile::Projectile(sf::RenderWindow *window, sf::Vector2f position, sf::Vect
 
 	if (!buffer0.loadFromFile("Sound/Hit0.wav")) {
 		throw exception("Sound file not found");
-	}
-	else {
+	} else {
 		hit_sound.setBuffer(buffer0);
 		hit_sound.setVolume(20 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
 	}
@@ -70,8 +69,6 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 		knock_back.y = -velocity.y / 2.0f;
 
 		for (int i = 0; i < (int)hit_objects.size(); i++) {
-			hit_sound.play();
-			
 			bool deactivate = true;
 
 			if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE ||
@@ -99,6 +96,7 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 				impact_position.y = y;
 				velocity.x = 0.0f;
 				velocity.y = 0.0f;
+				hit_sound.play();
 			}
 		}
 

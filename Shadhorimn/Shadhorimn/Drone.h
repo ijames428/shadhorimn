@@ -9,6 +9,8 @@ using namespace std;
 
 class Drone : public Creature {
 private:
+	sf::Sound firing_projectile_sound;
+	sf::SoundBuffer firing_projectile_buffer;
 	std::vector<Projectile*> projectiles = std::vector<Projectile*>();
 	float movement_speed;
 	bool is_aggroed;
