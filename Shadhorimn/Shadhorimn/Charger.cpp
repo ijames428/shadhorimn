@@ -8,7 +8,7 @@ using namespace std;
 
 Charger::Charger(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : Creature::Creature(window, position, dimensions, subject_to_gravity) {
 	entity_type = Singleton<World>::Get()->ENTITY_TYPE_CHARGER;
-	starting_hit_points = 30;
+	starting_hit_points = 15;
 	hit_points = starting_hit_points;
 
 	jump_power = 1.0f;

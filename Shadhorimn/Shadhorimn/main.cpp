@@ -149,7 +149,7 @@ int main()
 	loading_text = sf::Text("Loading...", ringbearer_font, 60);
 	loading_text.setPosition(viewport_width / 2.0f - 150.0f, viewport_height / 2.0f - 100.0f);
 
-	credits_text = sf::Text("Programmed by Ian James\n\nArt by Conor Koenig\n\n\n\n\nThank you for playing Shadhorimn", ringbearer_font);
+	credits_text = sf::Text("Made by Ian James\n\n\n\n\nThank you for playing Shadhorimn", ringbearer_font);
 	credits_text.setPosition(viewport_width / 2.0f - 220.0f, viewport_height + 50.0f);
 
 	while (window->isOpen())
@@ -288,7 +288,7 @@ void UpdateGameStateCredits() {
 	credits_text.setPosition(credits_text.getPosition().x, credits_text.getPosition().y - 1.0f);
 	window->draw(credits_text);
 
-	if (WasButtonAPressed() || WasButtonStartPressed() || credits_text.getPosition().y < - 500.0f) {
+	if (credits_text.getPosition().y < - 350.0f) {
 		GameState = GAME_STATE_START_MENU;
 	}
 

@@ -104,6 +104,10 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				frame_delta = 50;
 			}
 
+			if (door_opening_sound.getStatus() == sf::Sound::Status::Paused) {
+				door_opening_sound.play();
+			}
+
 			if (!fighting_boss && charger->hit_points > 0) {
 				boss_health_trigger->Update(frame_delta);
 
@@ -306,6 +310,9 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 		blank_screen_sprite.setColor(sf::Color(255, 255, 255, 255));
 		render_window->draw(blank_screen_sprite);
 		render_window->draw(paused_text);
+		if (door_opening_sound.getStatus() == sf::Sound::Status::Playing) {
+			door_opening_sound.pause();
+		}
 	}
 
 	render_window->display();
@@ -405,6 +412,9 @@ void World::SetCurrentCheckPoint(Checkpoint* cp) {
 }
 
 void World::EndTheGame() {
+	if (door_opening_sound.getStatus() == sf::Sound::Status::Playing) {
+		door_opening_sound.stop();
+	}
 	player_beat_the_game = true;
 }
 
