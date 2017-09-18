@@ -454,15 +454,18 @@ void World::BuildReleaseLevel() {
 
 		stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, 569.0f), sf::Vector2f(420.0f, 236.0f));
 		stalagtite->entity_type = ENTITY_TYPE_STALAGTITE;
+
+		main_character->velocity = sf::Vector2f(10.0f, -10.0f);
 	} else {
 		stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, stalagtite->y), sf::Vector2f(420.0f, 236.0f));
 		stalagtite->entity_type = ENTITY_TYPE_STALAGTITE;
+
+		main_character->velocity = sf::Vector2f(0.0f, 0.0f);
 	}
 
 	main_character->x = current_checkpoint->x;
 	main_character->y = current_checkpoint->y + current_checkpoint->height - main_character->height;
 	main_character->hit_points = main_character->max_hit_points;
-	main_character->velocity = sf::Vector2f(0.0f, 0.0f);
 
 	platforms.erase(platforms.begin(), platforms.end());
 	platforms.push_back(new Platform(render_window, sf::Vector2f(0.0f, 0.0f), sf::Vector2f(65.0f, 5000.0f)));
