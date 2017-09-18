@@ -169,7 +169,7 @@ void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
 
 	if (was_in_air && !in_the_air) {
 		hit_terminal_velocity = false;
-		landing_sound.play();
+		//landing_sound.play();
 	}
 
 	was_in_air = in_the_air;
@@ -278,7 +278,7 @@ void PlayerCharacter::HandleButtonAPress() {
 	if (!in_the_air) {
 		velocity.y = -(jump_power);
 		in_the_air = true;
-		soundJump.play();
+		//soundJump.play();
 	}
 }
 

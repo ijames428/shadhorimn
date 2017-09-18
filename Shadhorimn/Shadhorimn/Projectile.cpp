@@ -95,8 +95,8 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 				impact_position.x = x;
 				impact_position.y = y;
 				velocity.x = 0.0f;
-				velocity.y = 0.0f;
 				hit_sound.play();
+				velocity.y = 0.0f;
 			}
 		}
 
