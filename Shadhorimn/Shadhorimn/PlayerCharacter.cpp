@@ -17,6 +17,8 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	time_of_last_fire = 0;
 	fire_cooldown = 1000;
 	fire_duration = 200;
+	was_in_air = false;
+	hit_terminal_velocity = false;
 
 	HitBox = new RigidBody(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(60.0f, 10.0f), false, false);
 	HitBox->entities_excluded_from_collision.push_back(entity_type);
@@ -126,6 +128,13 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 		firing_projectile_sound.setBuffer(firing_projectile_buffer);
 		firing_projectile_sound.setVolume(Singleton<Settings>().Get()->effects_volume * 2.0f);
 	}
+
+	if (!landing_buffer.loadFromFile("Sound/player_landing.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		landing_sound.setBuffer(landing_buffer);
+		landing_sound.setVolume(Singleton<Settings>().Get()->effects_volume / 10.0f);
+	}
 }
 
 void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
@@ -153,6 +162,17 @@ void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
 		lock_facing_direction_when_hit = false;
 		can_take_input = true;
 	}
+
+	if (velocity.y > terminal_velocity * 0.99f) {
+		hit_terminal_velocity = true;
+	}
+
+	if (was_in_air && !in_the_air) {
+		hit_terminal_velocity = false;
+		landing_sound.play();
+	}
+
+	was_in_air = in_the_air;
 }
 
 void PlayerCharacter::UpdateProjectiles(sf::Int64 curr_time, sf::Int64 frame_delta) {

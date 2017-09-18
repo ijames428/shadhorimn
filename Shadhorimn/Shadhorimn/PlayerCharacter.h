@@ -10,6 +10,7 @@ using namespace std;
 
 class PlayerCharacter : public Creature {
 	private:
+		bool hit_terminal_velocity;
 		sf::Color player_color;
 		SpriteAnimation* running_animation;
 		sf::Texture idle_texture;
@@ -25,6 +26,8 @@ class PlayerCharacter : public Creature {
 		sf::SoundBuffer buffer0;
 		sf::SoundBuffer buffer1;
 		sf::SoundBuffer buffer2;
+		sf::Sound landing_sound;
+		sf::SoundBuffer landing_buffer;
 		sf::Sound sword_hitting_enemy_sound;
 		sf::SoundBuffer sword_hitting_enemy_buffer;
 		sf::Sound sword_whiffing_sound;

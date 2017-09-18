@@ -20,7 +20,7 @@ RigidBody::RigidBody(sf::Vector2f position, sf::Vector2f dimensions, bool subjec
 	weight = 10.0f;
 
 	gravity_acceleration = 0.5f;
-	terminal_velocity = 20.0f;
+	terminal_velocity = 30.0f;
 
 	velocity.x = 0.0f;
 	velocity.y = 0.0f;
