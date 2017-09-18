@@ -112,6 +112,13 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 		sword_whiffing_sound.setBuffer(sword_whiffing_buffer);
 		sword_whiffing_sound.setVolume(Singleton<Settings>().Get()->effects_volume);
 	}
+
+	if (!sword_hitting_enemy_buffer.loadFromFile("Sound/sword_hitting.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		sword_hitting_enemy_sound.setBuffer(sword_hitting_enemy_buffer);
+		sword_hitting_enemy_sound.setVolume(Singleton<Settings>().Get()->effects_volume);
+	}
 }
 
 void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
@@ -279,23 +286,21 @@ void PlayerCharacter::HandleButtonXPress() {
 		HitBox->y = y;
 		HitBox->Update(0);
 		std::vector<RigidBody*> hit_objects = HitBox->GetCollidersRigidBodyIsCollidingWith();
+		bool hit_something = false;
 
 		if (hit_objects.size() > 0) {
 			for (int i = 0; i < (int)hit_objects.size(); i++) {
-				if (hit_sounds.size() > 0) {
-					hit_sounds[rand() % 3].play();
-				}
-
 				if (!hit_objects[i]->only_collide_with_platforms &&
 					(hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE ||
 						hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GRUNT ||
 						hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
 						hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER)) {
+					hit_something = true;
 					((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back);
-				}
-
-				if (!hit_objects[i]->only_collide_with_platforms &&
+					sword_hitting_enemy_sound.play();
+				} else if (!hit_objects[i]->only_collide_with_platforms &&
 					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE) {
+					hit_something = true;
 					((Projectile*)(hit_objects[i]))->fired_velocity.x *= -1.5f;
 
 					((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.erase(((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.begin(), ((Projectile*)(hit_objects[i]))->entities_excluded_from_collision.end());
@@ -303,13 +308,20 @@ void PlayerCharacter::HandleButtonXPress() {
 					((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
 					((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_RIGID_BODY);
 					((Projectile*)(hit_objects[i]))->ExcludeFromCollision(Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX);
-				}
-
-				if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_STALAGTITE) {
+					if (hit_sounds.size() > 0) {
+						hit_sounds[rand() % 3].play();
+					}
+				} else if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_STALAGTITE) {
+					hit_something = true;
 					Singleton<World>::Get()->HitStalagtite();
+					if (hit_sounds.size() > 0) {
+						hit_sounds[rand() % 3].play();
+					}
 				}
 			}
-		} else {
+		}
+
+		if (!hit_something) {
 			sword_whiffing_sound.play();
 		}
 

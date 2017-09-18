@@ -25,6 +25,8 @@ class PlayerCharacter : public Creature {
 		sf::SoundBuffer buffer0;
 		sf::SoundBuffer buffer1;
 		sf::SoundBuffer buffer2;
+		sf::Sound sword_hitting_enemy_sound;
+		sf::SoundBuffer sword_hitting_enemy_buffer;
 		sf::Sound sword_whiffing_sound;
 		sf::SoundBuffer sword_whiffing_buffer;
 		sf::Sound soundLand;
