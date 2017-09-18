@@ -62,6 +62,14 @@ Charger::Charger(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f d
 		hitting_wall_sound.setVolume(50 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
 		hitting_wall_sound.setLoop(false);
 	}
+
+	if (!hitting_player_buffer.loadFromFile("Sound/charger_hitting_player.wav")) {
+		throw exception("Sound file not found");
+	} else {
+		hitting_player_sound.setBuffer(hitting_player_buffer);
+		hitting_player_sound.setVolume(50 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
+		hitting_player_sound.setLoop(false);
+	}
 }
 
 void Charger::UpdateBehavior(sf::Int64 curr_time) {
@@ -107,13 +115,14 @@ void Charger::UpdateBehavior(sf::Int64 curr_time) {
 						is_charging = false;
 					} else if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 						if (!((Creature*)(hit_objects[i]))->IsInvincible()) {
-							((Creature*)(hit_objects[i]))->TakeHit(3, 1000, knock_back);
+							((Creature*)(hit_objects[i]))->TakeHit(2, 1000, knock_back);
 							knock_back.x = -knock_back.x;
 							TakeHit(0, 1500, knock_back);
 							if (IsInSecondStage()) {
 								FireSecondStageProjectiles();
 							}
 							Singleton<World>::Get()->ScreenShake(2.0f);
+							hitting_player_sound.play();
 						}
 
 						is_charging = false;
