@@ -22,6 +22,10 @@ class PlayerCharacter : public Creature {
 		sf::Sprite fire_sprite;
 		sf::Texture dodge_texture;
 		sf::Sprite dodge_sprite;
+		sf::Texture taking_damage_texture;
+		sf::Sprite taking_damage_sprite;
+		sf::Texture dead_on_ground_texture;
+		sf::Sprite dead_on_ground_sprite;
 		std::vector<sf::Sound> hit_sounds = std::vector<sf::Sound>();
 		sf::SoundBuffer buffer0;
 		sf::SoundBuffer buffer1;
@@ -48,7 +52,7 @@ class PlayerCharacter : public Creature {
 		sf::Int64 fire_duration;
 	public:
 		bool can_take_input;
-		int max_hit_points = 10;
+		int max_hit_points = 1;
 		std::vector<Projectile*> projectiles = std::vector<Projectile*>();
 		PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);
 		void HandleLeftStickInput(float horizontal, float vertical);

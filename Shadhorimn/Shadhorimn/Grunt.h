@@ -30,6 +30,10 @@ private:
 	sf::SoundBuffer sword_hitting_enemy_buffer;
 	sf::Sound sword_whiffing_sound;
 	sf::SoundBuffer sword_whiffing_buffer;
+	sf::Texture taking_damage_texture;
+	sf::Sprite taking_damage_sprite;
+	sf::Texture dead_on_ground_texture;
+	sf::Sprite dead_on_ground_sprite;
 public:
 	Grunt(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);
 	void UpdateBehavior(sf::Int64 curr_time);

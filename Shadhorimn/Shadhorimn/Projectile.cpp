@@ -76,14 +76,14 @@ void Projectile::UpdateProjectile(sf::Int64 curr_time) {
 			if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_DRONE ||
 				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GRUNT ||
 				hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER) {
-				((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back);
+				((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back, false, true);
 			}
 
 			if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 				if (((Creature*)(hit_objects[i]))->IsInvincible()) {
 					deactivate = false;
 				} else {
-					((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back);
+					((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back, true, true);
 				}
 			}
 

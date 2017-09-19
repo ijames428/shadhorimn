@@ -468,8 +468,8 @@ void World::HitStalagtite() {
 
 void World::BuildReleaseLevel() {
 	if (IsNewGame()) {
-		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 150.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position	
-		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(2288.0f, 1200.0f), sf::Vector2f(40.0f, 264.0f), false);
+		starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(100.0f, 150.0f), sf::Vector2f(40.0f, 10.0f), false);//starting position	
+		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(2288.0f, 1200.0f), sf::Vector2f(40.0f, 264.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1440.0f, 1976.0f), sf::Vector2f(40.0f, 120.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1016.0f, 3592.0f), sf::Vector2f(40.0f, 192.0f), false);
 		//starting_checkpoint = new Checkpoint(render_window, sf::Vector2f(1728.0f, 4752.0f), sf::Vector2f(40.0f, 192.0f), false);
@@ -482,7 +482,7 @@ void World::BuildReleaseLevel() {
 		stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, 569.0f), sf::Vector2f(420.0f, 236.0f));
 		stalagtite->entity_type = ENTITY_TYPE_STALAGTITE;
 
-		main_character->velocity = sf::Vector2f(10.0f, -10.0f);
+		main_character->velocity = sf::Vector2f(5.0f, -5.0f);
 	} else {
 		stalagtite = new Platform(render_window, sf::Vector2f(2427.0f, stalagtite->y), sf::Vector2f(420.0f, 236.0f));
 		stalagtite->entity_type = ENTITY_TYPE_STALAGTITE;

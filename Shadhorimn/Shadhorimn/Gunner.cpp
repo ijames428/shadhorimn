@@ -35,6 +35,16 @@ Gunner::Gunner(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dim
 	fire_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
 	fire_sprite.setColor(gunner_color);
 
+	taking_damage_texture = *Singleton<AssetManager>().Get()->GetTexture("Images/kaltar_taking_damage.png");
+	taking_damage_sprite = sf::Sprite(taking_damage_texture);
+	taking_damage_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
+	taking_damage_sprite.setColor(gunner_color);
+
+	dead_on_ground_texture = *Singleton<AssetManager>().Get()->GetTexture("Images/kaltar_dead_on_ground.png");
+	dead_on_ground_sprite = sf::Sprite(dead_on_ground_texture);
+	dead_on_ground_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
+	dead_on_ground_sprite.setColor(gunner_color);
+
 	target = Singleton<World>::Get()->main_character;
 
 	time_between_firing = 1500;
@@ -125,16 +135,44 @@ void Gunner::Draw(sf::Vector2f camera_position) {
 	if (facing_right) {
 		idle_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 		fire_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
+		taking_damage_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
+		dead_on_ground_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 	} else {
 		idle_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 		fire_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
+		taking_damage_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
+		dead_on_ground_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 	}
 
 	if (facing_right != running_animation->IsFacingRight()) {
 		running_animation->Flip();
 	}
 
-	if (time_of_last_firing + fire_duration > current_time) {
+	if (hit_points <= 0) {
+		if (facing_right) {
+			taking_damage_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+			dead_on_ground_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		}
+		else {
+			taking_damage_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+			dead_on_ground_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+		}
+
+		if (in_the_air) {
+			render_window->draw(taking_damage_sprite);
+		}
+		else {
+			render_window->draw(dead_on_ground_sprite);
+		}
+	} else if (hit_stun_start_time + hit_stun_duration > current_time) {
+		if (facing_right) {
+			taking_damage_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		}
+		else {
+			taking_damage_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+		}
+		render_window->draw(taking_damage_sprite);
+	} else if (time_of_last_firing + fire_duration > current_time) {
 		if (facing_right) {
 			fire_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
 		} else {

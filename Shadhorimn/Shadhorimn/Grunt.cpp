@@ -43,6 +43,16 @@ Grunt::Grunt(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimen
 	attack_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
 	attack_sprite.setColor(grunt_color);
 
+	taking_damage_texture = *Singleton<AssetManager>().Get()->GetTexture("Images/kaltar_taking_damage.png");
+	taking_damage_sprite = sf::Sprite(taking_damage_texture);
+	taking_damage_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
+	taking_damage_sprite.setColor(grunt_color);
+
+	dead_on_ground_texture = *Singleton<AssetManager>().Get()->GetTexture("Images/kaltar_dead_on_ground.png");
+	dead_on_ground_sprite = sf::Sprite(dead_on_ground_texture);
+	dead_on_ground_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
+	dead_on_ground_sprite.setColor(grunt_color);
+
 	target = Singleton<World>::Get()->main_character;
 
 	if (!sword_whiffing_buffer.loadFromFile("Sound/sword_whiffing.wav")) {
@@ -102,7 +112,7 @@ void Grunt::UpdateBehavior(sf::Int64 curr_time) {
 					for (int i = 0; i < (int)hit_objects.size(); i++) {
 						if (hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER) {
 							if (!((Creature*)(hit_objects[i]))->IsInvincible()) {
-								((Creature*)(hit_objects[i]))->TakeHit(1, 1000, knock_back);
+								((Creature*)(hit_objects[i]))->TakeHit(1, 1000, knock_back, true, true);
 								hit_player = true;
 							}
 						}
@@ -130,16 +140,44 @@ void Grunt::Draw(sf::Vector2f camera_position) {
 	if (facing_right) {
 		idle_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 		attack_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
+		taking_damage_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
+		dead_on_ground_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 	} else {
 		idle_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 		attack_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
+		taking_damage_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
+		dead_on_ground_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 	}
 
 	if (facing_right != running_animation->IsFacingRight()) {
 		running_animation->Flip();
 	}
 
-	if (time_of_last_attack + attack_animation_duration > current_time) {
+	if (hit_points <= 0) {
+		if (facing_right) {
+			taking_damage_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+			dead_on_ground_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		}
+		else {
+			taking_damage_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+			dead_on_ground_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+		}
+
+		if (in_the_air) {
+			render_window->draw(taking_damage_sprite);
+		}
+		else {
+			render_window->draw(dead_on_ground_sprite);
+		}
+	} else if (hit_stun_start_time + hit_stun_duration > current_time) {
+		if (facing_right) {
+			taking_damage_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		}
+		else {
+			taking_damage_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+		}
+		render_window->draw(taking_damage_sprite);
+	} else if (time_of_last_attack + attack_animation_duration > current_time) {
 		if (facing_right) {
 			attack_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
 		} else {

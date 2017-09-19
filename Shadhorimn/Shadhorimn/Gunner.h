@@ -26,6 +26,10 @@ private:
 	float idle_sprite_scale;
 	sf::Texture fire_texture;
 	sf::Sprite fire_sprite;
+	sf::Texture taking_damage_texture;
+	sf::Sprite taking_damage_sprite;
+	sf::Texture dead_on_ground_texture;
+	sf::Sprite dead_on_ground_sprite;
 public:
 	Gunner(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);
 	void UpdateBehavior(sf::Int64 curr_time);

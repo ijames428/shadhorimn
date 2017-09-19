@@ -70,6 +70,16 @@ PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position
 	dodge_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
 	dodge_sprite.setColor(player_color);
 
+	taking_damage_texture = *Singleton<AssetManager>().Get()->GetTexture("Images/kaltar_taking_damage.png");
+	taking_damage_sprite = sf::Sprite(taking_damage_texture);
+	taking_damage_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
+	taking_damage_sprite.setColor(player_color);
+
+	dead_on_ground_texture = *Singleton<AssetManager>().Get()->GetTexture("Images/kaltar_dead_on_ground.png");
+	dead_on_ground_sprite = sf::Sprite(dead_on_ground_texture);
+	dead_on_ground_sprite.setScale(idle_sprite_scale, idle_sprite_scale);
+	dead_on_ground_sprite.setColor(player_color);
+
 	if (!buffer0.loadFromFile("Sound/Hit0.wav")) {
 		throw exception("Sound file not found");
 	} else {
@@ -147,7 +157,7 @@ void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
 		} else {
 			velocity.x = -dodge_velocity_x;
 		}
-	} else if (hit_stun_start_time + hit_stun_duration > curr_time) {
+	} else if (hit_stun_start_time + hit_stun_duration > current_time) {
 		can_take_input = false;
 	} else if (time_of_last_attack + attack_duration > current_time) {
 		can_take_input = false;
@@ -159,7 +169,9 @@ void PlayerCharacter::UpdatePlayerCharacter(sf::Int64 curr_time) {
 	} else if (time_of_last_fire + fire_duration > current_time) {
 		can_take_input = false;
 	} else {
-		lock_facing_direction_when_hit = false;
+		if (!in_the_air) {
+			lock_facing_direction_when_hit = false;
+		}
 		can_take_input = true;
 	}
 
@@ -202,6 +214,8 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 			fire_sprite.setColor(players_color_this_cycle);
 			running_animation->SetColor(players_color_this_cycle);
 			dodge_sprite.setColor(players_color_this_cycle);
+			taking_damage_sprite.setColor(players_color_this_cycle);
+			dead_on_ground_sprite.setColor(players_color_this_cycle);
 		}
 	} else {
 		if (players_color_this_cycle.a != 255) {
@@ -212,6 +226,8 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 			fire_sprite.setColor(players_color_this_cycle);
 			running_animation->SetColor(players_color_this_cycle);
 			dodge_sprite.setColor(players_color_this_cycle);
+			taking_damage_sprite.setColor(players_color_this_cycle);
+			dead_on_ground_sprite.setColor(players_color_this_cycle);
 		}
 	}
 
@@ -220,18 +236,37 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 		attack_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 		fire_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 		dodge_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
+		taking_damage_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
+		dead_on_ground_sprite.setScale(idle_sprite_scale, idle_sprite.getScale().y);
 	} else {
 		idle_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 		attack_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 		fire_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 		dodge_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
+		taking_damage_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
+		dead_on_ground_sprite.setScale(-idle_sprite_scale, idle_sprite.getScale().y);
 	}
 
 	if (facing_right != running_animation->IsFacingRight()) {
 		running_animation->Flip();
 	}
 
-	if (IsDodging()) {
+	if (hit_points <= 0) {
+		if (facing_right) {
+			taking_damage_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+			dead_on_ground_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		} else {
+			taking_damage_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+			dead_on_ground_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+		}
+
+		if (in_the_air) {
+			render_window->draw(taking_damage_sprite);
+		} else {
+			render_window->draw(dead_on_ground_sprite);
+		}
+
+	} else if (IsDodging()) {
 		if (facing_right) {
 			dodge_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
 		}
@@ -239,6 +274,14 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 			dodge_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
 		}
 		render_window->draw(dodge_sprite);
+	} else if (hit_stun_start_time + hit_stun_duration > current_time) {
+		if (facing_right) {
+			taking_damage_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
+		}
+		else {
+			taking_damage_sprite.setPosition(sf::Vector2f(x + width - camera_position.x, y - camera_position.y));
+		}
+		render_window->draw(taking_damage_sprite);
 	} else if (time_of_last_attack + attack_duration > current_time) {
 		if (facing_right) {
 			attack_sprite.setPosition(sf::Vector2f(x - camera_position.x, y - camera_position.y));
@@ -271,6 +314,10 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 void PlayerCharacter::HandleLeftStickInput(float horizontal, float vertical) {
 	if (can_take_input && hit_points > 0) {
 		velocity.x = (horizontal / 100.0f) * speed;
+
+		if (lock_facing_direction_when_hit && hit_stun_start_time + hit_stun_duration < current_time) {
+			lock_facing_direction_when_hit = false;
+		}
 	}
 }
 
@@ -323,7 +370,7 @@ void PlayerCharacter::HandleButtonXPress() {
 						hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
 						hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER)) {
 					hit_something = true;
-					((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back);
+					((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back, false, true);
 					sword_hitting_enemy_sound.play();
 				} else if (!hit_objects[i]->only_collide_with_platforms &&
 					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE) {
