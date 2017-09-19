@@ -126,14 +126,14 @@ void World::Update(sf::Int64 curr_time, sf::Int64 frame_delta) {
 				end_of_game_door->velocity = sf::Vector2f(0.0f, -1.0f);
 				ScreenShake(0.5f);
 				fighting_boss = false;
-				door_opening_volume = door_opening_volume > 100.0f ? 100.0f : door_opening_volume + 5.0f;
+				door_opening_volume = door_opening_volume + 5.0f > 100.0f ? 100.0f : door_opening_volume + 5.0f;
 				door_opening_sound.setVolume(door_opening_volume * (Singleton<Settings>().Get()->effects_volume / 100.0f));
 				if (door_opening_sound.getStatus() != sf::Sound::Status::Playing) {
 					door_opening_sound.play();
 				}
 			} else {
 				end_of_game_door->velocity = sf::Vector2f(0.0f, 0.0f);
-				door_opening_volume = door_opening_volume < 0.0f ? 0.0f : door_opening_volume - 5.0f;
+				door_opening_volume = door_opening_volume - 5.0f < 0.0f ? 0.0f : door_opening_volume - 5.0f;
 				door_opening_sound.setVolume(door_opening_volume * (Singleton<Settings>().Get()->effects_volume / 100.0f));
 				if (door_opening_volume == 0.0f) {
 					door_opening_sound.stop();

@@ -82,8 +82,8 @@ void Grunt::UpdateBehavior(sf::Int64 curr_time) {
 				if (time_of_last_attack + time_between_attacks <= curr_time && 
 					RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(target->x + target->width / 2.0f, target->y + target->height / 2.0f), sf::Vector2f(x + width / 2.0f, y + height / 2.0f)) < attack_radius) {
 					sf::Vector2f knock_back = sf::Vector2f();
-					knock_back.x = 2.0f;
-					knock_back.y = 6.0f;
+					knock_back.x = 3.0f;
+					knock_back.y = 8.0f;
 
 					if (facing_right) {
 						HitBox->x = x + width;
