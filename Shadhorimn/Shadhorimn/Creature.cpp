@@ -115,5 +115,7 @@ void Creature::OnDeath() {
 		entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_CHARGER);
 		entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE);
 		entities_excluded_from_collision.push_back(Singleton<World>::Get()->ENTITY_TYPE_HIT_BOX);
+	} else {
+		Singleton<World>::Get()->PlayerDied();
 	}
 }

@@ -24,6 +24,7 @@ bool WasButtonBPressed();
 bool WasButtonBReleased();
 bool WasButtonStartPressed();
 bool WasButtonStartReleased();
+void SetFramesPerSecond(int new_fps);
 
 enum GameStates
 {
@@ -76,6 +77,10 @@ bool start_button_previous = false;
 
 sf::Event event;
 
+int frames_per_second = 60;
+sf::Int64 microseconds_in_a_second = 1000000;
+sf::Int64 microseconds_per_frame = microseconds_in_a_second / frames_per_second;
+
 int main()
 {
 	sf::Clock clock;
@@ -86,10 +91,6 @@ int main()
 	window_height = viewport_height;
 
 	time = clock.getElapsedTime();
-
-	int frames_per_second = 60;
-	sf::Int64 microseconds_in_a_second = 1000000;
-	sf::Int64 microseconds_per_frame = microseconds_in_a_second / frames_per_second;
 
 	sf::Int64 time_current = time.asMicroseconds();
 	sf::Int64 time_previous = time.asMicroseconds();
@@ -206,28 +207,26 @@ int main()
 						//combat_music.setVolume((float)combat_music_volume * (Singleton<Settings>::Get()->music_volume / 100.0f));
 					}
 				}
-
-				if (main_character->hit_points <= 0) {
-					frames_per_second = 10;
+				
+				if (Singleton<World>::Get()->CanContinue()) {
+					SetFramesPerSecond(60);
 					if ((a_button_current && !a_button_previous) || (start_button_current && !start_button_previous)) {
 						if (Singleton<World>::Get()->current_number_of_lives > 0) {
 							Singleton<World>::Get()->current_number_of_lives--;
-							frames_per_second = 60;
 							GameState = GAME_STATE_INITILIZATION;
 						} else {
 							Singleton<World>::Get()->current_number_of_lives = 2;
-							frames_per_second = 60;
 							GameState = GAME_STATE_START_MENU;
 						}
 					}
+				} else if (Singleton<World>::Get()->main_character->hit_points <= 0) {
+					SetFramesPerSecond(10);
 				} else if (Singleton<World>::Get()->DidThePlayerBeatTheGame()) {
-					frames_per_second = 10;
-					microseconds_per_frame = microseconds_in_a_second / frames_per_second;
+					SetFramesPerSecond(10);
 					input_handler->EatInputsForNumberOfFrames(1);
 					
 					if (Singleton<World>::Get()->ShouldGoToCredits()) {
-						frames_per_second = 60;
-						microseconds_per_frame = microseconds_in_a_second / frames_per_second;
+						SetFramesPerSecond(60);
 						GameState = GAME_STATE_CREDITS;
 						credits_text.setPosition(viewport_width / 2.0f - 120.0f, viewport_height + 50.0f);
 					}
@@ -242,6 +241,11 @@ int main()
 	}
 
 	return 0;
+}
+
+void SetFramesPerSecond(int new_fps) {
+	frames_per_second = new_fps;
+	microseconds_per_frame = microseconds_in_a_second / frames_per_second;
 }
 
 void UpdateGameStateLogos() {

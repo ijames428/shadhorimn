@@ -13,6 +13,8 @@ using namespace std;
 
 class World {
 	private:
+		sf::Int64 time_of_death;
+		sf::Int64 time_before_continue_screen_appears;
 		float door_opening_volume;
 		sf::Sound door_opening_sound;
 		sf::SoundBuffer door_opening_buffer;
@@ -111,4 +113,6 @@ class World {
 		bool IsNewGame();
 		void StartNewGame();
 		void HitStalagtite();
+		void PlayerDied();
+		bool CanContinue();
 };

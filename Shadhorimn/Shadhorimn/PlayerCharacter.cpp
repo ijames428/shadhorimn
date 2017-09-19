@@ -269,13 +269,13 @@ void PlayerCharacter::Draw(sf::Vector2f camera_position) {
 }
 
 void PlayerCharacter::HandleLeftStickInput(float horizontal, float vertical) {
-	if (can_take_input) {
+	if (can_take_input && hit_points > 0) {
 		velocity.x = (horizontal / 100.0f) * speed;
 	}
 }
 
 void PlayerCharacter::HandleButtonAPress() {
-	if (!in_the_air) {
+	if (!in_the_air && hit_points > 0) {
 		velocity.y = -(jump_power);
 		in_the_air = true;
 		//soundJump.play();
@@ -286,7 +286,7 @@ void PlayerCharacter::HandleButtonARelease() {
 }
 
 void PlayerCharacter::HandleButtonBPress() {
-	if (!IsDodging() && !in_the_air) {
+	if (!IsDodging() && !in_the_air && hit_points > 0) {
 		dodge_start_time = current_time;
 		dodge_invincibility_start_time = current_time;
 	}
@@ -296,7 +296,7 @@ void PlayerCharacter::HandleButtonBRelease() {
 }
 
 void PlayerCharacter::HandleButtonXPress() {
-	if (time_of_last_attack + attack_cooldown < current_time) {
+	if (time_of_last_attack + attack_cooldown < current_time && hit_points > 0) {
 		time_of_last_attack = current_time;
 
 		sf::Vector2f knock_back = sf::Vector2f();
@@ -360,7 +360,7 @@ void PlayerCharacter::HandleButtonXRelease() {
 }
 
 void PlayerCharacter::HandleButtonYPress() {
-	if (time_of_last_fire + fire_duration < current_time) {
+	if (time_of_last_fire + fire_duration < current_time && hit_points > 0) {
 		if (!in_the_air) {
 			velocity.x = 0.0f;
 			velocity.y = 0.0f;
