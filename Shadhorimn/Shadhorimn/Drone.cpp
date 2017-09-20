@@ -73,16 +73,12 @@ void Drone::UpdateBehavior(sf::Int64 curr_time) {
 							float deltaX = target->x - x;
 							float deltaY = target->y - y;
 							sf::Vector2f vel = sf::Vector2f(deltaX, deltaY);
-							sf::Vector2f starting_position = sf::Vector2f(x - projectiles[i]->width, y);
+							sf::Vector2f starting_position = sf::Vector2f(x + width / 2.0f - projectiles[i]->width / 2.0f, y + height / 2.0f - projectiles[i]->height / 2.0f);
 							float length = sqrt(deltaX * deltaX + deltaY * deltaY);
 
 							if (length != 0) {
 								vel.x = vel.x / length;
 								vel.y = vel.y / length;
-							}
-
-							if (facing_right) {
-								starting_position.x += width + projectiles[i]->width;
 							}
 
 							projectiles[i]->Fire(current_time, starting_position, vel * 4.0f);
