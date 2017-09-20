@@ -59,7 +59,6 @@ sf::Sprite start_menu_background_sprite;
 sf::Font ringbearer_font;
 sf::Text title_text;
 sf::Text start_text;
-sf::Text loading_text;
 
 sf::Text credits_text;
 
@@ -146,9 +145,6 @@ int main()
 
 	start_text = sf::Text("Press Start to begin", ringbearer_font);
 	start_text.setPosition(viewport_width / 2.0f - 120.0f, viewport_height / 2.0f - 60.0f);
-
-	loading_text = sf::Text("Loading...", ringbearer_font, 60);
-	loading_text.setPosition(viewport_width / 2.0f - 150.0f, viewport_height / 2.0f - 100.0f);
 
 	credits_text = sf::Text("Made by Ian James\n\n\n\n\nThank you for playing Shadhorimn", ringbearer_font);
 	credits_text.setPosition(viewport_width / 2.0f - 220.0f, viewport_height + 50.0f);
@@ -288,8 +284,6 @@ void UpdateGameStateStartMenu() {
 
 void UpdateGameStateLoadingScreen() {
 	window->clear();
-
-	window->draw(loading_text);
 
 	HandleClosingEvent();
 	SetPreviousButtonValues();

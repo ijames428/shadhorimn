@@ -9,9 +9,17 @@ World::World() {
 
 void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* character) {
 	Grid = std::vector<std::vector<std::vector<RigidBody*>>>(grid_width, std::vector<std::vector<RigidBody*>>(grid_height, std::vector<RigidBody*>()));
-
 	render_window = window;
 	camera = cam;
+
+	if (!ringbearer_font.loadFromFile("Images/RingbearerFont.ttf"))
+		return;
+
+	loading_text = sf::Text("Loading.", ringbearer_font, 60);
+	loading_text.setPosition(camera->viewport_dimensions.x / 2.0f - 150.0f, camera->viewport_dimensions.y / 2.0f - 100.0f);
+
+	UpdateLoadingText("L");
+
 	main_character = character;
 	paused = false;
 	game_over_screen_sprite_transparency = 0;
@@ -19,7 +27,6 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	player_is_in_combat = false;
 	fighting_boss = false;
 	combat_music_range = 400.0f;
-
 	current_time = 0;
 	screen_shaking = false;
 	screen_shake_start_time = 0;
@@ -46,22 +53,29 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	blank_screen_texture.loadFromFile("Images/StartMenuBackground.png");
 	blank_screen_sprite = sf::Sprite(blank_screen_texture);
 
+	UpdateLoadingText("Load");
+
 	game_over_texture.loadFromFile("Images/GameOverScreen.png");
 	game_over_sprite = sf::Sprite(game_over_texture);
+
+	UpdateLoadingText("Loadi");
 
 	level_art_texture.loadFromFile("Images/ReleaseLevelArt.png");
 	level_art_sprite = sf::Sprite(level_art_texture);
 
+	UpdateLoadingText("Loadin");
+
 	foreground_behind_layer_texture.loadFromFile("Images/ReleaseLevelArt_rough_overlay.png");
 	foreground_behind_layer_sprite = sf::Sprite(foreground_behind_layer_texture);
+
+	UpdateLoadingText("Loading");
 
 	parallax_background_texture.loadFromFile("Images/ReleaseLevelArt_Backdrop.png");
 	parallax_background_sprite = sf::Sprite(parallax_background_texture);
 	parallax_background_sprite.setPosition(0.0f, 0.0f);
 	parallax_background_sprite.setScale(0.4f, 0.4f);
 
-	if (!ringbearer_font.loadFromFile("Images/RingbearerFont.ttf"))
-		return;
+	UpdateLoadingText("Loading.");
 
 	lives_counter_text = sf::Text();
 	lives_counter_text.setFont(ringbearer_font);
@@ -79,6 +93,8 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 	continue_text.setString("You have " + std::to_string(current_number_of_lives) + " lives left.\nPress Start to continue.");
 	continue_text.setPosition(camera->viewport_dimensions.x / 2.0f - 150.0f, camera->viewport_dimensions.y / 2.0f - 100.0f);
 
+	UpdateLoadingText("Loading..");
+
 	if (!buffer_stalagtite_landing.loadFromFile("Sound/stalagtite_landing.wav")) {
 		throw exception("Sound file not found");
 	} else {
@@ -86,6 +102,8 @@ void World::Init(sf::RenderWindow* window, Camera* cam, PlayerCharacter* charact
 		sound_stalagtite_landing.setVolume(50 * (Singleton<Settings>().Get()->effects_volume / 100.0f));
 		sound_stalagtite_landing.setLoop(false);
 	}
+
+	UpdateLoadingText("Loading...");
 
 	if (!door_opening_buffer.loadFromFile("Sound/door_opening.wav")) {
 		throw exception("Sound file not found");
@@ -354,6 +372,13 @@ bool World::IsObjectInUpdateRange(RigidBody* rb) {
 	return false;
 }
 
+void World::UpdateLoadingText(sf::String loading_string) {
+	render_window->clear();
+	loading_text.setString(loading_string);
+	render_window->draw(loading_text);
+	render_window->display();
+}
+
 void World::ScreenShake(float magnitude) {
 	screen_shake_start_time = current_time;
 	screen_shake_magnitude = magnitude;
@@ -510,7 +535,6 @@ void World::BuildReleaseLevel() {
 	platforms.push_back(new Platform(render_window, sf::Vector2f(1417.0f, 1212.0f), sf::Vector2f(311.0f, 737.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(1728.0f, 1484.0f), sf::Vector2f(302.0f, 464.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2030.0f, 1484.0f), sf::Vector2f(412.0f, 277.0f)));
-
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2833.0f, 1482.0f), sf::Vector2f(362.0f, 242.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2504.0f, 2120.0f), sf::Vector2f(208.0f, 65.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(1969.0f, 2119.0f), sf::Vector2f(292.0f, 50.0f)));
@@ -546,6 +570,9 @@ void World::BuildReleaseLevel() {
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2394.0f, 4265.0f), sf::Vector2f(573.0f, 128.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2492.0f, 4383.0f), sf::Vector2f(387.0f, 150.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2566.0f, 4531.0f), sf::Vector2f(193.0f, 262.0f)));
+
+	UpdateLoadingText("Lo");
+
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2158.0f, 4748.0f), sf::Vector2f(1018.0f, 241.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(3174.0f, 4134.0f), sf::Vector2f(489.0f, 869.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2103.0f, 4855.0f), sf::Vector2f(59.0f, 114.0f)));
@@ -609,6 +636,8 @@ void World::BuildReleaseLevel() {
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4561.0f, 560.0f), sf::Vector2f(129.0f, 34.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4817.0f, 429.0f), sf::Vector2f(128.0f, 35.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4559.0f, 335.0f), sf::Vector2f(131.0f, 35.0f)));
+
+	UpdateLoadingText("Loa");
 
 	checkpoints.erase(checkpoints.begin(), checkpoints.end());
 	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(2288.0f, 1200.0f), sf::Vector2f(40.0f, 264.0f), false));

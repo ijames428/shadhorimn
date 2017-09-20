@@ -13,6 +13,7 @@ using namespace std;
 
 class World {
 	private:
+		sf::Text loading_text;
 		sf::Int64 time_of_death;
 		sf::Int64 time_before_continue_screen_appears;
 		float door_opening_volume;
@@ -115,4 +116,5 @@ class World {
 		void HitStalagtite();
 		void PlayerDied();
 		bool CanContinue();
+		void UpdateLoadingText(sf::String loading_text);
 };
