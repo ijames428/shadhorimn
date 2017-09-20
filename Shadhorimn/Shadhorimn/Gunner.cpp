@@ -67,6 +67,7 @@ void Gunner::UpdateBehavior(sf::Int64 curr_time) {
 
 	if (hit_points > 0) {
 		if (hit_stun_start_time + hit_stun_duration <= current_time) {
+			lock_facing_direction_when_hit = false;
 			is_aggroed = RigidBody::GetDistanceBetweenTwoPoints(sf::Vector2f(target->x + target->width / 2.0f, target->y + target->height / 2.0f), sf::Vector2f(x, y)) < aggro_radius;
 
 			if (is_aggroed) {
@@ -112,6 +113,9 @@ void Gunner::UpdateBehavior(sf::Int64 curr_time) {
 				velocity.x = 0.0f;
 				velocity.y = 0.0f;
 			}
+		} else {
+			lock_facing_direction_when_hit = true;
+			rectangle_shape.setFillColor(sf::Color::Red);
 		}
 	}
 }

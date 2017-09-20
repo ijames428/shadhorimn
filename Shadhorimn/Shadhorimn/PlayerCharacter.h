@@ -52,7 +52,7 @@ class PlayerCharacter : public Creature {
 		sf::Int64 fire_duration;
 	public:
 		bool can_take_input;
-		int max_hit_points = 1;
+		int max_hit_points;
 		std::vector<Projectile*> projectiles = std::vector<Projectile*>();
 		PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position = sf::Vector2f(0.0f, 0.0f), sf::Vector2f dimensions = sf::Vector2f(0.0f, 0.0f), bool subject_to_gravity = true);
 		void HandleLeftStickInput(float horizontal, float vertical);

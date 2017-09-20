@@ -105,7 +105,7 @@ int main()
 
 	if (!background_music.openFromFile("Sound/background_music0.ogg"))
 		return -1;
-	//combat_music.setVolume((float)background_music_volume * (Singleton<Settings>::Get()->music_volume / 100.0f));
+	combat_music.setVolume((float)background_music_volume * (Singleton<Settings>::Get()->music_volume / 100.0f));
 #ifdef _DEBUG
 #else
 	background_music.play();
@@ -114,7 +114,7 @@ int main()
 
 	if (!combat_music.openFromFile("Sound/combat_music.ogg"))
 		return -1;
-	//combat_music.setVolume((float)combat_music_volume * (Singleton<Settings>::Get()->music_volume / 100.0f));
+	combat_music.setVolume((float)combat_music_volume * (Singleton<Settings>::Get()->music_volume / 100.0f));
 #ifdef _DEBUG
 #else
 	combat_music.play();
@@ -195,16 +195,16 @@ int main()
 						combat_music_volume++;
 						background_music_volume--;
 
-						//combat_music.setVolume((float)combat_music_volume * (Singleton<Settings>::Get()->music_volume / 100.0f));
-						//background_music.setVolume((float)background_music_volume * (Singleton<Settings>::Get()->music_volume / 100.0f));
+						combat_music.setVolume((float)combat_music_volume * (Singleton<Settings>::Get()->music_volume / 100.0f));
+						background_music.setVolume((float)background_music_volume * (Singleton<Settings>::Get()->music_volume / 100.0f));
 					}
 				} else {
 					if (background_music_volume < 100) {
 						background_music_volume++;
 						combat_music_volume--;
 
-						//background_music.setVolume((float)background_music_volume * (Singleton<Settings>::Get()->music_volume / 100.0f));
-						//combat_music.setVolume((float)combat_music_volume * (Singleton<Settings>::Get()->music_volume / 100.0f));
+						background_music.setVolume((float)background_music_volume * (Singleton<Settings>::Get()->music_volume / 100.0f));
+						combat_music.setVolume((float)combat_music_volume * (Singleton<Settings>::Get()->music_volume / 100.0f));
 					}
 				}
 				

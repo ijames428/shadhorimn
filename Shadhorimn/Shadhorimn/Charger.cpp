@@ -77,6 +77,8 @@ void Charger::UpdateBehavior(sf::Int64 curr_time) {
 
 	if (hit_points > 0) {
 		if (hit_stun_start_time + hit_stun_duration <= current_time) {
+			lock_facing_direction_when_hit = false;
+
 			sf::Vector2f knock_back = sf::Vector2f();
 			knock_back.x = 2.0f;
 			knock_back.y = 6.0f;
@@ -131,12 +133,14 @@ void Charger::UpdateBehavior(sf::Int64 curr_time) {
 			} else {
 				StartCharge();
 			}
+		} else {
+			lock_facing_direction_when_hit = true;
 		}
 	}
 }
 
 void Charger::FireSecondStageProjectiles() {
-	sf::Vector2f starting_position = sf::Vector2f(x + width / 2.0f, y + height / 2.0f);
+	sf::Vector2f starting_position = sf::Vector2f(x + width / 2.0f, y + height / 4.0f);
 	float projectile_speed = 6.0f;
 	float angled_speed = 4.24f;
 
@@ -167,9 +171,10 @@ void Charger::StartCharge() {
 
 	if (target->x > x) {
 		charge_velocity.x = charge_speed_by_stage;
-	}
-	else if (target->x < x) {
+		WallDetector->x = x + width;
+	} else if (target->x < x) {
 		charge_velocity.x = -charge_speed_by_stage;
+		WallDetector->x = x - WallDetector->width;
 	}
 }
 

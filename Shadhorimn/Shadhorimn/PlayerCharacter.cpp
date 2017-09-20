@@ -9,7 +9,7 @@ using namespace std;
 PlayerCharacter::PlayerCharacter(sf::RenderWindow *window, sf::Vector2f position, sf::Vector2f dimensions, bool subject_to_gravity) : 
 	Creature::Creature(window, position, dimensions, subject_to_gravity) {
 	entity_type = Singleton<World>::Get()->ENTITY_TYPE_PLAYER_CHARACTER;
-	hit_points = 10;
+	hit_points = max_hit_points = 10;
 	can_take_input = true;
 	time_of_last_attack = 0;
 	attack_cooldown = 600;
@@ -370,7 +370,7 @@ void PlayerCharacter::HandleButtonXPress() {
 						hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_GUNNER ||
 						hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_CHARGER)) {
 					hit_something = true;
-					((Creature*)(hit_objects[i]))->TakeHit(1, 500, knock_back, false, true);
+					((Creature*)(hit_objects[i]))->TakeHit(2, 500, knock_back, false, true);
 					sword_hitting_enemy_sound.play();
 				} else if (!hit_objects[i]->only_collide_with_platforms &&
 					hit_objects[i]->entity_type == Singleton<World>::Get()->ENTITY_TYPE_PROJECTILE) {
