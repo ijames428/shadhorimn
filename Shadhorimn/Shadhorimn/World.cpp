@@ -570,9 +570,6 @@ void World::BuildReleaseLevel() {
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2394.0f, 4265.0f), sf::Vector2f(573.0f, 128.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2492.0f, 4383.0f), sf::Vector2f(387.0f, 150.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2566.0f, 4531.0f), sf::Vector2f(193.0f, 262.0f)));
-
-	UpdateLoadingText("Lo");
-
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2158.0f, 4748.0f), sf::Vector2f(1018.0f, 241.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(3174.0f, 4134.0f), sf::Vector2f(489.0f, 869.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(2103.0f, 4855.0f), sf::Vector2f(59.0f, 114.0f)));
@@ -637,7 +634,7 @@ void World::BuildReleaseLevel() {
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4817.0f, 429.0f), sf::Vector2f(128.0f, 35.0f)));
 	platforms.push_back(new Platform(render_window, sf::Vector2f(4559.0f, 335.0f), sf::Vector2f(131.0f, 35.0f)));
 
-	UpdateLoadingText("Loa");
+	UpdateLoadingText("Lo");
 
 	checkpoints.erase(checkpoints.begin(), checkpoints.end());
 	checkpoints.push_back(new Checkpoint(render_window, sf::Vector2f(2288.0f, 1200.0f), sf::Vector2f(40.0f, 264.0f), false));
@@ -666,6 +663,8 @@ void World::BuildReleaseLevel() {
 	drones.push_back(new Drone(render_window, sf::Vector2f(1016.0f, 3160.0f), sf::Vector2f(30.0f, 30.0f), false));
 	drones.push_back(new Drone(render_window, sf::Vector2f(2488.0f, 4104.0f), sf::Vector2f(30.0f, 30.0f), false));
 	drones.push_back(new Drone(render_window, sf::Vector2f(2808.0f, 4104.0f), sf::Vector2f(30.0f, 30.0f), false));
+
+	UpdateLoadingText("Loa");
 
 	charger = new Charger(render_window, sf::Vector2f(3800.0f, 1820.0f), sf::Vector2f(40.0f, 100.0f), true);
 	end_of_the_game_trigger = new EndOfTheGame(render_window, sf::Vector2f(3950.0f, 1408.0f), sf::Vector2f(200.0f, 488.0f), false);
